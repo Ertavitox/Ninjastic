@@ -24,6 +24,18 @@ sudo apt install php8.2-mysql php8.2-gd
 php -v
 ```
 
+#### CLI Symphony telepítése:
+
+````bash
+composer install
+curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash
+sudo apt install symfony-cli
+sudo apt install php8.2 php8.2-common php8.2-ctype php8.2-iconv php8.2-simplexml php8.2-tokenizer php8.2-mbstring php8.2-mysql php8.2-intl libnss3-tools php8.2-xdebug
+symfony server:ca:install
+symfony server:start
+```bash
+````
+
 # További Források
 
 ## Trágár Szavak Listája
