@@ -3,7 +3,7 @@ version: '3'
 services:
 ###> doctrine/doctrine-bundle ###
    database:
-    container_name: artic-database
+    container_name: database
     image: mysql:${MYSQL_VERSION:-8.0.32}-debian
     ports:
       - 3306:3306

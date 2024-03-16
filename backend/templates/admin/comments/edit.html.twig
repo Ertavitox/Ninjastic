@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block body %}
+    <h1>Edit Comment</h1>
+
+    {{ include('admin/comments/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_admin_comments_index') }}">back to list</a>
+
+    {{ include('admin/comments/_delete_form.html.twig') }}
+{% endblock %}
