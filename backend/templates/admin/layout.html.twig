@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ page_title }} - Admin </title>
+        <link rel="icon" href="/favicon_admin.ico" type="image/x-icon">
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon_admin.ico" >
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/plugins/fontawesome-free/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/plugins/toastr/toastr.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/css/adminlte.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/plugins/daterangepicker/daterangepicker.css">
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/plugins/bootstrap-select/bootstrap-select.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/plugins/fancybox/source/jquery.fancybox.css">
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/plugins/datetimepicker/jquery.datetimepicker.css">
+        <link rel="stylesheet" type="text/css" href="{{ apps.baseUrl }}/admins/plugins/jquery-ui/jquery-ui.min.css">
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" >
+    </head>
+
+    <body class="hold-transition sidebar-mini layout-fixed accent-lime">
+        <div class="wrapper">
+            {% include "admin/adminParts/navTop.twig" %}
+
+            <div class="content-wrapper">
+                {% include "admin/adminParts/breadcrumb.twig" %}
+                <section class="content">
+                    <div class="container-fluid">
+                        <!-- Small boxes (Stat box) -->
+                        <div class="row">
+                            <div class="col-12">
+                                {% block viewContent %}
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <footer class="main-footer">
+                <strong>Copyright &copy; 2024 <a href="javascript:void(0);">Ninjastic Team</a></strong>
+            </footer>
+        </div>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/moment/moment.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/jquery-sortable/sortable.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/bootbox/bootbox.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/daterangepicker/daterangepicker.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/datetimepicker/jquery.datetimepicker.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/toastr/toastr.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/fancybox/source/jquery.fancybox.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/js/adminlte.min.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/js/demo.js"></script>
+        <script type="text/javascript" src="{{ apps.baseUrl }}/admins/js/jbadmin.js"></script>
+        {% block javascript %}
+        {% endblock %}
+        {% if flashbag.has('notice') %}
+            {% set flashBagType = flashbag.getType() %}
+            {% set notice = flashbag.get('notice') %}
+            <script>
+                {% if flashBagType == "1" %}
+                    toastr["success"]('{{notice.text|raw}}', '{{notice.title}}');
+                {% else %}
+                    toastr["error"]('{{notice.text|raw}}', '{{notice.title}}');
+                {% endif %}
+            </script>
+        {% endif %}
+
+    </body>
+</html>

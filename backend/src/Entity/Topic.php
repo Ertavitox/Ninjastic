@@ -3,25 +3,33 @@
 namespace App\Entity;
 
 use App\Repository\TopicRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TopicRepository::class)]
 class Topic
 {
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE = 0;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'topics')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?int $status = null;
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
+
+    #[ORM\Column(options: ["default" => 1])]
+    private int $status = self::STATUS_ACTIVE;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -29,25 +37,29 @@ class Topic
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $description = null;
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'topic')]
+    private Collection $comments;
 
-    #[ORM\OneToOne(mappedBy: 'topic_id', cascade: ['persist', 'remove'])]
-    private ?Comment $comment = null;
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
+        $this->updated_at = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setUser(?User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
@@ -64,13 +76,30 @@ class Topic
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getStatus(): int
     {
         return $this->status;
     }
 
     public function setStatus(int $status): static
     {
+
+        if (!in_array($status, [self::STATUS_ACTIVE, self::STATUS_INACTIVE])) {
+            throw new \InvalidArgumentException("Invalid status");
+        }
+
         $this->status = $status;
 
         return $this;
@@ -100,36 +129,32 @@ class Topic
         return $this;
     }
 
-    public function getDescription(): ?string
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
     {
-        return $this->description;
+        return $this->comments;
     }
 
-    public function setDescription(string $description): static
+    public function addComment(Comment $comment): static
     {
-        $this->description = $description;
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setTopic($this);
+        }
 
         return $this;
     }
 
-    public function getComment(): ?Comment
+    public function removeComment(Comment $comment): static
     {
-        return $this->comment;
-    }
-
-    public function setComment(?Comment $comment): static
-    {
-        // unset the owning side of the relation if necessary
-        if ($comment === null && $this->comment !== null) {
-            $this->comment->setTopicId(null);
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getTopic() === $this) {
+                $comment->setTopic(null);
+            }
         }
-
-        // set the owning side of the relation if necessary
-        if ($comment !== null && $comment->getTopicId() !== $this) {
-            $comment->setTopicId($this);
-        }
-
-        $this->comment = $comment;
 
         return $this;
     }

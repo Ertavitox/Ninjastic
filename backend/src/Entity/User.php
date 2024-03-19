@@ -5,11 +5,17 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
+
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE = 0;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -21,8 +27,8 @@ class User
     #[ORM\Column(length: 160)]
     private ?string $email = null;
 
-    #[ORM\Column]
-    private ?int $status = null;
+    #[ORM\Column(options: ["default" => 1])]
+    private int $status = self::STATUS_ACTIVE;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -30,16 +36,21 @@ class User
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
 
-    #[ORM\OneToMany(targetEntity: Topic::class, mappedBy: 'user_id', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Topic::class, mappedBy: 'user')]
     private Collection $topics;
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user_id', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
     private Collection $comments;
+
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
 
     public function __construct()
     {
         $this->topics = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
+        $this->updated_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -71,13 +82,18 @@ class User
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): int
     {
         return $this->status;
     }
 
     public function setStatus(int $status): static
     {
+
+        if (!in_array($status, [self::STATUS_ACTIVE, self::STATUS_INACTIVE])) {
+            throw new \InvalidArgumentException("Invalid status");
+        }
+
         $this->status = $status;
 
         return $this;
@@ -119,7 +135,7 @@ class User
     {
         if (!$this->topics->contains($topic)) {
             $this->topics->add($topic);
-            $topic->setUserId($this);
+            $topic->setUser($this);
         }
 
         return $this;
@@ -129,8 +145,8 @@ class User
     {
         if ($this->topics->removeElement($topic)) {
             // set the owning side to null (unless already changed)
-            if ($topic->getUserId() === $this) {
-                $topic->setUserId(null);
+            if ($topic->getUser() === $this) {
+                $topic->setUser(null);
             }
         }
 
@@ -149,7 +165,7 @@ class User
     {
         if (!$this->comments->contains($comment)) {
             $this->comments->add($comment);
-            $comment->setUserId($this);
+            $comment->setUser($this);
         }
 
         return $this;
@@ -159,10 +175,22 @@ class User
     {
         if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)
-            if ($comment->getUserId() === $this) {
-                $comment->setUserId(null);
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }

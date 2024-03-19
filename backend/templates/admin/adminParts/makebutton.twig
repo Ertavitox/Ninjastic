@@ -1,0 +1,73 @@
+{% if button.controller is defined %}
+    {% set ControllerName = button.controller %}
+{% else %}
+    {% set ControllerName = controller_url %}
+{% endif %}
+
+{% if button.type is defined and button.type == 'edit' %}
+    <a class="btn btn-warning {% if button.class is defined %}{{ button.class }}{% endif %}" href="{{ apps.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Edit">
+        <i class="fas fa-edit"></i>
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'read' %}
+    <a class="btn btn-info {% if button.class is defined %}{{ button.class }}{% endif %}" href="{{ apps.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Read">
+        <i class="fas fa-eye"></i>
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'delete' %}
+    <a class="btn btn-danger {% if button.class is defined %}{{ button.class }}{% endif %}" data-delete="true" href="{{ apps.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Delete">
+        <i class="fas fa-trash"></i>
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'create' %}
+    <a class="btn btn-success {% if button.class is defined %}{{ button.class }}{% endif %}" href="{{ apps.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Create">
+        <i class="fas fa-plus"></i> {% if button.without is defined %}{% elseif button.text is defined %}{{ button.text }}{% else %}Create{% endif%}
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'up' %}
+    <a class="btn btn-warning {% if button.class is defined %}{{ button.class }}{% endif %}" href="{{ apps.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Up">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'down' %}
+    <a class="btn btn-warning {% if button.class is defined %}{{ button.class }}{% endif %}" href="{{ apps.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Down">
+        <i class="fas fa-arrow-down"></i>
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'back' %}
+    <a class="btn btn-info float-right ml-2 {% if button.class is defined %}{{ button.class }}{% endif %}" href="{{ apps.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Back">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'save' %}
+    <button type="submit" class="btn btn-success float-right ml-2 {% if button.class is defined %}{{ button.class }}{% endif %}">Save</button>
+{% endif %}
+
+{% if button.type is defined and button.type == 'saveStay' %}
+    <button type="submit" name="stay" value="1" class="btn btn-success float-right ml-2 {% if button.class is defined %}{{ button.class }}{% endif %}">Save and stay</button>
+{% endif %}
+
+{% if button.type is defined and button.type == 'list' %}
+    <a class="btn btn-default {% if button.class is defined %}{{ button.class }}{% endif %}" href="{{ apps.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="List">
+        <i class="fas fa-list"></i>
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'preview' %}
+    <a class="btn btn-primary {% if button.class is defined %}{{ button.class }}{% endif %}" target="_blank" href="{{ app.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Preview">
+        <i class="fas fa-arrow-circle-right"></i>
+    </a>
+{% endif %}
+
+{% if button.type is defined and button.type == 'gallery' %}
+    <a class="btn btn-primary {% if button.class is defined %}{{ button.class }}{% endif %}" href="{{ app.adminUrl ~ '/' ~ ControllerName ~ '/' ~ button.action }}" title="Gallery">
+        <i class="fas fa-image"></i>
+    </a>
+{% endif %}

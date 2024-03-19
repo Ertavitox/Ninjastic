@@ -4,28 +4,32 @@ namespace App\Entity;
 
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
+
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE = 0;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'comment', cascade: ['persist', 'remove'])]
-    private ?Topic $topic_id = null;
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    private ?Topic $topic = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $message = null;
 
-    #[ORM\Column]
-    private ?int $status = null;
+    #[ORM\Column(options: ["default" => 1])]
+    private int $status = self::STATUS_ACTIVE;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -33,31 +37,37 @@ class Comment
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
 
+    public function __construct()
+    {
+        $this->created_at = new \DateTimeImmutable();
+        $this->updated_at = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTopicId(): ?Topic
+    public function getUser(): ?User
     {
-        return $this->topic_id;
+        return $this->user;
     }
 
-    public function setTopicId(?Topic $topic_id): static
+    public function setUser(?User $user): static
     {
-        $this->topic_id = $topic_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getTopic(): ?Topic
     {
-        return $this->user_id;
+        return $this->topic;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setTopic(?Topic $topic): static
     {
-        $this->user_id = $user_id;
+        $this->topic = $topic;
 
         return $this;
     }
@@ -74,13 +84,18 @@ class Comment
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): int
     {
         return $this->status;
     }
 
     public function setStatus(int $status): static
     {
+
+        if (!in_array($status, [self::STATUS_ACTIVE, self::STATUS_INACTIVE])) {
+            throw new \InvalidArgumentException("Invalid status");
+        }
+
         $this->status = $status;
 
         return $this;
