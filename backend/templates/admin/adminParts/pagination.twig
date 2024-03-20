@@ -12,7 +12,7 @@
         <ul class="pagination pagination-sm m-0 float-right">
             {% if currentPage != 1 %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ pathUrl({ 'actpage': 1, 'q': query }) }}">First</a>
+                    <a class="page-link" href="{{ pathUrl({ 'actpage': 1, 'q': query, 'r': request_uri }) }}">First</a>
                 </li>
             {% endif %}
             {% for i in 1..pageCount %}
@@ -28,13 +28,13 @@
                 {% elseif 0 > (currentPage + nearbyPagesLimit) - loop.index %} {# hide all after #}
                 {% else %}
                     <li class="page-item{% if currentPage == loop.index  %} active{% endif %}">
-                        <a class="page-link" href="{{ pathUrl({ 'actpage': loop.index, 'q': query }) }}">{{ loop.index }}</a>
+                        <a class="page-link" href="{{ pathUrl({ 'actpage': loop.index, 'q': query, 'r': request_uri }) }}">{{ loop.index }}</a>
                     </li>
                 {% endif %}
             {% endfor %}
             {% if currentPage != pageCount %}
                 <li class="page-item" >
-                    <a class="page-link" href="{{ pathUrl({ 'actpage': pageCount, 'q': query }) }}">Last</a>
+                    <a class="page-link" href="{{ pathUrl({ 'actpage': pageCount, 'q': query, 'r': request_uri }) }}">Last</a>
                 </li>
             {% endif %}
         </ul>

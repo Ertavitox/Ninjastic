@@ -88,6 +88,11 @@ class Topic
         return $this;
     }
 
+    public function showStatusText(): string
+    {
+        return $this->status == 1 ? "Active" : "Inactive";
+    }
+
     public function getStatus(): int
     {
         return $this->status;

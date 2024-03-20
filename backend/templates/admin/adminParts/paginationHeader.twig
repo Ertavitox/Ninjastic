@@ -6,48 +6,56 @@
         {% if list is defined %}
             <h3 class="float-left ml-2">{% include "admin/adminParts/makebutton.twig" with list %}</h3>
         {% endif %}
-        <div class="card-tools ">
-            <div class="card-group">
-                <div class="card mt-2" style="box-shadow: none;">
-                    <form method="GET">
-                        <input type="hidden" name="actpage" value="{{ currentPage }}" />
-                        <input type="hidden" name="pagesize" value="{{ limit }}" />
-                        <div class="card-deck">
-                            {% if searchStatusModul is defined %}
-                                <div class="card" style="box-shadow: none;">
-                                    <div class="input-group input-group-sm">
-                                        <select value="empty" name="searchstatus" class="form-control" onchange="this.form.submit()" >
-                                            <option value="" {% if GET.searchstatus is not defined %}selected{% endif %} >Status</option>
-                                            {% for key, searchStatusItem in searchStatusModul %}
-                                                <option value="{{ key }}"  {% if GET.searchstatus is defined and GET.searchstatus is numeric and GET.searchstatus == key %} selected  {% endif %}>{{ searchStatusItem }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            {% endif %}
-                            <div class="card">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" value="{% if GET.search is defined  %}{{ GET.search }}{% endif %}" name="search" class="form-control float-right" placeholder="Search">
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                                    </div>
+        <div class="row">
+            <div class="col-sm-9">
+                <form method="GET" class="row">
+                    <input type="hidden" name="actpage" value="{{ currentPage }}" />
+                    <input type="hidden" name="pagesize" value="{{ limit }}" />
+
+                    {% if searchUserName is defined %}
+                        <div class="col-sm-4">
+                            <div class="input-group input-group-sm">
+                                <input type="text" value="{% if GET.searchusername is defined  %}{{ GET.searchusername }}{% endif %}" name="searchusername" class="form-control float-right" placeholder="Search User Name">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    {% endif %}
 
-                <div class="card ml-2 mt-2">
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text" for="dataTables_length">Result per page</label>
+                    {% if searchStatusModul is defined %}
+                        <div class="col-sm-4">
+                            <div class="input-group input-group-sm">
+                                <select value="empty" name="searchstatus" class="form-control" onchange="this.form.submit()">
+                                    <option value="" {% if GET.searchstatus is not defined %}selected{% endif %}>Status</option>
+                                    {% for key, searchStatusItem in searchStatusModul %}
+                                        <option value="{{ key }}" {% if GET.searchstatus is defined and GET.searchstatus is numeric and GET.searchstatus == key %} selected  {% endif %}>{{ searchStatusItem }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
-                        <select class="custom-select form-control " onchange="location = this.value;">
-                            {% for tableLengthItem in apps.tableLength %}
-                                <option value="{{ pathUrl({ 'pagesize': tableLengthItem , 'q': query }) }}" {% if tableLengthItem == limit %}selected="selected"{% endif %}>{{ tableLengthItem }}</option>
-                            {% endfor %}
-                        </select>
+                    {% endif %}
+
+                    <div class="col-sm-4">
+                        <div class="input-group input-group-sm">
+                            <input type="text" value="{% if GET.search is defined  %}{{ GET.search }}{% endif %}" name="search" class="form-control float-right" placeholder="Search">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
                     </div>
+                </form>
+            </div>
+            <div class="col-sm-3">
+                <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="dataTables_length">Result per page</label>
+                    </div>
+                    <select class="custom-select form-control" onchange="location = this.value;">
+                        {% for tableLengthItem in apps.tableLength %}
+                            <option value="{{ pathUrl({ 'pagesize': tableLengthItem , 'q': query, 'r': request_uri }) }}" {% if tableLengthItem == limit %}selected="selected"{% endif %}>{{ tableLengthItem }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
         </div>

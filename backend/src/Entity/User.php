@@ -10,6 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(
+    name: '`user`',
+    uniqueConstraints: [
+        new \Doctrine\ORM\Mapping\UniqueConstraint("unique_user_email", ["email"])
+    ]
+)]
 class User implements PasswordAuthenticatedUserInterface
 {
 
@@ -24,7 +30,7 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 160)]
+    #[ORM\Column(length: 160, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column(options: ["default" => 1])]
@@ -80,6 +86,11 @@ class User implements PasswordAuthenticatedUserInterface
         $this->email = $email;
 
         return $this;
+    }
+
+    public function showStatusText(): string
+    {
+        return $this->status == 1 ? "Active" : "Inactive";
     }
 
     public function getStatus(): int
@@ -188,10 +199,16 @@ class User implements PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password): static
     {
-        $this->password = $password;
+        $this->password = self::generatePassHash($password);
 
         return $this;
+    }
+
+    public static function generatePassHash($password)
+    {
+        $salt = 'Ninjastic Team 2024';
+        return hash('sha256', $salt . $password);
     }
 }

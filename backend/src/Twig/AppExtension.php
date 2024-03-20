@@ -110,7 +110,8 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
             'currentPage' => $currentPage,
             'limit' => $limit,
             'offset' => $offset,
-            'query' => $_SERVER['QUERY_STRING']
+            'query' => $_SERVER['QUERY_STRING'],
+            "request_uri" => $_SERVER['REQUEST_URI'],
         );
     }
 
@@ -189,6 +190,13 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
             $parseArray[] = 'ordersort=ASC';
         }
         $queryString = implode('&', $parseArray);
+
+        if (isset($parameters['r'])) {
+            $request_uri = $parameters['r'];
+            $explodedRequestUri = explode("?", $request_uri);
+            return $this->getBaseUrl() . $explodedRequestUri[0] . "?" . $queryString;
+        }
+
         return $this->getAdminUrl() . '/index.php?' . $queryString;
     }
 
