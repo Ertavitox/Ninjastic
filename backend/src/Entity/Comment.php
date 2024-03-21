@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -27,6 +26,9 @@ class Comment
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $message = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $original = null;
 
     #[ORM\Column(options: ["default" => 1])]
     private int $status = self::STATUS_ACTIVE;
@@ -80,6 +82,18 @@ class Comment
     public function setMessage(string $message): static
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function getOriginal(): ?string
+    {
+        return $this->original;
+    }
+
+    public function setOriginal(string $original): static
+    {
+        $this->original = $original;
 
         return $this;
     }

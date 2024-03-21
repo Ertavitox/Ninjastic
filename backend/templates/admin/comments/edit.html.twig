@@ -13,22 +13,24 @@
 				{% endif %}
 
 				<div class="form-group">
-					{% set index = 'name' %}
-					<label>Name</label>
-					<input class="form-control {%if error[index] is defined %}error{% endif %}" type="text" name="{{ index }}" value="{{ Entity.getName() }}" placeholder="Name" />
+					{% set index = 'original' %}
+					<label>Original Message</label>
+					<textarea style="resize: none;" class="form-control {%if error[index] is defined %}error{% endif %}" type="text" name="{{ index }}" placeholder="Original Message" >{{ Entity.getOriginal() }}</textarea>
 					{% if error[index] is defined %}
 						<label class="error text-danger" for="{{ index }}">{{ error[index] }}</label>
 					{% endif %}
 				</div>
 
-				<div class="form-group">
-					{% set index = 'description' %}
-					<label>Description</label>
-					<textarea style="resize: none;" class="form-control {%if error[index] is defined %}error{% endif %}" type="text" name="{{ index }}" placeholder="Description" >{{ Entity.getDescription() }}</textarea>
-					{% if error[index] is defined %}
-						<label class="error text-danger" for="{{ index }}">{{ error[index] }}</label>
-					{% endif %}
-				</div>
+				{% if Entity.getId() %}
+					{% set index = 'message' %}
+					<div class="form-group">
+						<label for="{{ index }}">Show Message</label>
+						<textarea style="resize: none;" class="form-control {%if error[index] is defined %}error{% endif %}" type="text" disabled name="{{ index }}" >{{ Entity.getMessage() }}</textarea>
+						{% if error[index] is defined %}
+							<label class="error text-danger" for="{{ index }}">{{ error[index] }}</label>
+						{% endif %}
+					</div>
+				{% endif %}
 
 				<div class="form-group">
 					<label>User</label>
@@ -37,6 +39,20 @@
 						<option value="0">Not selected user</option>
 						{% for userEntity in UserList %}
 							<option value="{{ userEntity.getId() }}"  {% if Entity.getUser() != null and userEntity.getId() == Entity.getUser().getId() %}selected{% endif %}>{{ userEntity.getName() }}</option>
+						{% endfor %}
+					</select>
+					{% if error[index] is defined %}
+						<label class="error text-danger" for="{{ index }}">{{ error[index] }}</label>
+					{% endif %}
+				</div>
+
+				<div class="form-group">
+					<label>Topic</label>
+					{% set index = 'topic_id' %}
+					<select name="{{ index }}" class="form-control">
+						<option value="0">Not selected topic</option>
+						{% for topicEntity in TopicList %}
+							<option value="{{ topicEntity.getId() }}"  {% if Entity.getTopic() != null and topicEntity.getId() == Entity.getTopic().getId() %}selected{% endif %}>{{ topicEntity.getName() }}</option>
 						{% endfor %}
 					</select>
 					{% if error[index] is defined %}

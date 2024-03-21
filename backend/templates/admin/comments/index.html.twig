@@ -1,0 +1,42 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block viewContent %}
+
+	{% set createButton = {'button': { 'type' : 'create', 'action' : 'create' }} %}
+	{% include "admin/adminParts/paginationHeader.twig" with createButton %}
+	<div class="card-body table-responsive p-0 mt-2">
+		<table class="table table-hover text-nowrap table-sm">
+			<thead class="thead-dark">
+				<tr>
+					<th>{% include "admin/adminParts/paginationOrderingLink.twig" with { 'text' : 'ID', 'orderingfield' : 'id' } %}</th>
+					<th>User Name</th>
+					<th>Topic Name</th>
+					<th>{% include "admin/adminParts/paginationOrderingLink.twig" with { 'text' : 'Message', 'orderingfield' : 'message' } %}</th>
+					<th>{% include "admin/adminParts/paginationOrderingLink.twig" with { 'text' : 'Status', 'orderingfield' : 'status' } %}</th>
+					<th>Event</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if EntityList|length > 0 %}
+					{% for Entity in EntityList %}
+						<tr>
+							<td>{{ Entity.getId() }}</td>
+							<td>{{ Entity.getUser().getName() }}</td>
+							<td>{{ Entity.getTopic().getName() }}</td>
+							<td>{{ Entity.getMessage()|length > 30 ? Entity.getMessage()|slice(0, 30) ~ '...' : Entity.getMessage() }}</td>
+							<td>{{ Entity.showStatusText() }}</td>
+							<td>
+								{% set editButton = {'button': { 'type' : 'edit', 'action' : 'edit/' ~ Entity.getId() }} %}
+								{% include "admin/adminParts/makebutton.twig" with editButton %}
+								{% set deleteButton = {'button': { 'type' : 'delete', 'action' : 'delete/' ~ Entity.getId() }} %}
+								{% include "admin/adminParts/makebutton.twig" with deleteButton %}
+							</td>
+						</tr>
+					{% endfor %}
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+	{% include "admin/adminParts/pagination.twig" %}
+
+{% endblock %}
