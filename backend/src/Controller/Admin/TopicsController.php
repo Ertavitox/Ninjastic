@@ -9,18 +9,21 @@ use App\Helper\FlashBag;
 use App\Repository\TopicRepository;
 use App\Twig\AppExtension;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class TopicsController extends AbstractController
+class TopicsController extends AdminController
 {
 
     #[Route('/admin/topics', name: 'app_admin_topics_index')]
     public function index(TopicRepository $repository, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $currentPage = isset($_GET['actpage']) && $_GET['actpage'] > 0 ? $_GET['actpage'] : 1;
         $limit = isset($_GET['pagesize']) && $_GET['pagesize'] > 0 ? $_GET['pagesize'] : 25;
         $orderfield = isset($_GET['orderfield']) ? $_GET['orderfield'] : 'id';
@@ -81,6 +84,10 @@ class TopicsController extends AbstractController
     #[Route('/admin/topics/create', name: 'app_admin_topics_create')]
     public function create(TopicRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $entity = new Topic();
         $error = array();
 
@@ -118,6 +125,10 @@ class TopicsController extends AbstractController
     #[Route('/admin/topics/edit/{id}', name: 'app_admin_topics_edit')]
     public function edit(int $id, TopicRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $entity = $repository->find($id);
         $error = [];
         if (empty($entity)) {
@@ -155,6 +166,10 @@ class TopicsController extends AbstractController
     #[Route('/admin/topics/delete/{id}', name: 'app_admin_topics_delete')]
     public function delete(int $id, TopicRepository $repository, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
+        if (!$this->isAdmin()) {
+            return new JsonResponse(['error' => true]);
+        }
+
         if ($request->getMethod() == "POST" && $request->request->get('delete') == 1) {
             $entity = $repository->find($id);
             if ($entity) {

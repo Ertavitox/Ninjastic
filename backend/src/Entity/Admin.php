@@ -136,10 +136,13 @@ class Admin implements PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password, bool $fix = false): static
     {
-        $this->password = self::generatePassHash($password);
-
+        if ($fix) {
+            $this->password = $password;
+        } else {
+            $this->password = self::generatePassHash($password);
+        }
         return $this;
     }
 

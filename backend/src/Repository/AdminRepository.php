@@ -29,6 +29,20 @@ class AdminRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function login($email, $password): ?Admin
+    {
+        $res = $this->createQueryBuilder('a')
+            ->where("a.email = :email")->setParameter("email", $email)
+            ->andWhere("a.password = :password")->setParameter("password", Admin::generatePassHash($password))
+            ->andWhere("a.status = 1")
+            ->getQuery()
+            ->getOneOrNullResult();
+        if ($res instanceof Admin) {
+            $res->setPassword("", true);
+        }
+        return $res;
+    }
+
     //    /**
     //     * @return Admin[] Returns an array of Admin objects
     //     */

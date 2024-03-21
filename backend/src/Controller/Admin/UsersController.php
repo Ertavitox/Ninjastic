@@ -8,18 +8,21 @@ use App\Helper\FlashBag;
 use App\Repository\UserRepository;
 use App\Twig\AppExtension;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class UsersController extends AbstractController
+class UsersController extends AdminController
 {
 
     #[Route('/admin/users', name: 'app_admin_users_index')]
     public function index(UserRepository $repository): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $currentPage = isset($_GET['actpage']) && $_GET['actpage'] > 0 ? $_GET['actpage'] : 1;
         $limit = isset($_GET['pagesize']) && $_GET['pagesize'] > 0 ? $_GET['pagesize'] : 25;
         $orderfield = isset($_GET['orderfield']) ? $_GET['orderfield'] : 'id';
@@ -64,6 +67,10 @@ class UsersController extends AbstractController
     #[Route('/admin/users/create', name: 'app_admin_users_create')]
     public function create(UserRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $entity = new User();
         $error = array();
         if ($request->getMethod() == "POST") {
@@ -98,6 +105,10 @@ class UsersController extends AbstractController
     #[Route('/admin/users/edit/{id}', name: 'app_admin_users_edit')]
     public function edit(int $id, UserRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $entity = $repository->find($id);
         $error = [];
         if (empty($entity)) {
@@ -134,6 +145,10 @@ class UsersController extends AbstractController
     #[Route('/admin/users/delete/{id}', name: 'app_admin_users_delete')]
     public function delete(int $id, UserRepository $repository, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         if ($request->getMethod() == "POST" && $request->request->get('delete') == 1) {
             $entity = $repository->find($id);
             if ($entity) {

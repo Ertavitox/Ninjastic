@@ -9,18 +9,21 @@ use App\Repository\DirtyWordRepository;
 use App\Service\XmlProcessor;
 use App\Twig\AppExtension;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class DirtyWordsController extends AbstractController
+class DirtyWordsController extends AdminController
 {
 
     #[Route('/admin/dirtywords', name: 'app_admin_dirtywords_index')]
     public function index(DirtyWordRepository $adminRepository): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $currentPage = isset($_GET['actpage']) && $_GET['actpage'] > 0 ? $_GET['actpage'] : 1;
         $limit = isset($_GET['pagesize']) && $_GET['pagesize'] > 0 ? $_GET['pagesize'] : 25;
         $orderfield = isset($_GET['orderfield']) ? $_GET['orderfield'] : 'id';
@@ -64,6 +67,10 @@ class DirtyWordsController extends AbstractController
     #[Route('/admin/dirtywords/create', name: 'app_admin_dirtywords_create')]
     public function create(DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $entity = new DirtyWord();
         $error = array();
         if ($request->getMethod() == "POST") {
@@ -98,6 +105,10 @@ class DirtyWordsController extends AbstractController
     #[Route('/admin/dirtywords/edit/{id}', name: 'app_admin_dirtywords_edit')]
     public function edit(int $id, DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->isAdmin()) {
+            return $this->redirectToRoute('app_admin_login');
+        }
+
         $entity = $repository->find($id);
         $error = [];
         if (empty($entity)) {
@@ -134,6 +145,10 @@ class DirtyWordsController extends AbstractController
     #[Route('/admin/dirtywords/delete/{id}', name: 'app_admin_dirtywords_delete')]
     public function delete(int $id, DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
+        if (!$this->isAdmin()) {
+            return new JsonResponse(['error' => true]);
+        }
+
         if ($request->getMethod() == "POST" && $request->request->get('delete') == 1) {
             $entity = $repository->find($id);
             if ($entity) {

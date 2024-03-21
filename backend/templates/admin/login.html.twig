@@ -4,12 +4,12 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ getPageTitle(page_title) }}</title>
-		<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+        <title>{{ page_title }}</title>
+		<link rel="stylesheet" href="{{ apps.baseUrl }}/admins/plugins/fontawesome-free/css/all.min.css">
 		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-		<link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-		<link rel="stylesheet" href="css/adminlte.min.css">
-		<link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+		<link rel="stylesheet" href="{{ apps.baseUrl }}/admins/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+		<link rel="stylesheet" href="{{ apps.baseUrl }}/admins/css/adminlte.min.css">
+		<link rel="stylesheet" href="{{ apps.baseUrl }}/admins/plugins/daterangepicker/daterangepicker.css">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" >
     </head>
 
@@ -20,9 +20,9 @@
 			</div>
 			<div class="card">
 				<div class="card-body login-card-body">
-					<form action="{{ app.adminUrl }}/" method="post">
+					<form action="" method="post">
 						<div class="input-group mb-3">
-							<input type="text" name="login" class="form-control" placeholder="Felhasználó név">
+							<input type="text" name="email" class="form-control" placeholder="E-mail">
 							<div class="input-group-append">
 								<div class="input-group-text">
 									<span class="fas fa-user"></span>
@@ -30,26 +30,31 @@
 							</div>
 						</div>
 						<div class="input-group mb-3">
-							<input type="password" name="passw" class="form-control" placeholder="Jelszó">
+							<input type="password" name="password" class="form-control" placeholder="Password">
 							<div class="input-group-append">
 								<div class="input-group-text">
 									<span class="fas fa-lock"></span>
 								</div>
 							</div>
 						</div>
+						{% if error["login"] is defined %}
+						<div class="alert alert-danger">
+							{{ error["login"] }}
+						</div>
+						{% endif %}
 						<div class="row">
 							<div class="col-8"></div>
 							<div class="col-4">
 								<input type="hidden" name="loginAction" value="login">
-								<input type="hidden" name="crsf" value="{{ crsf }}">
-								<button type="submit" class="btn btn-primary btn-block">Belépés</button>
+								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+								<button type="submit" class="btn btn-primary btn-block">Login</button>
 							</div>
 						</div>
 					</form>
 				</div>
 			</div>
-			<script type="text/javascript" src="plugins/jquery/jquery.min.js"></script>
-			<script type="text/javascript" src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-			<script type="text/javascript" src="js/adminlte.min.js"></script>
+			<script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/jquery/jquery.min.js"></script>
+			<script type="text/javascript" src="{{ apps.baseUrl }}/admins/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+			<script type="text/javascript" src="{{ apps.baseUrl }}/admins/js/adminlte.min.js"></script>
 	</body>
 </html>

@@ -202,7 +202,6 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
 
     public static function getHostNameMain()
     {
-        $host = explode('.', $_SERVER['HTTP_HOST']);
-        return strtoupper($host[0]) . ' ADMIN';
+        return  'Ninjastic Admin';
     }
 }
