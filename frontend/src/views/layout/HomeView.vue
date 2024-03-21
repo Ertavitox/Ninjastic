@@ -5,7 +5,5 @@ import CategoriesView from '../CategoriesView.vue';
 <template>
    <div class="flex">
       <CategoriesView></CategoriesView>
-
    </div>
-
 </template>

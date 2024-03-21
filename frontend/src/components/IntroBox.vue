@@ -1,13 +1,13 @@
 <template>
-    <div class="py-12 px-4 bg-gray-800 mx-auto rounded-xl shadow-md max-w-full lg:max-w-7xl ">
+    <div class="flex py-6 px-4  bg-gray-800 my-8 rounded-xl shadow-md max-w-full lg:max-w-7xl ">
         <div id="content-wrapper" class="py-6 relative">
-            <h2 class="text-4xl font-bold px-10 leading-10 max-w-3xl">Start a Discussion and Connect <br />Within our
+            <h2 class="text-4xl font-bold px-6 leading-10 max-w-3xl">Start a Discussion and Connect <br />Within our
                 Ninjastic Community!
             </h2>
-            <p class="px-10 py-8 text-gray-400 text-lg max-w-2xl">Be the first, who creates a new discussion and connect
+            <p class="px-6 py-8 text-gray-400 text-lg max-w-2xl">Be the first, who creates a new discussion and connect
                 with people around the globe. Live the time of your life with us. </p>
 
-            <button class="mx-10 px-10 bg-red-500 py-4 rounded-xl">Get Started</button>
+            <button class="mx-6 px-10 bg-red-500 py-4 rounded-xl">Get Started</button>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                 class="text-white/50 w-64 h-64 pr-12 absolute right-0 top-0">
                 <path
