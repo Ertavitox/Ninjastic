@@ -21,6 +21,14 @@ class TopicRepository extends ServiceEntityRepository
         parent::__construct($registry, Topic::class);
     }
 
+    public function countAll(): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Topic[] Returns an array of Topic objects
     //     */

@@ -21,6 +21,14 @@ class AdminRepository extends ServiceEntityRepository
         parent::__construct($registry, Admin::class);
     }
 
+    public function countAll(): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Admin[] Returns an array of Admin objects
     //     */
