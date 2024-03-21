@@ -1,85 +1,117 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { HomeIcon as HomeIconOutlined } from '@heroicons/vue/24/outline'
+import { ChatBubbleBottomCenterTextIcon as ChatOutlined } from '@heroicons/vue/24/outline'
+import { ChatBubbleBottomCenterTextIcon as ChatSolid } from '@heroicons/vue/24/solid'
+import { FireIcon as FireOutlined } from '@heroicons/vue/24/outline'
+import { FireIcon as FireSolid } from '@heroicons/vue/24/solid'
+import { PlusIcon } from '@heroicons/vue/24/outline'
+import { BellIcon } from '@heroicons/vue/24/outline'
+import { UserIcon } from '@heroicons/vue/24/solid'
+import { HomeIcon as HomeIconFilled } from '@heroicons/vue/24/solid'
+import IntroBox from './components/IntroBox.vue'
+import StaffOnline from './components/StaffOnline.vue'
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="flex flex-col md:flex-row h-screen">
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+    <!-- Navbar -->
+    <div class="hidden md:block w-28 bg-gray-800 text-center text-white">
+      <nav class="py-2">
+        <div id="logo" class="my-8 ">
+          <div class="text-6xl font-black rotate-6 text-gray-950/60 select-none relative">N
+            <div class="absolute top-0 my-5 mx-8 rounded-md left-0 right-0 bg-black w-12 h-3">
+              <div class="absolute h-2 w-3 bg-red-500 rounded-l-md rounded-r-md my-0.5 mx-2  "></div>
+              <div class="absolute top-0 right-0 h-2 w-3 rounded-l-md rounded-r-md bg-red-500 my-0.5 mx-2"></div>
+            </div>
+          </div>
+        </div>
+        <ul class="flex items-center justify-center flex-col gap-12 pt-10">
+          <RouterLink to="/" v-slot="{ isExactActive }">
+            <li class="cursor-pointer">
+              <template v-if="isExactActive">
+                <HomeIconFilled class="w-8 h-8"></HomeIconFilled>
+              </template>
+              <template v-else>
+                <HomeIconOutlined class="w-8 h-8 hover:stroke-red-500 "></HomeIconOutlined>
+              </template>
+            </li>
+          </RouterLink>
+          <RouterLink to="/discussions" v-slot="{ isExactActive }">
+            <li class="relative cursor-pointer ">
+              <template v-if="isExactActive">
+                <ChatSolid class="w-8 h-8"></ChatSolid>
+              </template>
+              <template v-else>
+                <ChatOutlined class="w-8 h-8 hover:stroke-red-500"></ChatOutlined>
+              </template>
+              <div class="absolute -m-1 h-3 w-3 bg-red-500 rounded-full right-0 top-0"></div>
+            </li>
+          </RouterLink>
+          <RouterLink to="/hot-topics" v-slot="{ isExactActive }">
+            <li class="cursor-pointer ">
+              <template v-if="isExactActive">
+                <FireSolid class="w-8 h-8"></FireSolid>
+              </template>
+              <template v-else>
+                <FireOutlined class="w-8 h-8 hover:stroke-red-500"></FireOutlined>
+              </template>
+            </li>
+          </RouterLink>
+        </ul>
       </nav>
     </div>
-  </header>
 
-  <RouterView />
+    <!-- Main Content -->
+    <div class="flex-1 bg-gray-900">
+      <div class="py-8 px-8">
+        <!-- Search Bar -->
+        <div id="action-bar" class="flex flex-col-reverse justify-between w-full gap-12">
+          <div class="flex items-center gap-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-8 h-8 hidden">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+            </svg>
+            <div class="relative w-full">
+              <input type="text" class="w-full py-3 pl-12 focus:outline-none rounded-2xl  bg-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                class="w-6 h-6 absolute left-0 top-0 m-3">
+                <path fill-rule="evenodd"
+                  d="M10.51 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+
+          </div>
+
+          <div class="flex w-full justify-end gap-8 items-center">
+
+            <PlusIcon class="h-8 p-1 border-2 rounded-full "></PlusIcon>
+            <BellIcon class="h-10"></BellIcon>
+            <UserIcon class="hover:bg-gray-600 h-12 p-1 bg-gray-700 rounded-xl"></UserIcon>
+          </div>
+        </div>
+        <!-- Breadcrumb -->
+        <div id="breadcrumb" class="mx-8 pt-12 text-gray-500 font-semibold">Home > Community Forums </div>
+
+        <!-- IntroBox and Staff Online -->
+        <div class="flex flex-col xl:flex-row gap-8 py-8">
+          <div class="flex-1">
+            <IntroBox />
+          </div>
+          <StaffOnline />
+        </div>
+      </div>
+
+      <!-- Content area -->
+      <div class="flex">
+        <!-- Your content goes here -->
+        <RouterView></RouterView>
+      </div>
+    </div>
+
+  </div>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
