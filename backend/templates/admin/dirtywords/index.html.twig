@@ -1,0 +1,39 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block viewContent %}
+
+	{% set createButton = {'button': { 'type' : 'create', 'action' : 'create' }} %}
+	{% include "admin/adminParts/paginationHeader.twig" with createButton %}
+	<div class="card-body table-responsive p-0 mt-2">
+		<table class="table table-hover text-nowrap table-sm">
+			<thead class="thead-dark">
+				<tr>
+
+					<th>{% include "admin/adminParts/paginationOrderingLink.twig" with { 'text' : 'ID', 'orderingfield' : 'id' } %}</th>
+					<th>{% include "admin/adminParts/paginationOrderingLink.twig" with { 'text' : 'Word', 'orderingfield' : 'word' } %}</th>
+					<th>{% include "admin/adminParts/paginationOrderingLink.twig" with { 'text' : 'Type', 'orderingfield' : 'type' } %}</th>
+					<th>Event</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if EntityList|length > 0 %}
+					{% for Entity in EntityList %}
+						<tr>
+							<td>{{ Entity.getId() }}</td>
+							<td>{{ Entity.getWord() }}</td>
+							<td>{{ Entity.showTypeText() }}</td>
+							<td>
+								{% set editButton = {'button': { 'type' : 'edit', 'action' : 'edit/' ~ Entity.getId() }} %}
+								{% include "admin/adminParts/makebutton.twig" with editButton %}
+								{% set deleteButton = {'button': { 'type' : 'delete', 'action' : 'delete/' ~ Entity.getId() }} %}
+								{% include "admin/adminParts/makebutton.twig" with deleteButton %}
+							</td>
+						</tr>
+					{% endfor %}
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+	{% include "admin/adminParts/pagination.twig" %}
+
+{% endblock %}

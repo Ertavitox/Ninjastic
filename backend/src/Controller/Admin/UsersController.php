@@ -111,7 +111,7 @@ class UsersController extends AbstractController
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
-                FlashBag::set('notice', array('title' => 'Rendszerüzenet', 'text' => 'Record updated successfully'));
+                FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record updated successfully'));
                 return $this->redirectToRoute('app_admin_users_index');
             }
         }

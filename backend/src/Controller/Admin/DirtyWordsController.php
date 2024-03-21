@@ -2,11 +2,11 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Topic;
-use App\Entity\User;
-use App\Form\TopicFormType;
+use App\Entity\DirtyWord;
+use App\Form\DirtyWordFormType;
 use App\Helper\FlashBag;
-use App\Repository\TopicRepository;
+use App\Repository\DirtyWordRepository;
+use App\Service\XmlProcessor;
 use App\Twig\AppExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,11 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class TopicsController extends AbstractController
+class DirtyWordsController extends AbstractController
 {
 
-    #[Route('/admin/topics', name: 'app_admin_topics_index')]
-    public function index(TopicRepository $repository, EntityManagerInterface $entityManager): Response
+    #[Route('/admin/dirtywords', name: 'app_admin_dirtywords_index')]
+    public function index(DirtyWordRepository $adminRepository): Response
     {
         $currentPage = isset($_GET['actpage']) && $_GET['actpage'] > 0 ? $_GET['actpage'] : 1;
         $limit = isset($_GET['pagesize']) && $_GET['pagesize'] > 0 ? $_GET['pagesize'] : 25;
@@ -27,33 +27,17 @@ class TopicsController extends AbstractController
         $ordersort = isset($_GET['ordersort']) ? $_GET['ordersort'] : 'ASC';
         $search = isset($_GET['search']) && strlen(trim($_GET['search'])) > 0 ? trim($_GET['search']) : false;
         $searchStatus = isset($_GET['searchstatus']) && strlen(trim($_GET['searchstatus'])) > 0 ? trim($_GET['searchstatus']) : false;
-        $searchUserName = isset($_GET['searchusername']) && strlen(trim($_GET['searchusername'])) > 0 ? trim($_GET['searchusername']) : false;
-        $userEM = $entityManager->getRepository(User::class);
-        $query = $repository->createQueryBuilder('p')
+        $query = $adminRepository->createQueryBuilder('p')
             ->orderBy('p.' . $orderfield, $ordersort);
 
         if ($searchStatus !== false) {
             $filterStatus = [$searchStatus];
-            $query->andWhere($query->expr()->in('p.status', $filterStatus));
+            $query->andWhere($query->expr()->in('p.type', $filterStatus));
         }
-
-        if ($searchUserName) {
-            $queryBuilder = $userEM->createQueryBuilder("u");
-            $queryBuilder
-                ->where(
-                    $query->expr()->like('LOWER(u.name)', ':name'),
-                )
-                ->setParameter('name', '%' . strtolower($searchUserName) . '%');
-
-            $usersEntity = $queryBuilder->getQuery()->getResult();
-            $query->andWhere('p.user IN (:searchUser)')->setParameter('searchUser', $usersEntity);
-        }
-
         if ($search) {
             $query->andWhere(
                 $query->expr()->orX(
-                    $query->expr()->like('LOWER(p.name)', ':term'),
-                    $query->expr()->like('LOWER(p.description)', ':term'),
+                    $query->expr()->like('LOWER(p.word)', ':term'),
                 )
             )
                 ->setParameter('term', '%' . strtolower($search) . '%');
@@ -62,98 +46,93 @@ class TopicsController extends AbstractController
         $query->getQuery();
 
         $data = AppExtension::AdminPager($query, $currentPage, $limit);
-        $data["controller_name"] = "TopicsController";
+        $data["controller_name"] = "DirtyWordsController";
         $data["action_name"] = "index";
-        $data["controller_url"] = "topics";
-        $data["searchUserName"] = true;
-        $data['page_title'] = 'Topics';
+        $data["controller_url"] = "dirtywords";
+        $data['page_title'] = 'Dirty Words';
         $data['searchStatusModul'] = [
-            '0' => 'Inactive',
-            '1' => 'Active',
+            'm' => 'Maybe Dirty Word',
+            'f' => 'Force Dirty Word',
         ];
         $data['breadcrumb'] = [
-            ['name' => 'Topics']
+            ['name' => 'Dirty Words']
         ];
 
-        return $this->render("admin/topics/index.html.twig", $data);
+        return $this->render("admin/dirtywords/index.html.twig", $data);
     }
 
-    #[Route('/admin/topics/create', name: 'app_admin_topics_create')]
-    public function create(TopicRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/admin/dirtywords/create', name: 'app_admin_dirtywords_create')]
+    public function create(DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $entity = new Topic();
+        $entity = new DirtyWord();
         $error = array();
-
         if ($request->getMethod() == "POST") {
-            $formType = new TopicFormType();
+            $formType = new DirtyWordFormType();
             $result = $formType->createUpdate($entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
-                return $this->redirectToRoute('app_admin_topics_index');
+                return $this->redirectToRoute('app_admin_dirtywords_index');
             } elseif (empty($error) && !AppExtension::checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
-                return $this->redirectToRoute('app_admin_topics_edit', ["id" => $entity->getId()]);
+                return $this->redirectToRoute('app_admin_dirtywords_edit', ["id" => $entity->getId()]);
             }
         }
-        $userEM = $entityManager->getRepository(User::class);
         $data = [];
-        $data["controller_name"] = "TopicsController";
+        $data["controller_name"] = "DirtyWordsController";
         $data["action_name"] = "create";
-        $data["controller_url"] = "topics";
-        $data['page_title'] = 'Create Topic - ' . $entity->getId();
+        $data["controller_url"] = "dirtywords";
+        $data['page_title'] = 'Create Dirty Word - ' . $entity->getId();
         $data['Entity'] = $entity;
-        $data['UserList'] = $userEM->findAll();
         $data['error'] = $error;
         $data['breadcrumb'] = [
-            ["name" => "Topics", "url" => "/admin/topics"],
+            ["name" => "Dirty Words", "url" => "/admin/dirtywords"],
             ['name' => 'Create']
         ];
 
-        return $this->render("admin/topics/edit.html.twig", $data);
+        return $this->render("admin/dirtywords/edit.html.twig", $data);
     }
 
 
-    #[Route('/admin/topics/edit/{id}', name: 'app_admin_topics_edit')]
-    public function edit(int $id, TopicRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/admin/dirtywords/edit/{id}', name: 'app_admin_dirtywords_edit')]
+    public function edit(int $id, DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $entity = $repository->find($id);
         $error = [];
         if (empty($entity)) {
             FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record not found'));
-            return $this->redirectToRoute('app_admin_topics_index');
+            return $this->redirectToRoute('app_admin_dirtywords_index');
         }
 
         if ($request->getMethod() == "POST") {
-            $formType = new TopicFormType();
+            $formType = new DirtyWordFormType();
             $result = $formType->createUpdate($entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record updated successfully'));
-                return $this->redirectToRoute('app_admin_topics_index');
+                return $this->redirectToRoute('app_admin_dirtywords_index');
             }
         }
-        $userEM = $entityManager->getRepository(User::class);
+
         $data = [];
-        $data["controller_name"] = "TopicsController";
+        $data["controller_name"] = "DirtyWordsController";
         $data["action_name"] = "edit";
-        $data["controller_url"] = "topics";
-        $data['page_title'] = 'Edit Topic - ' . $entity->getId();
+        $data["controller_url"] = "dirtywords";
+        $data['page_title'] = 'Edit Dirty Words - ' . $entity->getId();
         $data['Entity'] = $entity;
-        $data['UserList'] = $userEM->findAll();
         $data['error'] = $error;
         $data['breadcrumb'] = [
-            ["name" => "Topics", "url" => "/admin/topics"],
+            ["name" => "Dirty Words", "url" => "/admin/dirtywords"],
             ['name' => 'Edit']
         ];
 
-        return $this->render("admin/topics/edit.html.twig", $data);
+        return $this->render("admin/dirtywords/edit.html.twig", $data);
     }
 
-    #[Route('/admin/topics/delete/{id}', name: 'app_admin_topics_delete')]
-    public function delete(int $id, TopicRepository $repository, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/admin/dirtywords/delete/{id}', name: 'app_admin_dirtywords_delete')]
+    public function delete(int $id, DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         if ($request->getMethod() == "POST" && $request->request->get('delete') == 1) {
             $entity = $repository->find($id);
@@ -167,5 +146,14 @@ class TopicsController extends AbstractController
         } else {
             return new JsonResponse(['error' => true]);
         }
+    }
+
+    #[Route('/admin/dirtywords/loadxml', name: 'app_admin_dirtywords_loadxml')]
+    public function loadXml(XmlProcessor $xmlProcessor): Response
+    {
+        $xmlPath = getcwd() . '/dirtywords.xml';
+        $xmlProcessor->process($xmlPath);
+
+        return new Response('XML processed and saved into the database.');
     }
 }

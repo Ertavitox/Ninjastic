@@ -62,13 +62,13 @@ class AdminsController extends AbstractController
     }
 
     #[Route('/admin/admins/create', name: 'app_admin_admins_create')]
-    public function create(AdminRepository $adminRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function create(AdminRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $entity = new Admin();
         $error = array();
         if ($request->getMethod() == "POST") {
-            $adminFormType = new AdminFormType();
-            $result = $adminFormType->createUpdate($entityManager, $entity);
+            $formType = new AdminFormType();
+            $result = $formType->createUpdate($entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
@@ -96,9 +96,9 @@ class AdminsController extends AbstractController
 
 
     #[Route('/admin/admins/edit/{id}', name: 'app_admin_admins_edit')]
-    public function edit(int $id, AdminRepository $adminRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(int $id, AdminRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $entity = $adminRepository->find($id);
+        $entity = $repository->find($id);
         $error = [];
         if (empty($entity)) {
             FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record not found'));
@@ -111,7 +111,7 @@ class AdminsController extends AbstractController
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
-                FlashBag::set('notice', array('title' => 'Rendszerüzenet', 'text' => 'Record updated successfully'));
+                FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record updated successfully'));
                 return $this->redirectToRoute('app_admin_admins_index');
             }
         }
@@ -132,10 +132,10 @@ class AdminsController extends AbstractController
     }
 
     #[Route('/admin/admins/delete/{id}', name: 'app_admin_admins_delete')]
-    public function delete(int $id, AdminRepository $adminRepository, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function delete(int $id, AdminRepository $repository, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         if ($request->getMethod() == "POST" && $request->request->get('delete') == 1) {
-            $entity = $adminRepository->find($id);
+            $entity = $repository->find($id);
             if ($entity) {
                 $entityManager->remove($entity);
                 $entityManager->flush();
