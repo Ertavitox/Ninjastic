@@ -121,20 +121,16 @@ class TopicsController extends AdminController
             }
         }
         $userEM = $this->entityManager->getRepository(User::class);
-        $data = [];
-        $data["controller_name"] = "TopicsController";
-        $data["action_name"] = "edit";
-        $data["controller_url"] = "topics";
-        $data['page_title'] = 'Edit Topic - ' . $entity->getId();
-        $data['Entity'] = $entity;
-        $data['UserList'] = $userEM->findAll();
-        $data['error'] = $error;
-        $data['breadcrumb'] = [
+
+        $this->adminHtmlDetails->setDefault("edit", "topics", 'Edit Topic - ' . $entity->getId(), $error);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ["name" => "Topics", "url" => "/admin/topics"],
             ['name' => 'Edit']
-        ];
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("Entity", $entity);
+        $this->adminHtmlDetails->setExtraParameter("UserList", $userEM->findAll());
 
-        return $this->render("admin/topics/edit.html.twig", $data);
+        return $this->render("admin/topics/edit.html.twig", $this->adminHtmlDetails->getData());
     }
 
     #[Route('/admin/topics/delete/{id}', name: 'app_admin_topics_delete')]
