@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\UserFormType;
+use App\Helper\AdminHtmlDetails;
 use App\Helper\FlashBag;
 use App\Repository\UserRepository;
 use App\Twig\AppExtension;
@@ -22,6 +23,7 @@ class UsersController extends AdminController
     public function __construct(UserRepository $repository, RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
         $this->repository = $repository;
+        $this->adminHtmlDetails = new AdminHtmlDetails(get_class());
         parent::__construct($requestStack, $entityManager);
     }
 
@@ -40,20 +42,17 @@ class UsersController extends AdminController
 
         $query = $this->repository->adminListing($orderField, $orderSort, $search, $searchStatus);
 
-        $data = AppExtension::AdminPager($query, $actPage, $pageSize);
-        $data["controller_name"] = "UsersController";
-        $data["action_name"] = "index";
-        $data["controller_url"] = "users";
-        $data['page_title'] = 'Users';
-        $data['searchStatusModul'] = [
+        $this->adminHtmlDetails->setPagerData(AppExtension::AdminPager($query, $actPage, $pageSize));
+        $this->adminHtmlDetails->setDefault("index", "users", "Users", []);
+        $this->adminHtmlDetails->setExtraParameter("searchStatusModul", [
             '0' => 'Inactive',
             '1' => 'Active',
-        ];
-        $data['breadcrumb'] = [
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ['name' => 'Users']
-        ];
+        ]);
 
-        return $this->render("admin/users/index.html.twig", $data);
+        return $this->render("admin/users/index.html.twig", $this->adminHtmlDetails->getData());
     }
 
     #[Route('/admin/users/create', name: 'app_admin_users_create')]
@@ -78,19 +77,15 @@ class UsersController extends AdminController
                 return $this->redirectToRoute('app_admin_users_edit', ["id" => $entity->getId()]);
             }
         }
-        $data = [];
-        $data["controller_name"] = "UsersController";
-        $data["action_name"] = "create";
-        $data["controller_url"] = "users";
-        $data['page_title'] = 'Create User - ' . $entity->getId();
-        $data['Entity'] = $entity;
-        $data['error'] = $error;
-        $data['breadcrumb'] = [
+
+        $this->adminHtmlDetails->setDefault("create", "users", 'Create User', $error);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ["name" => "Users", "url" => "/admin/users"],
             ['name' => 'Create']
-        ];
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("Entity", $entity);
 
-        return $this->render("admin/users/edit.html.twig", $data);
+        return $this->render("admin/users/edit.html.twig", $this->adminHtmlDetails->getData());
     }
 
 
@@ -119,19 +114,14 @@ class UsersController extends AdminController
             }
         }
 
-        $data = [];
-        $data["controller_name"] = "UsersController";
-        $data["action_name"] = "edit";
-        $data["controller_url"] = "users";
-        $data['page_title'] = 'Edit User - ' . $entity->getId();
-        $data['Entity'] = $entity;
-        $data['error'] = $error;
-        $data['breadcrumb'] = [
+        $this->adminHtmlDetails->setDefault("edit", "users", 'Edit User - ' . $entity->getId(), $error);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ["name" => "Users", "url" => "/admin/users"],
             ['name' => 'Edit']
-        ];
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("Entity", $entity);
 
-        return $this->render("admin/users/edit.html.twig", $data);
+        return $this->render("admin/users/edit.html.twig", $this->adminHtmlDetails->getData());
     }
 
     #[Route('/admin/users/delete/{id}', name: 'app_admin_users_delete')]
