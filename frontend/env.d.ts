@@ -1,3 +1,9 @@
 /// <reference types="vite/client" />
 
-VITE_API_URL="https://szakdolgozat.hu/api/v1/"
+interface ImportMetaEnv {
+    readonly BASE?: string;
+  }
+  
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }

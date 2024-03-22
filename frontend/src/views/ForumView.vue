@@ -9,7 +9,7 @@ import StaffOnline from '../components/StaffOnline.vue';
         <div class="flex-1">
             <div class="flex flex-col xl:flex-row gap-4">
                 <TopicView class="flex-1"></TopicView>
-            <LatestView class="flex-1"></LatestView>
+                <LatestView class="flex-1"></LatestView>
             </div>
           
         </div>

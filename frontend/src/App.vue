@@ -114,7 +114,7 @@ import StaffOnline from './components/StaffOnline.vue'
       </div>
 
       <!-- Content area -->
-      <div class="flex">
+      <div>
         <!-- Your content goes here -->
         <RouterView></RouterView>
       </div>
