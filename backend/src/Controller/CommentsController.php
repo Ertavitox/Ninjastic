@@ -2,79 +2,140 @@
 
 namespace App\Controller;
 
+use App\Dto\RequestDto;
 use App\Entity\Comment;
 use App\Form\Comment1Type;
+use App\Service\WordCensor;
+use App\Repository\UserRepository;
+use App\Repository\TopicRepository;
+use App\Helper\ValidationErrorHelper;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Validator\Comments\CommentsPaginationValidator;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/comments')]
+#[Route('/api/v1/topic/{topicId}/comments')]
 class CommentsController extends AbstractController
 {
+    public function __construct(
+        private CommentRepository $commentRepository,
+        private TopicRepository $topicRepository,
+        private UserRepository $userRepository,
+        private WordCensor $wordCensor
+    ) {
+    }
+
     #[Route('/', name: 'app_comments_index', methods: ['GET'])]
-    public function index(CommentRepository $commentRepository): Response
-    {
-        return $this->render('comments/index.html.twig', [
-            'comments' => $commentRepository->findAll(),
-        ]);
-    }
+    public function index(
+        ValidatorInterface $validator,
+        int $topicId,
+        #[MapQueryParameter] int $page = 1,
+        #[MapQueryParameter] int $limit = 10
+    ): JsonResponse {
+        $commentsPaginationValidator = new CommentsPaginationValidator($topicId, $page, $limit);
+        $errors = $validator->validate($commentsPaginationValidator);
 
-    #[Route('/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $comment = new Comment();
-        $form = $this->createForm(Comment1Type::class, $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+        if (count($errors) > 0) {
+            return $this->json(
+                new RequestDto(
+                    message: "Validation Failed!",
+                    errors: (new ValidationErrorHelper($errors))->getTransformedErrors(),
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
         }
 
-        return $this->render('comments/new.html.twig', [
-            'comment' => $comment,
-            'form' => $form,
-        ]);
+        return $this->json(
+            new RequestDto(result: $this->commentRepository->paginate($topicId, $page, $limit))
+        );
     }
 
-    #[Route('/{id}', name: 'app_comments_show', methods: ['GET'])]
-    public function show(Comment $comment): Response
-    {
-        return $this->render('comments/show.html.twig', [
-            'comment' => $comment,
-        ]);
-    }
+    #[Route('/', name: 'app_comments_new', methods: ['POST'])]
+    public function new(
+        int $topicId,
+        ValidatorInterface $validator,
+        Request $request,
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager
+    ): Response {
 
-    #[Route('/{id}/edit', name: 'app_comments_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(Comment1Type::class, $comment);
-        $form->handleRequest($request);
+        $topic = $this->topicRepository->getTopicById($topicId);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+        if (!$topic) {
+            return $this->json(
+                new RequestDto(
+                    message: "Topic not found!",
+                    errors: [
+                        'topicId' => "Invalid topic id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
         }
 
-        return $this->render('comments/edit.html.twig', [
-            'comment' => $comment,
-            'form' => $form,
-        ]);
+        $comment = $serializer->deserialize($request->getContent(), Comment::class, 'json');
+        $comment->setUser($this->getUser());
+        $comment->setTopic($topic);
+        $comment->setMessage($this->wordCensor->censorWords($comment->getOriginal()));
+
+        $errors = $validator->validate($comment);
+        if (count($errors) > 0) {
+            return $this->json(
+                new RequestDto(
+                    message: "Failed to create new comment!",
+                    errors: (new ValidationErrorHelper($errors))->getTransformedErrors(),
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $entityManager->persist($comment);
+        $entityManager->flush();
+
+        return $this->json(
+            new RequestDto(
+                result: $comment->getId(),
+                message: "Comment created successfully!"
+            )
+        );
     }
 
-    #[Route('/{id}', name: 'app_comments_delete', methods: ['POST'])]
-    public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
+
+    #[Route('/{id}', name: 'app_comments_edit', methods: ['PATCH'])]
+    public function edit(
+        int $topicId,
+        ValidatorInterface $validator,
+        Request $request,
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        return $this->json(
+            new RequestDto(
+                //result: $comment->getId(),
+                message: "Comment created successfully!"
+            )
+        );
+    }
+
+    #[Route('/{id}', name: 'app_comments_delete', methods: ['DELETE'])]
+    public function delete(
+        int $topicId,
+        ValidatorInterface $validator,
+        Request $request,
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager
+    ): Response {
+        /* if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
             $entityManager->remove($comment);
             $entityManager->flush();
-        }
+        } */
 
         return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
     }

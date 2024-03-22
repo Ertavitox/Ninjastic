@@ -4,68 +4,58 @@ namespace App\Controller\Admin;
 
 use App\Entity\Admin;
 use App\Form\AdminFormType;
+use App\Helper\AdminHtmlDetails;
 use App\Helper\FlashBag;
 use App\Repository\AdminRepository;
 use App\Twig\AppExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 class AdminsController extends AdminController
 {
+    private AdminRepository $repository;
+    public function __construct(AdminRepository $repository, RequestStack $requestStack, EntityManagerInterface $entityManager)
+    {
+        $this->repository = $repository;
+        $this->adminHtmlDetails = new AdminHtmlDetails(get_class());
+        parent::__construct($requestStack, $entityManager);
+    }
 
     #[Route('/admin/admins', name: 'app_admin_admins_index')]
-    public function index(AdminRepository $adminRepository): Response
-    {
+    public function index(
+        #[MapQueryParameter] int $actPage = 1,
+        #[MapQueryParameter] int $pageSize = 25,
+        #[MapQueryParameter] string $orderField = "id",
+        #[MapQueryParameter] string $orderSort = "ASC",
+        #[MapQueryParameter] string $search = "",
+        #[MapQueryParameter()] int $searchStatus = -1
+    ): Response {
         if (!$this->isAdmin()) {
             return $this->redirectToRoute('app_admin_login');
         }
 
-        $currentPage = isset($_GET['actpage']) && $_GET['actpage'] > 0 ? $_GET['actpage'] : 1;
-        $limit = isset($_GET['pagesize']) && $_GET['pagesize'] > 0 ? $_GET['pagesize'] : 25;
-        $orderfield = isset($_GET['orderfield']) ? $_GET['orderfield'] : 'id';
-        $ordersort = isset($_GET['ordersort']) ? $_GET['ordersort'] : 'ASC';
-        $search = isset($_GET['search']) && strlen(trim($_GET['search'])) > 0 ? trim($_GET['search']) : false;
-        $searchStatus = isset($_GET['searchstatus']) && strlen(trim($_GET['searchstatus'])) > 0 ? trim($_GET['searchstatus']) : false;
-        $query = $adminRepository->createQueryBuilder('p')
-            ->orderBy('p.' . $orderfield, $ordersort);
+        $query = $this->repository->adminListing($orderField, $orderSort, $search, $searchStatus);
 
-        if ($searchStatus !== false) {
-            $filterStatus = [$searchStatus];
-            $query->andWhere($query->expr()->in('p.status', $filterStatus));
-        }
-        if ($search) {
-            $query->andWhere(
-                $query->expr()->orX(
-                    $query->expr()->like('LOWER(p.name)', ':term'),
-                    $query->expr()->like('LOWER(p.email)', ':term'),
-                )
-            )
-                ->setParameter('term', '%' . strtolower($search) . '%');
-        }
-
-        $query->getQuery();
-
-        $data = AppExtension::AdminPager($query, $currentPage, $limit);
-        $data["controller_name"] = "AdminsController";
-        $data["action_name"] = "index";
-        $data["controller_url"] = "admins";
-        $data['page_title'] = 'Admins';
-        $data['searchStatusModul'] = [
+        $this->adminHtmlDetails->setPagerData(AppExtension::AdminPager($query, $actPage, $pageSize));
+        $this->adminHtmlDetails->setDefault("index", "admins", "Admins", []);
+        $this->adminHtmlDetails->setExtraParameter("searchStatusModul", [
             '0' => 'Inactive',
             '1' => 'Active',
-        ];
-        $data['breadcrumb'] = [
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ['name' => 'Admins']
-        ];
+        ]);
 
-        return $this->render("admin/admins/index.html.twig", $data);
+        return $this->render("admin/admins/index.html.twig", $this->adminHtmlDetails->getData());
     }
 
     #[Route('/admin/admins/create', name: 'app_admin_admins_create')]
-    public function create(AdminRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request): Response
     {
 
         if (!$this->isAdmin()) {
@@ -76,7 +66,7 @@ class AdminsController extends AdminController
         $error = array();
         if ($request->getMethod() == "POST") {
             $formType = new AdminFormType();
-            $result = $formType->createUpdate($entityManager, $entity);
+            $result = $formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
@@ -87,30 +77,26 @@ class AdminsController extends AdminController
                 return $this->redirectToRoute('app_admin_admins_edit', ["id" => $entity->getId()]);
             }
         }
-        $data = [];
-        $data["controller_name"] = "AdminsController";
-        $data["action_name"] = "create";
-        $data["controller_url"] = "admins";
-        $data['page_title'] = 'Create Admin - ' . $entity->getId();
-        $data['Entity'] = $entity;
-        $data['error'] = $error;
-        $data['breadcrumb'] = [
+
+        $this->adminHtmlDetails->setDefault("create", "admins", 'Create Admin', $error);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ["name" => "Admins", "url" => "/admin/admins"],
             ['name' => 'Create']
-        ];
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("Entity", $entity);
 
-        return $this->render("admin/admins/edit.html.twig", $data);
+        return $this->render("admin/admins/edit.html.twig", $this->adminHtmlDetails->getData());
     }
 
 
     #[Route('/admin/admins/edit/{id}', name: 'app_admin_admins_edit')]
-    public function edit(int $id, AdminRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(int $id, Request $request): Response
     {
         if (!$this->isAdmin()) {
             return $this->redirectToRoute('app_admin_login');
         }
 
-        $entity = $repository->find($id);
+        $entity = $this->repository->find($id);
         $error = [];
         if (empty($entity)) {
             FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record not found'));
@@ -119,7 +105,7 @@ class AdminsController extends AdminController
 
         if ($request->getMethod() == "POST") {
             $adminFormType = new AdminFormType();
-            $result = $adminFormType->createUpdate($entityManager, $entity);
+            $result = $adminFormType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
@@ -128,33 +114,28 @@ class AdminsController extends AdminController
             }
         }
 
-        $data = [];
-        $data["controller_name"] = "AdminsController";
-        $data["action_name"] = "edit";
-        $data["controller_url"] = "admins";
-        $data['page_title'] = 'Edit Admin - ' . $entity->getId();
-        $data['Entity'] = $entity;
-        $data['error'] = $error;
-        $data['breadcrumb'] = [
+        $this->adminHtmlDetails->setDefault("edit", "admins", 'Edit Admin - ' . $entity->getId(), $error);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ["name" => "Admins", "url" => "/admin/admins"],
             ['name' => 'Edit']
-        ];
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("Entity", $entity);
 
-        return $this->render("admin/admins/edit.html.twig", $data);
+        return $this->render("admin/admins/edit.html.twig", $this->adminHtmlDetails->getData());
     }
 
     #[Route('/admin/admins/delete/{id}', name: 'app_admin_admins_delete')]
-    public function delete(int $id, AdminRepository $repository, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function delete(int $id, Request $request): JsonResponse
     {
         if (!$this->isAdmin()) {
             return new JsonResponse(['error' => true]);
         }
 
         if ($request->getMethod() == "POST" && $request->request->get('delete') == 1) {
-            $entity = $repository->find($id);
+            $entity = $this->repository->find($id);
             if ($entity) {
-                $entityManager->remove($entity);
-                $entityManager->flush();
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
                 return new JsonResponse(['success' => true]);
             } else {
                 return new JsonResponse(['error' => true]);

@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Comment;
+use App\Entity\Topic;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,34 +25,87 @@ class CommentRepository extends ServiceEntityRepository
 
     public function countAll(): int
     {
-        return $this->createQueryBuilder('a')
-            ->select('count(a.id)')
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id)')
             ->getQuery()
             ->getSingleScalarResult();
     }
 
-    //    /**
-    //     * @return Comment[] Returns an array of Comment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function paginate(int $topicId, int $page, int $limit): mixed
+    {
 
-    //    public function findOneBySomeField($value): ?Comment
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $offset = ($page - 1) * $limit;
+
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT 
+                c.id,
+                IDENTITY(c.user) as user_id,
+                c.message
+            FROM App\Entity\Comment c
+            WHERE c.topic = :topicId'
+        )
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->setParameter('topicId', $topicId);
+
+        return $query
+            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+    }
+
+    public function adminListing(
+        string $orderField = "id",
+        string $orderSort = "ASC",
+        string $search = "",
+        int $searchStatus = -1,
+        string $searchUsername = "",
+        string $searchTopic = ""
+    ) {
+        $entityManager = $this->getEntityManager();
+        $userEM = $entityManager->getRepository(User::class);
+        $topicEM = $entityManager->getRepository(Topic::class);
+        $query = $this->createQueryBuilder('p')
+            ->orderBy('p.' . $orderField, $orderSort);
+
+        if ($searchStatus > -1) {
+            $filterStatus = [$searchStatus];
+            $query->andWhere($query->expr()->in('p.status', $filterStatus));
+        }
+
+        if ($searchUsername !== "") {
+            $userQueryBuilder = $userEM->createQueryBuilder("u");
+            $userQueryBuilder
+                ->where(
+                    $query->expr()->like('LOWER(u.name)', ':userName'),
+                )
+                ->setParameter('userName', '%' . strtolower($searchUsername) . '%');
+
+            $usersEntity = $userQueryBuilder->getQuery()->getResult();
+            $query->andWhere('p.user IN (:searchUser)')->setParameter('searchUser', $usersEntity);
+        }
+
+        if ($searchTopic !== "") {
+            $topicQueryBuilder = $topicEM->createQueryBuilder("t");
+            $topicQueryBuilder
+                ->where(
+                    $query->expr()->like('LOWER(t.name)', ':topicName'),
+                )
+                ->setParameter('topicName', '%' . strtolower($searchTopic) . '%');
+
+            $topicsEntity = $topicQueryBuilder->getQuery()->getResult();
+            $query->andWhere('p.topic IN (:searchTopic)')->setParameter('searchTopic', $topicsEntity);
+        }
+
+        if ($search !== "") {
+            $query->andWhere(
+                $query->expr()->orX(
+                    $query->expr()->like('LOWER(p.message)', ':term'),
+                )
+            )
+                ->setParameter('term', '%' . strtolower($search) . '%');
+        }
+
+        $query->getQuery();
+        return $query;
+    }
 }

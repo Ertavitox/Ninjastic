@@ -7,10 +7,18 @@ use App\Entity\Topic;
 use App\Entity\User;
 use App\Helper\Validator;
 use App\Helper\ValidatorEConvMessage;
+use App\Service\WordCensor;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CommentFormType
 {
+
+    private WordCensor $wordCensor;
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->wordCensor = new WordCensor($entityManager);
+    }
+
     public function createUpdate(EntityManagerInterface $entityManager, Comment $entity): array
     {
         $error = array();
@@ -75,8 +83,8 @@ class CommentFormType
     private function setEntityData(Comment $entity, Topic $topicEntity, User $userEntity, $post)
     {
         $entity->setOriginal($post['original']);
-        //TODO check DIRTY WORDS
-        $entity->setMessage($post['original']);
+        $censoredText = $this->wordCensor->censorWords($post["original"]);
+        $entity->setMessage($censoredText);
         $entity->setStatus($post['status']);
         $entity->setTopic($topicEntity);
         $entity->setUser($userEntity);

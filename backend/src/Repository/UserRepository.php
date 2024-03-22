@@ -29,28 +29,37 @@ class UserRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getUserById(int $userId): User
+    {
+        return $this->findOneBy([
+            'id' => $userId
+        ]);
+    }
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function adminListing(
+        string $orderField = "id",
+        string $orderSort = "ASC",
+        string $search = "",
+        int $searchStatus = -1
+    ) {
+        $query = $this->createQueryBuilder('p')
+            ->orderBy('p.' . $orderField, $orderSort);
+
+        if ($searchStatus > -1) {
+            $filterStatus = [$searchStatus];
+            $query->andWhere($query->expr()->in('p.status', $filterStatus));
+        }
+        if ($search !== "") {
+            $query->andWhere(
+                $query->expr()->orX(
+                    $query->expr()->like('LOWER(p.name)', ':term'),
+                    $query->expr()->like('LOWER(p.email)', ':term'),
+                )
+            )
+                ->setParameter('term', '%' . strtolower($search) . '%');
+        }
+
+        $query->getQuery();
+        return $query;
+    }
 }

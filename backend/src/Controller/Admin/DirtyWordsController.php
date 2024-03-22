@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\DirtyWord;
 use App\Form\DirtyWordFormType;
+use App\Helper\AdminHtmlDetails;
 use App\Helper\FlashBag;
 use App\Repository\DirtyWordRepository;
 use App\Service\XmlProcessor;
@@ -11,61 +12,55 @@ use App\Twig\AppExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 class DirtyWordsController extends AdminController
 {
 
-    #[Route('/admin/dirtywords', name: 'app_admin_dirtywords_index')]
-    public function index(DirtyWordRepository $adminRepository): Response
+    private DirtyWordRepository $repository;
+    public function __construct(DirtyWordRepository $repository, RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
+        $this->repository = $repository;
+        $this->adminHtmlDetails = new AdminHtmlDetails(get_class());
+        parent::__construct($requestStack, $entityManager);
+    }
+
+    #[Route('/admin/dirtywords', name: 'app_admin_dirtywords_index')]
+    public function index(
+        #[MapQueryParameter()] int $actPage = 1,
+        #[MapQueryParameter] int $pageSize = 25,
+        #[MapQueryParameter] string $orderField = "id",
+        #[MapQueryParameter] string $orderSort = "ASC",
+        #[MapQueryParameter] string $search = "",
+        #[MapQueryParameter] string $searchStatus = "-1"
+    ): Response {
         if (!$this->isAdmin()) {
             return $this->redirectToRoute('app_admin_login');
         }
 
-        $currentPage = isset($_GET['actpage']) && $_GET['actpage'] > 0 ? $_GET['actpage'] : 1;
-        $limit = isset($_GET['pagesize']) && $_GET['pagesize'] > 0 ? $_GET['pagesize'] : 25;
-        $orderfield = isset($_GET['orderfield']) ? $_GET['orderfield'] : 'id';
-        $ordersort = isset($_GET['ordersort']) ? $_GET['ordersort'] : 'ASC';
-        $search = isset($_GET['search']) && strlen(trim($_GET['search'])) > 0 ? trim($_GET['search']) : false;
-        $searchStatus = isset($_GET['searchstatus']) && strlen(trim($_GET['searchstatus'])) > 0 ? trim($_GET['searchstatus']) : false;
-        $query = $adminRepository->createQueryBuilder('p')
-            ->orderBy('p.' . $orderfield, $ordersort);
+        $query = $this->repository->adminListing($orderField, $orderSort, $search, $searchStatus);
 
-        if ($searchStatus !== false) {
-            $filterStatus = [$searchStatus];
-            $query->andWhere($query->expr()->in('p.type', $filterStatus));
-        }
-        if ($search) {
-            $query->andWhere(
-                $query->expr()->orX(
-                    $query->expr()->like('LOWER(p.word)', ':term'),
-                )
-            )
-                ->setParameter('term', '%' . strtolower($search) . '%');
-        }
 
-        $query->getQuery();
-
-        $data = AppExtension::AdminPager($query, $currentPage, $limit);
-        $data["controller_name"] = "DirtyWordsController";
-        $data["action_name"] = "index";
-        $data["controller_url"] = "dirtywords";
-        $data['page_title'] = 'Dirty Words';
-        $data['searchStatusModul'] = [
+        $this->adminHtmlDetails->setPagerData(AppExtension::AdminPager($query, $actPage, $pageSize));
+        $this->adminHtmlDetails->setDefault("index", "dirtywords", "Dirty Words", []);
+        $this->adminHtmlDetails->setExtraParameter("searchStatusModul", [
             'm' => 'Maybe Dirty Word',
             'f' => 'Force Dirty Word',
-        ];
-        $data['breadcrumb'] = [
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ['name' => 'Dirty Words']
-        ];
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("searchUserName", true);
+        $this->adminHtmlDetails->setExtraParameter("searchTopicName", true);
 
-        return $this->render("admin/dirtywords/index.html.twig", $data);
+        return $this->render("admin/dirtywords/index.html.twig", $this->adminHtmlDetails->getData());
     }
 
     #[Route('/admin/dirtywords/create', name: 'app_admin_dirtywords_create')]
-    public function create(DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request): Response
     {
         if (!$this->isAdmin()) {
             return $this->redirectToRoute('app_admin_login');
@@ -75,7 +70,7 @@ class DirtyWordsController extends AdminController
         $error = array();
         if ($request->getMethod() == "POST") {
             $formType = new DirtyWordFormType();
-            $result = $formType->createUpdate($entityManager, $entity);
+            $result = $formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
@@ -86,30 +81,26 @@ class DirtyWordsController extends AdminController
                 return $this->redirectToRoute('app_admin_dirtywords_edit', ["id" => $entity->getId()]);
             }
         }
-        $data = [];
-        $data["controller_name"] = "DirtyWordsController";
-        $data["action_name"] = "create";
-        $data["controller_url"] = "dirtywords";
-        $data['page_title'] = 'Create Dirty Word - ' . $entity->getId();
-        $data['Entity'] = $entity;
-        $data['error'] = $error;
-        $data['breadcrumb'] = [
+
+        $this->adminHtmlDetails->setDefault("create", "dirtywords", 'Create Dirty Word', $error);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ["name" => "Dirty Words", "url" => "/admin/dirtywords"],
             ['name' => 'Create']
-        ];
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("Entity", $entity);
 
-        return $this->render("admin/dirtywords/edit.html.twig", $data);
+        return $this->render("admin/dirtywords/edit.html.twig", $this->adminHtmlDetails->getData());
     }
 
 
     #[Route('/admin/dirtywords/edit/{id}', name: 'app_admin_dirtywords_edit')]
-    public function edit(int $id, DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(int $id, Request $request): Response
     {
         if (!$this->isAdmin()) {
             return $this->redirectToRoute('app_admin_login');
         }
 
-        $entity = $repository->find($id);
+        $entity = $this->repository->find($id);
         $error = [];
         if (empty($entity)) {
             FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record not found'));
@@ -118,7 +109,7 @@ class DirtyWordsController extends AdminController
 
         if ($request->getMethod() == "POST") {
             $formType = new DirtyWordFormType();
-            $result = $formType->createUpdate($entityManager, $entity);
+            $result = $formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
             if (empty($error) && AppExtension::checkStayPage()) {
@@ -127,33 +118,28 @@ class DirtyWordsController extends AdminController
             }
         }
 
-        $data = [];
-        $data["controller_name"] = "DirtyWordsController";
-        $data["action_name"] = "edit";
-        $data["controller_url"] = "dirtywords";
-        $data['page_title'] = 'Edit Dirty Words - ' . $entity->getId();
-        $data['Entity'] = $entity;
-        $data['error'] = $error;
-        $data['breadcrumb'] = [
+        $this->adminHtmlDetails->setDefault("edit", "dirtywords", 'Edit Dirty Words - ' . $entity->getId(), $error);
+        $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ["name" => "Dirty Words", "url" => "/admin/dirtywords"],
             ['name' => 'Edit']
-        ];
+        ]);
+        $this->adminHtmlDetails->setExtraParameter("Entity", $entity);
 
-        return $this->render("admin/dirtywords/edit.html.twig", $data);
+        return $this->render("admin/dirtywords/edit.html.twig", $this->adminHtmlDetails->getData());
     }
 
     #[Route('/admin/dirtywords/delete/{id}', name: 'app_admin_dirtywords_delete')]
-    public function delete(int $id, DirtyWordRepository $repository, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function delete(int $id, Request $request): JsonResponse
     {
         if (!$this->isAdmin()) {
             return new JsonResponse(['error' => true]);
         }
 
         if ($request->getMethod() == "POST" && $request->request->get('delete') == 1) {
-            $entity = $repository->find($id);
+            $entity = $this->repository->find($id);
             if ($entity) {
-                $entityManager->remove($entity);
-                $entityManager->flush();
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
                 return new JsonResponse(['success' => true]);
             } else {
                 return new JsonResponse(['error' => true]);
