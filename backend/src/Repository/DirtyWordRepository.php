@@ -21,28 +21,29 @@ class DirtyWordRepository extends ServiceEntityRepository
         parent::__construct($registry, DirtyWord::class);
     }
 
-    //    /**
-    //     * @return DirtyWord[] Returns an array of DirtyWord objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function adminListing(
+        string $orderField = "id",
+        string $orderSort = "ASC",
+        string $search = "",
+        string $searchStatus = "-1"
+    ) {
+        $query = $this->createQueryBuilder('p')
+            ->orderBy('p.' . $orderField, $orderSort);
 
-    //    public function findOneBySomeField($value): ?DirtyWord
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($searchStatus !== "-1") {
+            $filterStatus = [$searchStatus];
+            $query->andWhere($query->expr()->in('p.type', $filterStatus));
+        }
+        if ($search !== "") {
+            $query->andWhere(
+                $query->expr()->orX(
+                    $query->expr()->like('LOWER(p.word)', ':term'),
+                )
+            )
+                ->setParameter('term', '%' . strtolower($search) . '%');
+        }
+
+        $query->getQuery();
+        return $query;
+    }
 }

@@ -43,28 +43,30 @@ class AdminRepository extends ServiceEntityRepository
         return $res;
     }
 
-    //    /**
-    //     * @return Admin[] Returns an array of Admin objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function adminListing(
+        string $orderField = "id",
+        string $orderSort = "ASC",
+        string $search = "",
+        int $searchStatus = -1
+    ) {
+        $query = $this->createQueryBuilder('p')
+            ->orderBy('p.' . $orderField, $orderSort);
 
-    //    public function findOneBySomeField($value): ?Admin
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($searchStatus > -1) {
+            $filterStatus = [$searchStatus];
+            $query->andWhere($query->expr()->in('p.status', $filterStatus));
+        }
+        if ($search !== "") {
+            $query->andWhere(
+                $query->expr()->orX(
+                    $query->expr()->like('LOWER(p.name)', ':term'),
+                    $query->expr()->like('LOWER(p.email)', ':term'),
+                )
+            )
+                ->setParameter('term', '%' . strtolower($search) . '%');
+        }
+
+        $query->getQuery();
+        return $query;
+    }
 }

@@ -9,12 +9,12 @@
         <div class="row">
             <div class="col-sm-9">
                 <form method="GET" class="row">
-                    <input type="hidden" name="actpage" value="{{ currentPage }}" />
-                    <input type="hidden" name="pagesize" value="{{ limit }}" />
+                    <input type="hidden" name="actPage" value="{{ currentPage }}" />
+                    <input type="hidden" name="pageSize" value="{{ limit }}" />
                     {% if searchUserName is defined %}
                         <div class="col-sm-3">
                             <div class="input-group input-group-sm">
-                                <input type="text" value="{% if GET.searchusername is defined  %}{{ GET.searchusername }}{% endif %}" name="searchusername" class="form-control float-right" placeholder="Search User Name">
+                                <input type="text" value="{% if GET.searchUsername is defined  %}{{ GET.searchUsername }}{% endif %}" name="searchUsername" class="form-control float-right" placeholder="Search Username">
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
@@ -25,7 +25,7 @@
                     {% if searchTopicName is defined %}
                         <div class="col-sm-3">
                             <div class="input-group input-group-sm">
-                                <input type="text" value="{% if GET.searchtopic is defined  %}{{ GET.searchtopic }}{% endif %}" name="searchtopic" class="form-control float-right" placeholder="Search Topic Name">
+                                <input type="text" value="{% if GET.searchTopic is defined  %}{{ GET.searchTopic }}{% endif %}" name="searchTopic" class="form-control float-right" placeholder="Search Topic">
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
@@ -45,10 +45,10 @@
                     {% if searchStatusModul is defined %}
                         <div class="col-sm-3">
                             <div class="input-group input-group-sm">
-                                <select value="empty" name="searchstatus" class="form-control" onchange="this.form.submit()">
-                                    <option value="" {% if GET.searchstatus is not defined %}selected{% endif %}>Status</option>
+                                <select value="empty" name="searchStatus" class="form-control" onchange="this.form.submit()">
+                                    <option value="-1" {% if GET.searchStatus is not defined %}selected{% endif %}>Status</option>
                                     {% for key, searchStatusItem in searchStatusModul %}
-                                        <option value="{{ key }}" {% if GET.searchstatus is defined and GET.searchstatus is numeric and GET.searchstatus == key %} selected  {% endif %}>{{ searchStatusItem }}</option>
+                                        <option value="{{ key }}" {% if GET.searchStatus is defined and GET.searchStatus == key %} selected  {% endif %}>{{ searchStatusItem }}</option>
                                     {% endfor %}
                                 </select>
                             </div>

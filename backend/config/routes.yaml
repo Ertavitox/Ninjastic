@@ -1,3 +1,5 @@
+api_login:
+    path: /api/v1/login
 controllers:
     resource:
         path: ../src/Controller/

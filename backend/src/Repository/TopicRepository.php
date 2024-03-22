@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Topic;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -29,28 +30,52 @@ class TopicRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    //    /**
-    //     * @return Topic[] Returns an array of Topic objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getTopicById(int $topicId)
+    {
+        return $this->findOneBy([
+            'id' => $topicId
+        ]);
+    }
 
-    //    public function findOneBySomeField($value): ?Topic
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function adminListing(
+        string $orderField = "id",
+        string $orderSort = "ASC",
+        string $search = "",
+        string $searchStatus = "-1",
+        string $searchUsername = ""
+    ) {
+        $userEM = $this->getEntityManager()->getRepository(User::class);
+        $query = $this->createQueryBuilder('p')
+            ->orderBy('p.' . $orderField, $orderSort);
+
+        if ($searchStatus > -1) {
+            $filterStatus = [$searchStatus];
+            $query->andWhere($query->expr()->in('p.status', $filterStatus));
+        }
+
+        if ($searchUsername !== "") {
+            $queryBuilder = $userEM->createQueryBuilder("u");
+            $queryBuilder
+                ->where(
+                    $query->expr()->like('LOWER(u.name)', ':name'),
+                )
+                ->setParameter('name', '%' . strtolower($searchUsername) . '%');
+
+            $usersEntity = $queryBuilder->getQuery()->getResult();
+            $query->andWhere('p.user IN (:searchUser)')->setParameter('searchUser', $usersEntity);
+        }
+
+        if ($search !== "") {
+            $query->andWhere(
+                $query->expr()->orX(
+                    $query->expr()->like('LOWER(p.name)', ':term'),
+                    $query->expr()->like('LOWER(p.description)', ':term'),
+                )
+            )
+                ->setParameter('term', '%' . strtolower($search) . '%');
+        }
+
+        $query->getQuery();
+        return $query;
+    }
 }

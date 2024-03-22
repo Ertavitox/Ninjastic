@@ -236,8 +236,8 @@ var App = function () {
 
                         $('table').removeClass('running');
                         var urlParams = new URLSearchParams(window.location.search);
-                        var actPage = urlParams.get('actpage') != null ? parseInt(urlParams.get('actpage')) : 1;
-                        var pageSize = urlParams.get('pagesize') != null ? parseInt(urlParams.get('pagesize')) : 0;
+                        var actPage = urlParams.get('actPage') != null ? parseInt(urlParams.get('actPage')) : 1;
+                        var pageSize = urlParams.get('pageSize') != null ? parseInt(urlParams.get('pageSize')) : 0;
                         if (pageSize === 0 && $(".custom-select option:selected").length) {
                             pageSize = parseInt($(".custom-select option:selected").text())
                         }

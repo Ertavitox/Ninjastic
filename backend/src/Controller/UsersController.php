@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UsersController extends AbstractController
 {
-    #[Route('/api/v1/user/new', name: 'api_v1_user_new', methods: ['POST'])]
+    #[Route('/api/v1/user', name: 'api_v1_user_new', methods: ['POST','PUT'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): JsonResponse
     {
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
@@ -38,7 +38,7 @@ class UsersController extends AbstractController
         return new JsonResponse($userData, JsonResponse::HTTP_OK, [], true);
     }
 
-    #[Route('/api/v1/user/{id}', name: 'api_v1_user_edit', methods: ['PUT'])]
+    #[Route('/api/v1/user/{id}', name: 'api_v1_user_edit', methods: ['PATCH'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): JsonResponse
     {
         $serializer->deserialize($request->getContent(), User::class, 'json', ['object_to_populate' => $user]);

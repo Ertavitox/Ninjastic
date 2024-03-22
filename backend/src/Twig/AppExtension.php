@@ -121,21 +121,21 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
         $pagenumberChange = false;
 
         $parseArray = array();
-        if (isset($parameters['actpage'])) {
-            $pagenumber = (int) $parameters['actpage'];
+        if (isset($parameters['actPage'])) {
+            $pagenumber = (int) $parameters['actPage'];
             $pagenumberChange = true;
         }
-        $pagesize = false;
-        $pagesizeChange = false;
-        if (isset($parameters['pagesize'])) {
-            $pagesize = (int) $parameters['pagesize'];
-            $pagesizeChange = true;
+        $pageSize = false;
+        $pageSizeChange = false;
+        if (isset($parameters['pageSize'])) {
+            $pageSize = (int) $parameters['pageSize'];
+            $pageSizeChange = true;
         }
         $orderField = false;
         $orderFieldChange = false;
         $orderSortChange = false;
-        if (isset($parameters['orderfield'])) {
-            $orderField = $parameters['orderfield'];
+        if (isset($parameters['orderField'])) {
+            $orderField = $parameters['orderField'];
             $orderFieldChange = true;
             $orderSortChange = true;
         }
@@ -145,28 +145,28 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
             $parseArray = explode('&', $parameters['q']);
             if ($parseArray && is_array($parseArray) && count($parseArray) > 0) {
                 foreach ($parseArray as $key => $item) {
-                    if (strpos($item, 'actpage') !== false && $pagenumberChange) {
-                        $parseArray[$key] = 'actpage=' . $pagenumber;
+                    if (strpos($item, 'actPage') !== false && $pagenumberChange) {
+                        $parseArray[$key] = 'actPage=' . $pagenumber;
                         $pagenumberChange = false;
                     }
-                    if (strpos($item, 'pagesize') !== false && $pagesizeChange) {
-                        $parseArray[$key] = 'pagesize=' . $pagesize;
-                        $pagesizeChange = false;
+                    if (strpos($item, 'pageSize') !== false && $pageSizeChange) {
+                        $parseArray[$key] = 'pageSize=' . $pageSize;
+                        $pageSizeChange = false;
                     }
-                    if (strpos($item, 'orderfield') !== false && $orderFieldChange) {
+                    if (strpos($item, 'orderField') !== false && $orderFieldChange) {
                         $orderFieldParse = explode('=', $item);
                         if (isset($orderFieldParse[1]) && $orderFieldParse[1] == $orderField) {
                             $orderSortChange = true;
                         }
-                        $parseArray[$key] = 'orderfield=' . $orderField;
+                        $parseArray[$key] = 'orderField=' . $orderField;
                         $orderFieldChange = false;
                     }
-                    if (strpos($item, 'ordersort') !== false && $orderSortChange) {
+                    if (strpos($item, 'orderSort') !== false && $orderSortChange) {
                         $orderSortParse = explode('=', $item);
                         if (isset($orderSortParse[1]) && $orderSortParse[1] == 'ASC') {
-                            $parseArray[$key] = 'ordersort=DESC';
+                            $parseArray[$key] = 'orderSort=DESC';
                         } elseif (isset($orderSortParse[1]) && $orderSortParse[1] == 'DESC') {
-                            $parseArray[$key] = 'ordersort=ASC';
+                            $parseArray[$key] = 'orderSort=ASC';
                         }
                         $orderSortChange = false;
                     }
@@ -175,19 +175,19 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
         }
         if ($pagenumberChange) {
             $pagenumberChange = false;
-            $parseArray[] = 'actpage=' . $pagenumber;
+            $parseArray[] = 'actPage=' . $pagenumber;
         }
-        if ($pagesizeChange) {
-            $pagesizeChange = false;
-            $parseArray[] = 'pagesize=' . $pagesize;
+        if ($pageSizeChange) {
+            $pageSizeChange = false;
+            $parseArray[] = 'pageSize=' . $pageSize;
         }
         if ($orderFieldChange) {
             $orderFieldChange = false;
-            $parseArray[] = 'orderfield=' . $orderField;
+            $parseArray[] = 'orderField=' . $orderField;
         }
         if ($orderSortChange) {
             $orderSortChange = false;
-            $parseArray[] = 'ordersort=ASC';
+            $parseArray[] = 'orderSort=ASC';
         }
         $queryString = implode('&', $parseArray);
 

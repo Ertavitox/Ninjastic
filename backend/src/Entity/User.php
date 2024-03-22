@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         new \Doctrine\ORM\Mapping\UniqueConstraint("unique_user_email", ["email"])
     ]
 )]
-class User implements PasswordAuthenticatedUserInterface
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
 
     public const STATUS_ACTIVE = 1;
@@ -42,14 +43,23 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
 
+    /**
+     * @Groups({"topics"})
+     */
     #[ORM\OneToMany(targetEntity: Topic::class, mappedBy: 'user')]
     private Collection $topics;
 
+    /**
+     * @Groups({"comments"})
+     */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
     private Collection $comments;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
+
+    #[ORM\Column]
+    private array $roles = [];
 
     public function __construct()
     {
@@ -210,5 +220,43 @@ class User implements PasswordAuthenticatedUserInterface
     {
         $salt = 'Ninjastic Team 2024';
         return hash('sha256', $salt . $password);
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
     }
 }
