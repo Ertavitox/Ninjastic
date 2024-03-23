@@ -34,7 +34,7 @@ const topics = [
 ];
 </script>
 <template>
-    <div id="topics" class="flex flex-col xl:flex-row w-full gap-8">
+    <div id="topics" class="flex flex-col w-full gap-8 xl:flex-row">
         <div class="flex-1 mt-12 space-y-4">
             <div v-for="(topic, index) in topics" :key="index" :class="`${topic.color} border-l-8 bg-gray-800 rounded-xl flex flex-row justify-between items-center p-8`">
                 <div class="flex items-center gap-4 ">
@@ -47,11 +47,11 @@ const topics = [
                 </div>
                 <div class="flex items-center gap-12">
                     <div class="flex flex-col text-left">
-                        <span class="text-white font-medium text-lg">{{ topic.threadCount }}</span>
+                        <span class="text-lg font-medium text-white">{{ topic.threadCount }}</span>
                         <span class="text-gray-500"> Threads</span>
                     </div>
                     <div class="flex flex-col text-left">
-                        <span class="text-white font-medium text-lg">{{ topic.messageCount }}</span>
+                        <span class="text-lg font-medium text-white">{{ topic.messageCount }}</span>
                         <span class="text-gray-500"> Messages</span>
                     </div>
                 </div>
