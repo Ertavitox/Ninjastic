@@ -2,61 +2,56 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/layout/HomeView.vue'
 import ForumView from '@/views/ForumView.vue'
 import ThreadView from '@/views/topics/ThreadView.vue'
-import LoginPage from '@/components/auth/LoginPage.vue'
-import { useAuthStore } from '@/components/auth/authStore'
-import Logout from '@/components/auth/Logout.vue'
+import LoginPage from '@/views/auth/LoginView.vue'
+import { useAuthStore } from '@/stores/auth.store'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      name: 'Home',
+      component: HomeView,
+      //!TODO SEO stuff...
     },
     {
       path: '/login',
-      name: 'login',
+      name: 'Login',
       component: LoginPage
     },
     {
-      path: '/logout',
-      name: 'logout',
-      component: Logout
-    },
-    {
       path: '/discussions',
-      name: 'discussions',
+      name: 'Discussions',
       component: ForumView
     },
     {
       path: '/discussions/thread/:id',
-      name: 'thread',
+      name: 'Thread',
       component: ThreadView
     },
     {
       path: '/hot-topics',
-      name: 'hottopics',
+      name: 'Hot Topics',
       component: HomeView
     }
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
+router.beforeEach(async (to, from, next) => {
 
-  // Check if the route requires authentication
-  if (to.meta.requiresAuth) {
-    // If the user is not authenticated, redirect to the login page
-    if (!authStore.isAuthenticated) {
-      next('/login');
-    } else {
-      next(); // Proceed to the route
-    }
+  const publicPages = ['/login'];
+  const authRequired = !publicPages.includes(to.path);
+  const auth = useAuthStore();
+  
+  if (authRequired && (!auth.user || !auth.user.token)) {
+    auth.returnUrl = to.fullPath;
+    next('/login');
   } else {
-    next(); // Allow access to routes that do not require authentication
+    next();
   }
-
 });
+
+
 
 export default router;

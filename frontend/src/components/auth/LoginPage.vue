@@ -1,66 +1,62 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from './authStore';
+import { useAuthStore } from '@/stores/auth.store';
+
+interface User {
+  username: string;
+  password: string;
+}
 
 export default defineComponent({
   data() {
     return {
-      email: '',
+      username: '',
       password: '',
       errorMessage: '',
-      apiUrl: `${import.meta.env.VITE_API_URL}`,
-      authStore: useAuthStore(),
-      router: useRouter()
+     
     };
   },
   methods: {
-    async loginUser() {
-      try {
-        const response = await fetch(`${this.apiUrl}/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ username: this.email, password: this.password })
-        });
-
-        if (response.ok) {
-          const responseData = await response.json();
-          const userDetails = {
-          token: responseData.token
-          //todo more data...
-        };
-        this.authStore.login(userDetails);
-        this.router.push('/discussions');
-        } else {
-          const responseData = await response.json();
-          this.errorMessage = responseData.message;
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
+    loginUser(values: User, setErrors? : any): void {
+    const authStore = useAuthStore();
+    const { username, password } = values;
+    authStore.login(username, password)
+        .catch(error => setErrors({ errorMessage: error })), console.log(this.errorMessage);
+  },//!TODO: Fix error in the form
+  handleSubmit(event: Event) {
+      event.preventDefault();
+      const { username, password } = this; 
+      this.loginUser( { username, password });
     }
-  }
+}
 });
 </script>
 
 <template>
     <div class="flex items-center max-w-lg px-4 py-20 mx-auto my-8 bg-gray-800 shadow-md rounded-xl">
       <div class="flex flex-col justify-center w-full text-center">
-        <div id="logo" class="flex self-center my-2">
-          <div class="relative text-6xl font-black select-none rotate-6 text-gray-950/60">N
-            <div class="absolute top-0 left-0 right-0 w-12 h-3 my-5 bg-black rounded-md">
-              <div class="absolute h-2 w-3 bg-primary rounded-l-md rounded-r-md my-0.5 mx-2"></div>
-              <div class="absolute top-0 right-0 h-2 w-3 rounded-l-md rounded-r-md bg-primary my-0.5 mx-2"></div>
-            </div>
+        <div id="logo-container" class="flex items-center justify-center">
+          <svg class="w-auto h-20 mt-4 text-gray-900" viewBox="0 0 131 152" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M30.014 120C29.1607 120 28.3927 119.701 27.71 119.104C27.0273 118.421 26.686 117.611 26.686 116.672V33.728C26.686 32.7893 27.0273 32.0213 27.71 31.424C28.3927 30.7413 29.1607 30.4 30.014 30.4H47.038C48.574 30.4 49.6833 30.784 50.366 31.552C51.0487 32.2347 51.518 32.7467 51.774 33.088L78.142 75.456V33.728C78.142 32.7893 78.4833 32.0213 79.166 31.424C79.8487 30.7413 80.6167 30.4 81.47 30.4H100.798C101.737 30.4 102.505 30.7413 103.102 31.424C103.785 32.0213 104.126 32.7893 104.126 33.728V116.672C104.126 117.611 103.785 118.421 103.102 119.104C102.505 119.701 101.737 120 100.798 120H83.902C82.2807 120 81.1287 119.659 80.446 118.976C79.7633 118.208 79.294 117.653 79.038 117.312L52.67 77.376V116.672C52.67 117.611 52.3287 118.421 51.646 119.104C51.0487 119.701 50.2807 120 49.342 120H30.014Z"
+              fill="currentColor" />
+            <rect id="ninja" class="group" x="16" y="48" width="96" height="34" rx="12" fill="black"
+              fill-opacity="0.95" />
+            <rect id="left" class="group" x="28" y="55" width="31" height="20" rx="10" fill="#CC3C3C" />
+            <path id="right" class="group"
+              d="M70 65C70 59.4772 74.4772 55 80 55H91C96.5228 55 101 59.4772 101 65V65C101 70.5228 96.5228 75 91 75H80C74.4772 75 70 70.5228 70 65V65Z"
+              fill="#CC3C3C" />
+          </svg>
+          <div class="mt-2 text-2xl font-bold text-gray-500" >
+            Ninjastic
           </div>
         </div>
         <div class="text-3xl"><span class="antialiased font-bold">Ninjastic</span> Login</div>
-        <form @submit.prevent="loginUser" method="post" class="flex flex-col items-center p-8 mt-8">
+        <form @submit.prevent="handleSubmit" method="post" class="flex flex-col items-center p-8 mt-8">
           <div class="flex flex-col w-full gap-8">
             <div class="flex flex-col gap-2">
-              <input placeholder="Email Address" v-model="email"
+              <input placeholder="Email Address" v-model="username"
                 class="flex-grow w-full py-2 pl-4 text-black rounded-lg focus:outline-none" type="text"
                 name="email" id="email" autocomplete="email" autofocus />
               <input placeholder="Password" v-model="password"

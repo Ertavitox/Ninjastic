@@ -6,7 +6,8 @@
                 <div class="flex">
                     <UserIcon class="w-auto h-12 p-2 bg-gray-500 rounded-full lg:mx-2 "></UserIcon>
                     <div class="flex flex-col">
-                        <a class="pl-2 transition-all text-primary hover:text-primary-300" :href="`${ baseURL + '/profile/' + comment.user_id}`">Marcell</a>
+                        <a class="pl-2 transition-all text-primary hover:text-primary-300"
+                            :href="`${baseURL + '/profile/' + comment.user_id}`">Marcell</a>
                         <span class="pl-2 text-xs text-gray-500">Frontend Developer</span>
                     </div>
                 </div>
@@ -21,6 +22,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { UserIcon } from '@heroicons/vue/24/solid';
+
 interface Comments {
     id: number,
     user_id: number,
@@ -59,13 +61,9 @@ export default defineComponent({
                         'Authorization': `Bearer ${this.token}`
                     }
                 });
-
                 if (response.ok) {
                     const responseData = await response.json();
                     this.comments = responseData.result;
-                    console.log(this.comments)
-                } else {
-                    console.error('Something went wrong');
                 }
             } catch (error) {
                 console.error('Error:', error);
