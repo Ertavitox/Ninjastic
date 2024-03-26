@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import StaffOnline from '../../components/StaffOnline.vue';
-import { NewspaperIcon, UserIcon } from '@heroicons/vue/24/solid';
-import { WrenchScrewdriverIcon } from '@heroicons/vue/24/outline';
+import { UserIcon } from '@heroicons/vue/24/solid';
 const baseURL = import.meta.env.VITE_APP_URL
 const messages = [
     {

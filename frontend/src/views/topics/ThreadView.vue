@@ -1,7 +1,11 @@
 <template>
     <div id="latests" class="flex flex-col w-full gap-5">
+
+        <div id="newComment">
+            <NewComment></NewComment>
+        </div>
         <div class="flex flex-col w-full gap-8 p-6 bg-gray-800 lg:p-12 lg:items-center lg:flex-row rounded-xl max-w-7xl"
-            v-for="comment in comments" :key="comment.id">
+            v-for="comment in comments" :key="comment.id" >
             <div class="flex flex-row ">
                 <div class="flex">
                     <UserIcon class="w-auto h-12 p-2 bg-gray-500 rounded-full lg:mx-2 "></UserIcon>
@@ -22,6 +26,8 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { UserIcon } from '@heroicons/vue/24/solid';
+import router from '@/router/index'; 
+import NewComment from '@/components/topics/NewComment.vue';
 
 interface Comments {
     id: number,
@@ -31,7 +37,8 @@ interface Comments {
 
 export default defineComponent({
     components: {
-        UserIcon
+        UserIcon,
+        NewComment
     },
     data() {
         return {
@@ -63,7 +70,11 @@ export default defineComponent({
                 });
                 if (response.ok) {
                     const responseData = await response.json();
-                    this.comments = responseData.result;
+                    const commentsNonSorted = responseData.result;
+                    this.comments = commentsNonSorted.sort((b, a) => a.id - b.id)
+
+                } else if (response.status === 401) {
+                    router.push('/login')
                 }
             } catch (error) {
                 console.error('Error:', error);

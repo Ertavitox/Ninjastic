@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { ArrowRightStartOnRectangleIcon, Bars3Icon, HomeIcon as HomeIconOutlined } from '@heroicons/vue/24/outline'
 import { ChatBubbleBottomCenterTextIcon as ChatOutlined } from '@heroicons/vue/24/outline'
@@ -13,16 +13,24 @@ import { HomeIcon as HomeIconFilled } from '@heroicons/vue/24/solid'
 import IntroBox from './components/IntroBox.vue'
 import StaffOnline from './components/StaffOnline.vue'
 
-const isOpen = ref(false);
+
 const easterActive = ref(false);
 const router = useRouter()
 
+
+// Define initial configuration array with default values
+const config = ref(JSON.parse(localStorage.getItem('config')) || {
+  sidebarOpen: false,
+  // Add more configuration options here if needed
+});
+
+const isOpen = computed(() => config.value.sidebarOpen);
+
 const toggleSidebar = () => {
-  isOpen.value = !isOpen.value;
+  config.value.sidebarOpen = !config.value.sidebarOpen;
+  localStorage.setItem('config', JSON.stringify(config.value));
+
 };
-
-
-
 
 const currentRouteName = computed(() => router.currentRoute.value.name);
 
@@ -37,13 +45,16 @@ const easterEgg = () => {
   }
 }
 
+onMounted(() => {
+  localStorage.setItem('config', JSON.stringify(config.value));
+});
 </script>
 
 <template>
-  <div class="flex flex-col h-screen md:flex-row">
+  <div class="flex flex-col md:flex-row ">
     <!-- Navbar Desktop -->
     <div :class="{ 'w-28 text-center': !isOpen, 'w-80 text-left': isOpen }"
-      class="hidden text-white transition-all bg-gray-800 md:block ">
+      class="fixed hidden h-screen text-white transition-all bg-gray-800 md:block">
       <nav class="z-50 py-2">
         <div id="logo-container" class="flex items-center justify-center">
           <svg @click="easterEgg" class="w-auto h-20 mt-4 text-gray-900" viewBox="0 0 131 152" fill="none"
@@ -102,15 +113,15 @@ const easterEgg = () => {
             <li>
               <template v-if="isExactActive">
                 <div :class="{ 'bg-gray-900 ': isOpen }"
-                class="flex items-center gap-4 p-2 px-4 text-lg rounded-lg cursor-pointer">
-                <FireSolid class="w-8 h-8"></FireSolid>
-                <span v-if="isOpen">Hot Topics</span>
+                  class="flex items-center gap-4 p-2 px-4 text-lg rounded-lg cursor-pointer">
+                  <FireSolid class="w-8 h-8"></FireSolid>
+                  <span v-if="isOpen">Hot Topics</span>
                 </div>
               </template>
               <template v-else>
                 <div class="flex items-center gap-4 p-2 px-4 text-lg cursor-pointer">
-                <FireOutlined class="w-8 h-8 hover:stroke-red-500"></FireOutlined>
-                <span v-if="isOpen">Hot Topics</span>
+                  <FireOutlined class="w-8 h-8 hover:stroke-red-500"></FireOutlined>
+                  <span v-if="isOpen">Hot Topics</span>
                 </div>
               </template>
             </li>
@@ -121,49 +132,51 @@ const easterEgg = () => {
     </div>
 
     <!-- Main Content -->
-    <div class="z-0 flex-1 m-8 bg-gray-900 lg:m-12">
-      <div class="gap-8">
-        <!-- Search Bar -->
-        <div id="action-bar" class="flex flex-col-reverse justify-between w-full gap-12 lg:flex-row">
-          <div class="flex items-center gap-4">
-            <ArrowRightStartOnRectangleIcon @click="toggleSidebar()" class="hidden w-8 h-8 lg:block">
-            </ArrowRightStartOnRectangleIcon>
-            <div class="relative flex w-full max-w-lg hi">
-              <input type="text" class="w-full py-4 pl-12 bg-gray-700 min-w-96 focus:outline-none rounded-2xl">
-              <MagnifyingGlassIcon class="absolute top-0 left-0 w-auto h-8 m-3"></MagnifyingGlassIcon>
+    <div :class="{ 'ml-20': !isOpen, 'ml-80': isOpen }" class="relative flex-1 transition-all ">
+      <div class="z-0 flex-1 m-8 bg-gray-900 lg:m-12">
+        <div class="gap-8">
+          <!-- Search Bar -->
+          <div id="action-bar" class="flex flex-col-reverse justify-between w-full gap-12 lg:flex-row">
+            <div class="flex items-center gap-4">
+              <ArrowRightStartOnRectangleIcon @click="toggleSidebar()" class="hidden w-8 h-8 lg:block">
+              </ArrowRightStartOnRectangleIcon>
+              <div class="relative flex w-full max-w-lg hi">
+                <input type="text" class="w-full py-4 pl-12 bg-gray-700 min-w-96 focus:outline-none rounded-2xl">
+                <MagnifyingGlassIcon class="absolute top-0 left-0 w-auto h-8 m-3"></MagnifyingGlassIcon>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-around">
+              <div>
+                <Bars3Icon class="w-12 h-12 lg:hidden"></Bars3Icon>
+              </div>
+              <div class="flex items-center justify-end w-full gap-8">
+                <PlusIcon class="h-8 p-1 border-2 rounded-full "></PlusIcon>
+                <BellIcon class="h-10"></BellIcon>
+                <UserIcon class="h-12 p-1 bg-gray-700 hover:bg-gray-600 rounded-xl"></UserIcon>
+              </div>
+
             </div>
           </div>
+          <!-- Breadcrumb -->
+          <div id="breadcrumb" class="mx-2 my-5 font-semibold text-gray-500">Forum > {{ currentRouteName }} </div>
 
-          <div class="flex items-center justify-around">
-            <div>
-              <Bars3Icon class="w-12 h-12 lg:hidden"></Bars3Icon>
+          <!-- IntroBox and Staff Online -->
+          <div class="flex flex-col xl:flex-row">
+            <div class="flex-1">
+              <IntroBox class="hidden" />
             </div>
-            <div class="flex items-center justify-end w-full gap-8">
-              <PlusIcon class="h-8 p-1 border-2 rounded-full "></PlusIcon>
-              <BellIcon class="h-10"></BellIcon>
-              <UserIcon class="h-12 p-1 bg-gray-700 hover:bg-gray-600 rounded-xl"></UserIcon>
-            </div>
-
+            <StaffOnline class="hidden lg:mx-16" />
           </div>
         </div>
-        <!-- Breadcrumb -->
-        <div id="breadcrumb" class="mx-2 my-5 font-semibold text-gray-500">Forum > {{ currentRouteName }} </div>
 
-        <!-- IntroBox and Staff Online -->
-        <div class="flex flex-col xl:flex-row">
-          <div class="flex-1">
-            <IntroBox class="hidden" />
-          </div>
-          <StaffOnline class="hidden lg:mx-16" />
+        <!-- Content area -->
+        <div>
+          <RouterView></RouterView>
         </div>
-      </div>
-
-      <!-- Content area -->
-      <div>
-        <!-- Your content goes here -->
-        <RouterView></RouterView>
       </div>
     </div>
+
 
   </div>
 </template>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NewspaperIcon } from '@heroicons/vue/24/solid';
-import { WrenchScrewdriverIcon } from '@heroicons/vue/24/outline';
 
 const topics = [
     {

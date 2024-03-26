@@ -33,7 +33,7 @@ function request(method: string) {
 }
 
 
-function authHeader(url: string): Record<string, string> {
+export function authHeader(url: string): Record<string, string> {
 
     const { user } = useAuthStore();
     const isLoggedIn = !!user?.token;
