@@ -22,7 +22,8 @@ class AdminsController extends AdminController
     public function __construct(AdminRepository $repository, RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
         $this->repository = $repository;
-        $this->adminHtmlDetails = new AdminHtmlDetails(get_class());
+        $this->setFormType(new AdminFormType());
+        $this->setAdminHtmlDetails(new AdminHtmlDetails(get_class()));
         parent::__construct($requestStack, $entityManager);
     }
 
@@ -40,8 +41,7 @@ class AdminsController extends AdminController
         }
 
         $query = $this->repository->adminListing($orderField, $orderSort, $search, $searchStatus);
-
-        $this->adminHtmlDetails->setPagerData(AppExtension::AdminPager($query, $actPage, $pageSize));
+        $this->adminHtmlDetails->setPagerData($query, $actPage, $pageSize);
         $this->adminHtmlDetails->setDefault("index", "admins", "Admins", []);
         $this->adminHtmlDetails->setExtraParameter("searchStatusModul", [
             '0' => 'Inactive',
@@ -65,14 +65,13 @@ class AdminsController extends AdminController
         $entity = new Admin();
         $error = array();
         if ($request->getMethod() == "POST") {
-            $formType = new AdminFormType();
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_admins_index');
-            } elseif (empty($error) && !AppExtension::checkStayPage()) {
+            } elseif (empty($error) && !$this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_admins_edit', ["id" => $entity->getId()]);
             }
@@ -104,11 +103,10 @@ class AdminsController extends AdminController
         }
 
         if ($request->getMethod() == "POST") {
-            $adminFormType = new AdminFormType();
-            $result = $adminFormType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record updated successfully'));
                 return $this->redirectToRoute('app_admin_admins_index');
             }

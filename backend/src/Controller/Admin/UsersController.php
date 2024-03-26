@@ -23,6 +23,7 @@ class UsersController extends AdminController
     public function __construct(UserRepository $repository, RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
         $this->repository = $repository;
+        $this->setFormType(new UserFormType());
         $this->adminHtmlDetails = new AdminHtmlDetails(get_class());
         parent::__construct($requestStack, $entityManager);
     }
@@ -42,7 +43,7 @@ class UsersController extends AdminController
 
         $query = $this->repository->adminListing($orderField, $orderSort, $search, $searchStatus);
 
-        $this->adminHtmlDetails->setPagerData(AppExtension::AdminPager($query, $actPage, $pageSize));
+        $this->adminHtmlDetails->setPagerData($query, $actPage, $pageSize);
         $this->adminHtmlDetails->setDefault("index", "users", "Users", []);
         $this->adminHtmlDetails->setExtraParameter("searchStatusModul", [
             '0' => 'Inactive',
@@ -65,14 +66,13 @@ class UsersController extends AdminController
         $entity = new User();
         $error = array();
         if ($request->getMethod() == "POST") {
-            $formType = new UserFormType();
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_users_index');
-            } elseif (empty($error) && !AppExtension::checkStayPage()) {
+            } elseif (empty($error) && !$this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_users_edit', ["id" => $entity->getId()]);
             }
@@ -104,11 +104,10 @@ class UsersController extends AdminController
         }
 
         if ($request->getMethod() == "POST") {
-            $formType = new UserFormType();
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record updated successfully'));
                 return $this->redirectToRoute('app_admin_users_index');
             }
@@ -128,7 +127,7 @@ class UsersController extends AdminController
     public function delete(int $id, Request $request): JsonResponse
     {
         if (!$this->isAdmin()) {
-            return $this->redirectToRoute('app_admin_login');
+            return new JsonResponse(['error' => true]);
         }
 
         if ($request->getMethod() == "POST" && $request->request->get('delete') == 1) {

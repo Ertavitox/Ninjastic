@@ -10,6 +10,7 @@ use App\Twig\AppExtension;
 use App\Form\CommentFormType;
 use App\Helper\AdminHtmlDetails;
 use App\Repository\CommentRepository;
+use App\Service\WordCensor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,7 @@ class CommentsController extends AdminController
         $this->repository = $repository;
         $this->adminHtmlDetails = new AdminHtmlDetails(get_class());
         parent::__construct($requestStack, $entityManager);
+        $this->setFormType(new CommentFormType($this->entityManager));
     }
 
     #[Route('/admin/comments', name: 'app_admin_comments_index')]
@@ -45,7 +47,7 @@ class CommentsController extends AdminController
 
         $query = $this->repository->adminListing($orderField, $orderSort, $search, $searchStatus, $searchUsername, $searchTopic);
 
-        $this->adminHtmlDetails->setPagerData(AppExtension::AdminPager($query, $actPage, $pageSize));
+        $this->adminHtmlDetails->setPagerData($query, $actPage, $pageSize);
         $this->adminHtmlDetails->setDefault("index", "comments", "Comments", []);
         $this->adminHtmlDetails->setExtraParameter("searchStatusModul", [
             '0' => 'Inactive',
@@ -72,14 +74,13 @@ class CommentsController extends AdminController
         $error = array();
 
         if ($request->getMethod() == "POST") {
-            $formType = new CommentFormType($this->entityManager);
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_comments_index');
-            } elseif (empty($error) && !AppExtension::checkStayPage()) {
+            } elseif (empty($error) && !$this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_comments_edit', ["id" => $entity->getId()]);
             }
@@ -115,11 +116,10 @@ class CommentsController extends AdminController
         }
 
         if ($request->getMethod() == "POST") {
-            $formType = new CommentFormType($this->entityManager);
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record updated successfully'));
                 return $this->redirectToRoute('app_admin_comments_index');
             }

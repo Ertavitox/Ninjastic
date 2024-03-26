@@ -14,7 +14,7 @@ class WordCensor
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->dirtyWordRepository = $this->entityManager->getRepository(DirtyWord::class);
+        $this->setDirtyWordRepository($this->entityManager->getRepository(DirtyWord::class));
     }
 
     public function censorWords(string $text): string
@@ -27,5 +27,10 @@ class WordCensor
         }
 
         return $text;
+    }
+
+    public function setDirtyWordRepository(DirtyWordRepository $repostiroy): void
+    {
+        $this->dirtyWordRepository = $repostiroy;
     }
 }

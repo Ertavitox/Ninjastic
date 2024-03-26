@@ -12,15 +12,26 @@ class AdminController extends AbstractController
     protected RequestStack $requestStack;
     protected EntityManagerInterface $entityManager;
     protected AdminHtmlDetails $adminHtmlDetails;
+    protected $formType;
 
     public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
         $this->requestStack = $requestStack;
         $this->entityManager = $entityManager;
     }
-    protected function isAdmin(): bool
+    public function isAdmin(): bool
     {
         $session = $this->requestStack->getSession();
         return $session->has("__admin");
+    }
+
+    public function setAdminHtmlDetails(AdminHtmlDetails $adminHtmlDetails): void
+    {
+        $this->adminHtmlDetails = $adminHtmlDetails;
+    }
+
+    public function setFormType($formType): void
+    {
+        $this->formType = $formType;
     }
 }

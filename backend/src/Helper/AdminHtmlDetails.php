@@ -2,7 +2,7 @@
 
 namespace App\Helper;
 
-use App\Interface\IEntity;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class AdminHtmlDetails
 {
@@ -32,13 +32,44 @@ class AdminHtmlDetails
         $this->data[$key] = $value;
     }
 
-    public function setPagerData(array $data): void
+    public function setPagerData($query, $currentPage = 1, $limit = 25): void
     {
-        $this->pagerData = $data;
+        $this->pagerData = $this->adminPager($query, $currentPage, $limit);
     }
 
     public function getData(): array
     {
         return array_merge($this->data, $this->pagerData);
+    }
+
+    public function adminPager($query, $currentPage = 1, $limit = 25): array
+    {
+        $paginator = new Paginator($query);
+        $totalItems = count($paginator);
+        $pageCount = ceil($totalItems / $limit);
+        $offset = ($limit * ($currentPage - 1));
+
+        $paginator->getQuery()
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+
+        return array(
+            'EntityList' => $paginator,
+            'totalItems' => $totalItems,
+            'pageCount' => $pageCount,
+            'currentPage' => $currentPage,
+            'limit' => $limit,
+            'offset' => $offset,
+            'query' => $_SERVER['QUERY_STRING'],
+            "request_uri" => $_SERVER['REQUEST_URI'],
+        );
+    }
+
+    public function checkStayPage()
+    {
+        if (isset($_POST['stay']) && $_POST['stay'] == 1) {
+            return false;
+        }
+        return true;
     }
 }

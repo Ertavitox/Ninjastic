@@ -24,6 +24,7 @@ class TopicsController extends AdminController
     public function __construct(TopicRepository $repository, RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
         $this->repository = $repository;
+        $this->setFormType(new TopicFormType());
         $this->adminHtmlDetails = new AdminHtmlDetails(get_class());
         parent::__construct($requestStack, $entityManager);
     }
@@ -43,9 +44,7 @@ class TopicsController extends AdminController
         }
 
         $query = $this->repository->adminListing($orderField, $orderSort, $search, $searchStatus, $searchUsername);
-
-
-        $this->adminHtmlDetails->setPagerData(AppExtension::AdminPager($query, $actPage, $pageSize));
+        $this->adminHtmlDetails->setPagerData($query, $actPage, $pageSize);
         $this->adminHtmlDetails->setDefault("index", "topics", "Topics", []);
         $this->adminHtmlDetails->setExtraParameter("searchStatusModul", [
             '0' => 'Inactive',
@@ -70,14 +69,13 @@ class TopicsController extends AdminController
         $error = array();
 
         if ($request->getMethod() == "POST") {
-            $formType = new TopicFormType();
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_topics_index');
-            } elseif (empty($error) && !AppExtension::checkStayPage()) {
+            } elseif (empty($error) && !$this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_topics_edit', ["id" => $entity->getId()]);
             }
@@ -111,11 +109,10 @@ class TopicsController extends AdminController
         }
 
         if ($request->getMethod() == "POST") {
-            $formType = new TopicFormType();
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record updated successfully'));
                 return $this->redirectToRoute('app_admin_topics_index');
             }

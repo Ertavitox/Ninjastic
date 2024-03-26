@@ -24,6 +24,7 @@ class DirtyWordsController extends AdminController
     public function __construct(DirtyWordRepository $repository, RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
         $this->repository = $repository;
+        $this->setFormType(new DirtyWordFormType());
         $this->adminHtmlDetails = new AdminHtmlDetails(get_class());
         parent::__construct($requestStack, $entityManager);
     }
@@ -42,9 +43,7 @@ class DirtyWordsController extends AdminController
         }
 
         $query = $this->repository->adminListing($orderField, $orderSort, $search, $searchStatus);
-
-
-        $this->adminHtmlDetails->setPagerData(AppExtension::AdminPager($query, $actPage, $pageSize));
+        $this->adminHtmlDetails->setPagerData($query, $actPage, $pageSize);
         $this->adminHtmlDetails->setDefault("index", "dirtywords", "Dirty Words", []);
         $this->adminHtmlDetails->setExtraParameter("searchStatusModul", [
             'm' => 'Maybe Dirty Word',
@@ -69,14 +68,13 @@ class DirtyWordsController extends AdminController
         $entity = new DirtyWord();
         $error = array();
         if ($request->getMethod() == "POST") {
-            $formType = new DirtyWordFormType();
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_dirtywords_index');
-            } elseif (empty($error) && !AppExtension::checkStayPage()) {
+            } elseif (empty($error) && !$this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Successful creation!'));
                 return $this->redirectToRoute('app_admin_dirtywords_edit', ["id" => $entity->getId()]);
             }
@@ -108,11 +106,10 @@ class DirtyWordsController extends AdminController
         }
 
         if ($request->getMethod() == "POST") {
-            $formType = new DirtyWordFormType();
-            $result = $formType->createUpdate($this->entityManager, $entity);
+            $result = $this->formType->createUpdate($this->entityManager, $entity);
             $entity = $result['entity'];
             $error = $result['error'];
-            if (empty($error) && AppExtension::checkStayPage()) {
+            if (empty($error) && $this->adminHtmlDetails->checkStayPage()) {
                 FlashBag::set('notice', array('title' => 'System message', 'text' => 'Record updated successfully'));
                 return $this->redirectToRoute('app_admin_dirtywords_index');
             }

@@ -31,7 +31,7 @@ class LoginController extends AdminController
 
         return $this->render('admin/login.html.twig', [
             'controller_name' => 'LoginController',
-            'pageName' => AppExtension::getHostNameMain(),
+            'pageName' => "Ninjastic",
             'page_title' => 'Ninjastic Login - Admin',
             'error' => $error,
         ]);

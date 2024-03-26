@@ -14,16 +14,16 @@ use Symfony\Component\Routing\Attribute\Route;
 class DashboardController extends AdminController
 {
     #[Route('/admin', name: 'app_admin_dashboard')]
-    public function index(EntityManagerInterface $entityManager, Request $request): Response
+    public function index(): Response
     {
         if (!$this->isAdmin()) {
             return $this->redirectToRoute('app_admin_login');
         }
 
-        $userEM = $entityManager->getRepository(User::class);
-        $topicEM = $entityManager->getRepository(Topic::class);
-        $commentEM = $entityManager->getRepository(Comment::class);
-        $adminEM = $entityManager->getRepository(Admin::class);
+        $userEM = $this->entityManager->getRepository(User::class);
+        $topicEM = $this->entityManager->getRepository(Topic::class);
+        $commentEM = $this->entityManager->getRepository(Comment::class);
+        $adminEM = $this->entityManager->getRepository(Admin::class);
 
         return $this->render("admin/dashboard/index.html.twig", [
             "controller_name" => "DashboardController",

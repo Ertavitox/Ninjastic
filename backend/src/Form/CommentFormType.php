@@ -16,7 +16,7 @@ class CommentFormType
     private WordCensor $wordCensor;
     public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->wordCensor = new WordCensor($entityManager);
+        $this->setWordCensor(new WordCensor($entityManager));
     }
 
     public function createUpdate(EntityManagerInterface $entityManager, Comment $entity): array
@@ -37,7 +37,6 @@ class CommentFormType
             $error["user_id"] = "Please choose user from list";
             return array("entity" => $entity, "error" => $error);
         }
-
         $topic_id = (int) $_POST["topic_id"];
         if (null === $topic_id || !is_numeric($topic_id)) {
             $error["topic_id"] = "Please choose topic from list";
@@ -66,14 +65,14 @@ class CommentFormType
         return array("entity" => $entity, "error" => $error);
     }
 
-    private function checkTopicEntity(int $id, EntityManagerInterface $entityManager): ?Topic
+    public function checkTopicEntity(int $id, EntityManagerInterface $entityManager): ?Topic
     {
         $userEM = $entityManager->getRepository(Topic::class);
         $userEntity = $userEM->find($id);
         return $userEntity;
     }
 
-    private function checkUserEntity(int $id, EntityManagerInterface $entityManager): ?User
+    public function checkUserEntity(int $id, EntityManagerInterface $entityManager): ?User
     {
         $userEM = $entityManager->getRepository(User::class);
         $userEntity = $userEM->find($id);
@@ -93,5 +92,10 @@ class CommentFormType
         }
         $entity->setUpdatedAt(new \DateTimeImmutable());
         return $entity;
+    }
+
+    public function setWordCensor(WordCensor $wordCensor): void
+    {
+        $this->wordCensor = $wordCensor;
     }
 }
