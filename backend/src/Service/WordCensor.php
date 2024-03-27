@@ -22,7 +22,7 @@ class WordCensor
         $dirtyWords = $this->dirtyWordRepository->findAll();
         foreach ($dirtyWords as $dirtyWord) {
             $word = $dirtyWord->getWord();
-            $pattern = '/\b' . preg_quote($word, '/') . '\b/i';
+            $pattern = '/' . preg_quote($word, '/') . '/i';
             $text = preg_replace($pattern, str_repeat('*', mb_strlen($word)), $text);
         }
 
