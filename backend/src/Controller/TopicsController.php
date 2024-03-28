@@ -3,79 +3,202 @@
 namespace App\Controller;
 
 use App\Entity\Topic;
-use App\Form\Topic1Type;
+use App\Dto\RequestDto;
+use App\Repository\UserRepository;
 use App\Repository\TopicRepository;
+use App\Helper\ValidationErrorHelper;
+use App\Validator\PaginationValidator;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use PHPUnit\Util\Json;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/topic')]
+#[Route('/api/v1/topic')]
 class TopicsController extends AbstractController
 {
-    #[Route('/', name: 'app_topic_index', methods: ['GET'])]
-    public function index(TopicRepository $topicRepository): Response
-    {
-        return $this->render('topic/index.html.twig', [
-            'topics' => $topicRepository->findAll(),
-        ]);
+
+    public function __construct(
+        private TopicRepository $topicRepository,
+        private UserRepository $userRepository,
+    ) {
     }
 
-    #[Route('/new', name: 'app_topic_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $topic = new Topic();
-        $form = $this->createForm(Topic1Type::class, $topic);
-        $form->handleRequest($request);
+    #[Route('', name: 'app_topic_index', methods: ['GET'])]
+    public function index(
+        ValidatorInterface $validator,
+        #[MapQueryParameter] int $page = 1,
+        #[MapQueryParameter] int $limit = 10
+    ): JsonResponse {
+        $paginationValidator = new PaginationValidator($page, $limit);
+        $errors = $validator->validate($paginationValidator);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($topic);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_topic_index', [], Response::HTTP_SEE_OTHER);
+        if (count($errors) > 0) {
+            return $this->json(
+                new RequestDto(
+                    message: "Validation Failed!",
+                    errors: (new ValidationErrorHelper($errors))->getTransformedErrors(),
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
         }
 
-        return $this->render('topic/new.html.twig', [
-            'topic' => $topic,
-            'form' => $form,
-        ]);
+        return $this->json(
+            new RequestDto(result: $this->topicRepository->paginate($page, $limit))
+        );
     }
+
+    #[Route('', name: 'app_topic_new', methods: ['POST', 'PUT'])]
+    public function new(
+        ValidatorInterface $validator,
+        Request $request,
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $topic = $serializer->deserialize($request->getContent(), Topic::class, 'json');
+        $topic->setUser($this->getUser());
+
+        $errors = $validator->validate($topic);
+        if (count($errors) > 0) {
+            return $this->json(
+                new RequestDto(
+                    message: "Failed to create new comment!",
+                    errors: (new ValidationErrorHelper($errors))->getTransformedErrors(),
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $entityManager->persist($topic);
+        $entityManager->flush();
+
+        return $this->json(
+            new RequestDto(
+                result: $topic->getId(),
+                message: "Topic created successfully!"
+            )
+        );
+    }
+
 
     #[Route('/{id}', name: 'app_topic_show', methods: ['GET'])]
-    public function show(Topic $topic): Response
+    public function show(int $id): JsonResponse
     {
-        return $this->render('topic/show.html.twig', [
-            'topic' => $topic,
+        $topic = $this->topicRepository->findOneBy([
+            'id' => $id
         ]);
-    }
 
-    #[Route('/{id}/edit', name: 'app_topic_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Topic $topic, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(Topic1Type::class, $topic);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_topic_index', [], Response::HTTP_SEE_OTHER);
+        if (!$topic) {
+            return $this->json(
+                new RequestDto(
+                    message: "Topic not found!",
+                    errors: [
+                        'id' => 'Invalid topic id!'
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
         }
 
-        return $this->render('topic/edit.html.twig', [
-            'topic' => $topic,
-            'form' => $form,
-        ]);
+        return $this->json(
+            new RequestDto(
+                result: [
+                    'id' => $topic->getId(),
+                    'name' => $topic->getName(),
+                    'description' => $topic->getDescription(),
+                    'created_at' => $topic->getCreatedAt(),
+                    'updated_at' => $topic->getUpdatedAt(),
+                    'user_id' => $topic->getUser()->getId(),
+                    'username' => $topic->getUser()->getName()
+                ]
+            )
+        );
     }
+
+    #[Route('/{id}', name: 'app_topic_edit', methods: ['PATCH'])]
+    public function edit(
+        int $id,
+        ValidatorInterface $validator,
+        Request $request,
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $topic = $this->topicRepository->findOneBy([
+            'id' => $id,
+            'user' => $this->getUser()
+        ]);
+
+        if (!$topic) {
+            return $this->json(
+                new RequestDto(
+                    message: "Topic not found!",
+                    errors: [
+                        'topicId' => "Invalid topic id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $topicFromRequest = $serializer->deserialize($request->getContent(), Topic::class, 'json');
+        $topicFromRequest->setUser($this->getUser());
+
+        $errors = $validator->validate($topicFromRequest);
+        if (count($errors) > 0) {
+            return $this->json(
+                new RequestDto(
+                    message: "Failed to update topic!",
+                    errors: (new ValidationErrorHelper($errors))->getTransformedErrors(),
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $topic->setDescription($topicFromRequest->getDescription());
+        $topic->setName($topicFromRequest->getName());
+
+        $entityManager->flush();
+
+        return $this->json(
+            new RequestDto(
+                result: $topic->getId(),
+                message: "Comment updated successfully!"
+            )
+        );
+    }
+
 
     #[Route('/{id}', name: 'app_topic_delete', methods: ['POST'])]
-    public function delete(Request $request, Topic $topic, EntityManagerInterface $entityManager): Response
+    public function delete(int $id, EntityManagerInterface $entityManager): JsonResponse
     {
-        if ($this->isCsrfTokenValid('delete' . $topic->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($topic);
-            $entityManager->flush();
+        $topic = $this->topicRepository->findOneBy([
+            'id' => $id,
+            'user' => $this->getUser()
+        ]);
+
+        if (!$topic) {
+            return $this->json(
+                new RequestDto(
+                    message: "Topic not found!",
+                    errors: [
+                        'topicId' => "Invalid topic id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
         }
 
-        return $this->redirectToRoute('app_topic_index', [], Response::HTTP_SEE_OTHER);
+        $entityManager->remove($topic);
+
+        return $this->json(
+            new RequestDto(
+                message: "Comment deleted successfully!"
+            )
+        );
     }
 }

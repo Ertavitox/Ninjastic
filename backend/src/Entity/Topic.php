@@ -6,6 +6,7 @@ use App\Repository\TopicRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TopicRepository::class)]
 class Topic
@@ -18,12 +19,15 @@ class Topic
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotNull()]
     #[ORM\ManyToOne(inversedBy: 'topics')]
     private ?User $user = null;
 
+    #[Assert\NotNull()]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Assert\NotNull()]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 

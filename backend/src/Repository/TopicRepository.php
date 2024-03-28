@@ -2,10 +2,11 @@
 
 namespace App\Repository;
 
-use App\Entity\Topic;
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\Topic;
+use App\Entity\Comment;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Topic>
@@ -35,6 +36,24 @@ class TopicRepository extends ServiceEntityRepository
         return $this->findOneBy([
             'id' => $topicId
         ]);
+    }
+
+    public function paginate(int $page, int $limit): mixed
+    {
+        $offset = ($page - 1) * $limit;
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder
+            ->select('t.id,t.name,t.description,t.created_at,IDENTITY(t.user) as user_id,u.name as username,count(c.id) as comment_count')
+            ->from(Topic::class, 't')
+            ->innerJoin(User::class, 'u', \Doctrine\ORM\Query\Expr\Join::WITH, $queryBuilder->expr()->eq('t.user', 'u.id'))
+            ->leftJoin(Comment::class, 'c', \Doctrine\ORM\Query\Expr\Join::WITH, $queryBuilder->expr()->eq('t.id', 'c.topic'))
+            ->where('t.status = 1')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->groupBy('t.id, t.name');
+
+        return $queryBuilder->getQuery()
+            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
     }
 
     public function adminListing(

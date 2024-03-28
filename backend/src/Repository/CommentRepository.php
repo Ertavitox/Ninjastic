@@ -43,7 +43,8 @@ class CommentRepository extends ServiceEntityRepository
                 IDENTITY(c.user) as user_id,
                 c.message
             FROM App\Entity\Comment c
-            WHERE c.topic = :topicId'
+            WHERE c.topic = :topicId
+            and c.status = 1'
         )
             ->setMaxResults($limit)
             ->setFirstResult($offset)

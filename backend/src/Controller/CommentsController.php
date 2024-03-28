@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Dto\RequestDto;
 use App\Entity\Comment;
-use App\Form\Comment1Type;
 use App\Service\WordCensor;
 use App\Repository\UserRepository;
 use App\Repository\TopicRepository;
@@ -32,7 +31,7 @@ class CommentsController extends AbstractController
     ) {
     }
 
-    #[Route('/', name: 'app_comments_index', methods: ['GET'])]
+    #[Route('', name: 'app_comments_index', methods: ['GET'])]
     public function index(
         ValidatorInterface $validator,
         int $topicId,
@@ -57,7 +56,7 @@ class CommentsController extends AbstractController
         );
     }
 
-    #[Route('/', name: 'app_comments_new', methods: ['POST'])]
+    #[Route('', name: 'app_comments_new', methods: ['POST'])]
     public function new(
         int $topicId,
         ValidatorInterface $validator,
@@ -107,19 +106,123 @@ class CommentsController extends AbstractController
         );
     }
 
+    #[Route('/{id}', name: 'app_comments_show', methods: ['GET'])]
+    public function show(
+        int $topicId,
+        int $id,
+    ): JsonResponse {
+
+        $topic = $this->topicRepository->getTopicById($topicId);
+
+        if (!$topic) {
+            return $this->json(
+                new RequestDto(
+                    message: "Topic not found!",
+                    errors: [
+                        'topicId' => "Invalid topic id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $comment = $this->commentRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        if (!$comment) {
+            return $this->json(
+                new RequestDto(
+                    message: "Comment not found!",
+                    errors: [
+                        'topicId' => "Invalid comment id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        return $this->json(
+            new RequestDto(
+                result: [
+                    'id' => $comment->getId(),
+                    'mesasge' => $comment->getMessage(),
+                    'created_at' => $comment->getCreatedAt(),
+                    'updated_at' => $comment->getUpdatedAt(),
+                    'user_id' => $comment->getUser()->getId(),
+                    'username' => $comment->getUser()->getName()
+                ],
+                message: "Comment updated successfully!"
+            )
+        );
+    }
+
 
     #[Route('/{id}', name: 'app_comments_edit', methods: ['PATCH'])]
     public function edit(
         int $topicId,
+        int $id,
         ValidatorInterface $validator,
         Request $request,
         SerializerInterface $serializer,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+
+        $topic = $this->topicRepository->getTopicById($topicId);
+
+        if (!$topic) {
+            return $this->json(
+                new RequestDto(
+                    message: "Topic not found!",
+                    errors: [
+                        'topicId' => "Invalid topic id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $comment = $this->commentRepository->findOneBy([
+            'id' => $id
+        ]);
+
+        if (!$comment) {
+            return $this->json(
+                new RequestDto(
+                    message: "Comment not found!",
+                    errors: [
+                        'topicId' => "Invalid comment id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $commentFromRequest = $serializer->deserialize($request->getContent(), Comment::class, 'json');
+        $commentFromRequest->setUser($this->getUser());
+        
+        $errors = $validator->validate($commentFromRequest);
+        if (count($errors) > 0) {
+            return $this->json(
+                new RequestDto(
+                    message: "Failed to update comment!",
+                    errors: (new ValidationErrorHelper($errors))->getTransformedErrors(),
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $comment->setUser($this->getUser());
+        $comment->setTopic($topic);
+        $comment->setMessage($this->wordCensor->censorWords($comment->getOriginal()));
+        $comment->setOriginal($commentFromRequest->getOriginal());
+
+        $entityManager->flush();
+
         return $this->json(
             new RequestDto(
-                //result: $comment->getId(),
-                message: "Comment created successfully!"
+                result: $comment->getId(),
+                message: "Comment updated successfully!"
             )
         );
     }
@@ -127,16 +230,46 @@ class CommentsController extends AbstractController
     #[Route('/{id}', name: 'app_comments_delete', methods: ['DELETE'])]
     public function delete(
         int $topicId,
-        ValidatorInterface $validator,
-        Request $request,
-        SerializerInterface $serializer,
+        int $id,
         EntityManagerInterface $entityManager
-    ): Response {
-        /* if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($comment);
-            $entityManager->flush();
-        } */
+    ): JsonResponse {
+        $topic = $this->topicRepository->getTopicById($topicId);
 
-        return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+        if (!$topic) {
+            return $this->json(
+                new RequestDto(
+                    message: "Topic not found!",
+                    errors: [
+                        'topicId' => "Invalid topic id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $comment = $this->commentRepository->findOneBy([
+            'id' => $id,
+            'user' => $this->getUser()
+        ]);
+
+        if (!$comment) {
+            return $this->json(
+                new RequestDto(
+                    message: "Comment not found!",
+                    errors: [
+                        'topicId' => "Invalid comment id!"
+                    ],
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $entityManager->remove($comment);
+
+        return $this->json(
+            new RequestDto(
+                message: "Comment deleted successfully!"
+            )
+        );
     }
 }

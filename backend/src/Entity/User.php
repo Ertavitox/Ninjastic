@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(
@@ -19,7 +20,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
-
     public const STATUS_ACTIVE = 1;
     public const STATUS_INACTIVE = 0;
 
@@ -28,9 +28,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotNull()]
+    #[Assert\Length(min: 3, max: 255)]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Assert\NotNull()]
+    #[Assert\Length(max: 160)]
     #[ORM\Column(length: 160, unique: true)]
     private ?string $email = null;
 
@@ -55,6 +59,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
     private Collection $comments;
 
+    #[Assert\NotNull()]
+    #[Assert\Length(min: 8, max: 255)]
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
