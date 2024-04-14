@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Topic;
 use App\Dto\RequestDto;
 use App\Helper\ValidationErrorHelper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -79,7 +80,6 @@ class UsersController extends AbstractController
                 new RequestDto(
                     result: $userData
                 ),
-                JsonResponse::HTTP_FORBIDDEN
             );
         }
 
@@ -126,6 +126,22 @@ class UsersController extends AbstractController
                 JsonResponse::HTTP_FORBIDDEN
             );
         }
+
+        $comments = $user->getComments();
+
+        $comments->map(function ($c) use ($entityManager) {
+            $entityManager->remove($c);
+        });
+
+        $topics = $user->getTopics();
+
+        $topics->map(function (Topic $t) use ($entityManager) {
+            $comments = $t->getComments();
+            $comments->map(function ($c) use ($entityManager) {
+                $entityManager->remove($c);
+            });
+            $entityManager->remove($t);
+        });
 
         $entityManager->remove($user);
         $entityManager->flush();

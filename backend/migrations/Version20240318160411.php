@@ -25,14 +25,14 @@ final class Version20240318160411 extends AbstractMigration
         $this->addSql('ALTER TABLE comment DROP FOREIGN KEY FK_9474526CC4773235');
         $this->addSql('DROP INDEX IDX_9474526C9D86650F ON comment');
         $this->addSql('DROP INDEX UNIQ_9474526CC4773235 ON comment');
-        $this->addSql('ALTER TABLE comment ADD topic_id INT DEFAULT NULL, DROP user_id_id, CHANGE topic_id_id user_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE comment ADD topic_id INT DEFAULT NULL, DROP user_id, CHANGE topic_id user_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526CA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526C1F55203D FOREIGN KEY (topic_id) REFERENCES topic (id)');
         $this->addSql('CREATE INDEX IDX_9474526CA76ED395 ON comment (user_id)');
         $this->addSql('CREATE INDEX IDX_9474526C1F55203D ON comment (topic_id)');
         $this->addSql('ALTER TABLE topic DROP FOREIGN KEY FK_9D40DE1B9D86650F');
         $this->addSql('DROP INDEX IDX_9D40DE1B9D86650F ON topic');
-        $this->addSql('ALTER TABLE topic ADD user_id INT DEFAULT NULL, DROP user_id_id');
+        $this->addSql('ALTER TABLE topic ADD user_id INT DEFAULT NULL, DROP user_id');
         $this->addSql('ALTER TABLE topic ADD CONSTRAINT FK_9D40DE1BA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('CREATE INDEX IDX_9D40DE1BA76ED395 ON topic (user_id)');
     }
@@ -45,15 +45,15 @@ final class Version20240318160411 extends AbstractMigration
         $this->addSql('ALTER TABLE comment DROP FOREIGN KEY FK_9474526C1F55203D');
         $this->addSql('DROP INDEX IDX_9474526CA76ED395 ON comment');
         $this->addSql('DROP INDEX IDX_9474526C1F55203D ON comment');
-        $this->addSql('ALTER TABLE comment ADD topic_id_id INT DEFAULT NULL, ADD user_id_id INT NOT NULL, DROP user_id, DROP topic_id');
-        $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526C9D86650F FOREIGN KEY (user_id_id) REFERENCES user (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
-        $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526CC4773235 FOREIGN KEY (topic_id_id) REFERENCES topic (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
-        $this->addSql('CREATE INDEX IDX_9474526C9D86650F ON comment (user_id_id)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_9474526CC4773235 ON comment (topic_id_id)');
+        $this->addSql('ALTER TABLE comment ADD topic_id INT DEFAULT NULL, ADD user_id INT NOT NULL, DROP user_id, DROP topic_id');
+        $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526C9D86650F FOREIGN KEY (user_id) REFERENCES user (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
+        $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526CC4773235 FOREIGN KEY (topic_id) REFERENCES topic (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
+        $this->addSql('CREATE INDEX IDX_9474526C9D86650F ON comment (user_id)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_9474526CC4773235 ON comment (topic_id)');
         $this->addSql('ALTER TABLE topic DROP FOREIGN KEY FK_9D40DE1BA76ED395');
         $this->addSql('DROP INDEX IDX_9D40DE1BA76ED395 ON topic');
-        $this->addSql('ALTER TABLE topic ADD user_id_id INT NOT NULL, DROP user_id');
-        $this->addSql('ALTER TABLE topic ADD CONSTRAINT FK_9D40DE1B9D86650F FOREIGN KEY (user_id_id) REFERENCES user (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
-        $this->addSql('CREATE INDEX IDX_9D40DE1B9D86650F ON topic (user_id_id)');
+        $this->addSql('ALTER TABLE topic ADD user_id INT NOT NULL, DROP user_id');
+        $this->addSql('ALTER TABLE topic ADD CONSTRAINT FK_9D40DE1B9D86650F FOREIGN KEY (user_id) REFERENCES user (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
+        $this->addSql('CREATE INDEX IDX_9D40DE1B9D86650F ON topic (user_id)');
     }
 }

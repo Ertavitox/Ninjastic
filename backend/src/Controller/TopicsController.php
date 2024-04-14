@@ -81,7 +81,8 @@ class TopicsController extends AbstractController
             new RequestDto(
                 result: $topic->getId(),
                 message: "Topic created successfully!"
-            )
+            ),
+            JsonResponse::HTTP_CREATED
         );
     }
 
@@ -173,7 +174,7 @@ class TopicsController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'app_topic_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_topic_delete', methods: ['DELETE'])]
     public function delete(int $id, EntityManagerInterface $entityManager): JsonResponse
     {
         $topic = $this->topicRepository->findOneBy([

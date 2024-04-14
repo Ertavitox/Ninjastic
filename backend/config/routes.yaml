@@ -1,5 +1,7 @@
 api_login:
     path: /api/v1/login
+api_refresh_token:
+    path: /api/v1/token/refresh
 controllers:
     resource:
         path: ../src/Controller/

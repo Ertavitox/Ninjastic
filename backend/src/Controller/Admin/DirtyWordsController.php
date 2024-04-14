@@ -52,8 +52,6 @@ class DirtyWordsController extends AdminController
         $this->adminHtmlDetails->setExtraParameter("breadcrumb", [
             ['name' => 'Dirty Words']
         ]);
-        $this->adminHtmlDetails->setExtraParameter("searchUserName", true);
-        $this->adminHtmlDetails->setExtraParameter("searchTopicName", true);
 
         return $this->render("admin/dirtywords/index.html.twig", $this->adminHtmlDetails->getData());
     }

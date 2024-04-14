@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use ApiPlatform\GraphQl\Serializer\ObjectNormalizer;
 use App\Dto\RequestDto;
 use App\Entity\Comment;
 use App\Service\WordCensor;
@@ -83,7 +84,7 @@ class CommentsController extends AbstractController
         $comment->setUser($this->getUser());
         $comment->setTopic($topic);
         $comment->setMessage($this->wordCensor->censorWords($comment->getOriginal()));
-
+        
         $errors = $validator->validate($comment);
         if (count($errors) > 0) {
             return $this->json(
@@ -102,7 +103,8 @@ class CommentsController extends AbstractController
             new RequestDto(
                 result: $comment->getId(),
                 message: "Comment created successfully!"
-            )
+            ),
+            JsonResponse::HTTP_CREATED
         );
     }
 
@@ -183,7 +185,8 @@ class CommentsController extends AbstractController
         }
 
         $comment = $this->commentRepository->findOneBy([
-            'id' => $id
+            'id' => $id,
+            'user' => $this->getUser()
         ]);
 
         if (!$comment) {
@@ -200,7 +203,8 @@ class CommentsController extends AbstractController
 
         $commentFromRequest = $serializer->deserialize($request->getContent(), Comment::class, 'json');
         $commentFromRequest->setUser($this->getUser());
-        
+        $commentFromRequest->setTopic($topic);
+
         $errors = $validator->validate($commentFromRequest);
         if (count($errors) > 0) {
             return $this->json(
@@ -265,6 +269,7 @@ class CommentsController extends AbstractController
         }
 
         $entityManager->remove($comment);
+        $entityManager->flush();
 
         return $this->json(
             new RequestDto(
