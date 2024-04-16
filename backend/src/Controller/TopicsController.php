@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/v1/topic')]
+#[Route('/api/v1/topics')]
 class TopicsController extends AbstractController
 {
 
@@ -193,6 +193,11 @@ class TopicsController extends AbstractController
                 JsonResponse::HTTP_BAD_REQUEST
             );
         }
+
+        $comments = $topic->getComments();
+        $comments->map(function ($c) use ($entityManager) {
+            $entityManager->remove($c);
+        });     
 
         $entityManager->remove($topic);
 

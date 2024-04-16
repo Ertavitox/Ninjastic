@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use ApiPlatform\GraphQl\Serializer\ObjectNormalizer;
 use App\Dto\RequestDto;
 use App\Entity\Comment;
 use App\Service\WordCensor;
@@ -21,7 +20,7 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/api/v1/topic/{topicId}/comments')]
+#[Route('/api/v1/topics/{topicId}/comments')]
 class CommentsController extends AbstractController
 {
     public function __construct(
@@ -57,7 +56,7 @@ class CommentsController extends AbstractController
         );
     }
 
-    #[Route('', name: 'app_comments_new', methods: ['POST'])]
+    #[Route('', name: 'app_comments_new', methods: ['POST','PUT'])]
     public function new(
         int $topicId,
         ValidatorInterface $validator,

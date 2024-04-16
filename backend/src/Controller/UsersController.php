@@ -18,7 +18,7 @@ use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
 
 class UsersController extends AbstractController
 {
-    #[Route('/api/v1/user', name: 'api_v1_user_new', methods: ['POST', 'PUT'])]
+    #[Route('/api/v1/users', name: 'api_v1_user_new', methods: ['POST', 'PUT'])]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -145,6 +145,7 @@ class UsersController extends AbstractController
 
         $entityManager->remove($user);
         $entityManager->flush();
+
         return $this->json(['message' => 'User deleted successfully'], JsonResponse::HTTP_OK);
     }
 }

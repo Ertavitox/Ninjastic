@@ -1,0 +1,544 @@
+nelmio_api_doc:
+  documentation:
+    info:
+      title: Ninjastic
+      description: Ninjastic forum API
+      version: 1.0.0
+    tags:
+      - name: Topics
+      - name: Users
+      - name: Comments
+      - name: Login Check
+    security:
+      - bearerAuth: []
+    paths:
+      /api/v1/login:
+        post:
+          summary: Creates a user Token
+          tags:
+            - Login Check
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/LoginRequest"
+          responses:
+            "200":
+              description: Successful response
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/JwtResponse"
+      /api/v1/topics:
+        get:
+          summary: List topics
+          tags:
+            - Topics
+          parameters:
+            - name: page
+              in: query
+              description: Page number for pagination
+              schema:
+                type: integer
+                default: 1
+            - name: limit
+              in: query
+              description: Number of items per page
+              schema:
+                type: integer
+                default: 10
+          responses:
+            "200":
+              description: Successful response
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/PaginationTopicResponse"
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+        post:
+          summary: Create a new topic
+          tags:
+            - Topics
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+          responses:
+            "201":
+              description: Created
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+      /api/v1/topics/{topicId}:
+        put:
+          summary: Update a topic
+          tags:
+            - Topics
+          parameters:
+            - name: topicId
+              in: path
+              required: true
+              description: ID of the topic to update
+              schema:
+                type: integer
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+          responses:
+            "200":
+              description: OK
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+        delete:
+          summary: Delete a topic
+          tags:
+            - Topics
+          parameters:
+            - name: topicId
+              in: path
+              required: true
+              description: ID of the topic to delete
+              schema:
+                type: integer
+          responses:
+            "204":
+              description: No Content
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+      /api/v1/topics/{topicId}/comments:
+        get:
+          summary: List comments for a topic
+          tags:
+            - Comments
+          parameters:
+            - name: topicId
+              in: path
+              required: true
+              description: ID of the topic
+              schema:
+                type: integer
+            - name: page
+              in: query
+              description: Page number for pagination
+              schema:
+                type: integer
+                default: 1
+            - name: limit
+              in: query
+              description: Number of items per page
+              schema:
+                type: integer
+                default: 10
+          responses:
+            "200":
+              description: Successful response
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/PaginationCommentsResponse"
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+        post:
+          summary: Create a new comment for a topic
+          tags:
+            - Comments
+          parameters:
+            - name: topicId
+              in: path
+              required: true
+              description: ID of the topic
+              schema:
+                type: integer
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    content:
+                      type: string
+          responses:
+            "201":
+              description: Created
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+      /api/v1/topics/{topicId}/comments/{id}:
+        get:
+          summary: Get a comment by ID
+          tags:
+            - Comments
+          parameters:
+            - name: topicId
+              in: path
+              required: true
+              description: ID of the topic
+              schema:
+                type: integer
+            - name: id
+              in: path
+              required: true
+              description: ID of the comment
+              schema:
+                type: integer
+          responses:
+            "200":
+              description: OK
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+        patch:
+          summary: Update a comment by ID
+          tags:
+            - Comments
+          parameters:
+            - name: topicId
+              in: path
+              required: true
+              description: ID of the topic
+              schema:
+                type: integer
+            - name: id
+              in: path
+              required: true
+              description: ID of the comment
+              schema:
+                type: integer
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    content:
+                      type: string
+          responses:
+            "200":
+              description: OK
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+        delete:
+          summary: Delete a comment by ID
+          tags:
+            - Comments
+          parameters:
+            - name: topicId
+              in: path
+              required: true
+              description: ID of the topic
+              schema:
+                type: integer
+            - name: id
+              in: path
+              required: true
+              description: ID of the comment
+              schema:
+                type: integer
+          responses:
+            "204":
+              description: No Content
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+      /api/v1/users:
+        post:
+          summary: Create a new user
+          tags:
+            - Users
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+          responses:
+            "201":
+              description: Created
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+        put:
+          summary: Update a user
+          tags:
+            - Users
+          responses:
+            "200":
+              description: OK
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+      /api/v1/users/{id}:
+        get:
+          summary: Get a user by ID
+          tags:
+            - Users
+          parameters:
+            - name: id
+              in: path
+              required: true
+              description: ID of the user
+              schema:
+                type: integer
+          responses:
+            "200":
+              description: OK
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+        patch:
+          summary: Update a user by ID
+          tags:
+            - Users
+          parameters:
+            - name: id
+              in: path
+              required: true
+              description: ID of the user
+              schema:
+                type: integer
+          responses:
+            "200":
+              description: OK
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+        delete:
+          summary: Delete a user by ID
+          tags:
+            - Users
+          parameters:
+            - name: id
+              in: path
+              required: true
+              description: ID of the user
+              schema:
+                type: integer
+          responses:
+            "204":
+              description: No Content
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
+    components:
+      securitySchemes:
+        bearerAuth:
+          type: http
+          scheme: bearer
+          bearerFormat: JWT
+      responses:
+        Unauthorized:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+        NotFound:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        BadRequest:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestError"
+
+      schemas:
+        UnauthorizedError:
+          type: object
+          properties:
+            code:
+              type: integer
+              example: 403
+            message:
+              type: string
+              example: Invalid JWT Token
+        BadRequestError:
+          type: object
+          properties:
+            result:
+              type: string
+              nullable: true
+            message:
+              type: string
+              example: "Topic not found!"
+            errors:
+              type: array
+              items:
+                $ref: "#/components/schemas/ValidationError"
+        ValidationError:
+          type: object
+          properties:
+            key:
+              type: string
+              example: limit
+            message:
+              type: string
+              example: This value should be less than or equal to 100
+        NotFoundError:
+          type: object
+          properties:
+            result:
+              type: string
+              nullable: true
+            message:
+              type: string
+              example: "Topic not found!"
+            errors:
+              type: array
+              items:
+                type: object
+        Topic:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: test
+            description:
+              type: string
+              example: test
+            created_at:
+              type: string
+              example: "2024-03-27T15:55:43+00:00"
+            user_id:
+              type: integer
+              example: 11
+            username:
+              type: string
+              example: testUser
+            comment_count:
+              type: integer
+              example: 10
+        Comment:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            user_id:
+              type: integer
+              example: 11
+            message:
+              type: string
+              example: test message
+        PaginationTopicResponse:
+          type: object
+          properties:
+            result:
+              type: array
+              items:
+                $ref: "#/components/schemas/Topic"
+            message:
+              type: string
+              example: ""
+            errors:
+              type: array
+              items:
+                type: object
+        PaginationCommentsResponse:
+          type: object
+          properties:
+            result:
+              type: array
+              items:
+                $ref: "#/components/schemas/Comment"
+            message:
+              type: string
+              example: ""
+            errors:
+              type: array
+              items:
+                type: object
+        LoginRequest:
+          type: object
+          properties:
+            username:
+              type: string
+              description: The username
+            password:
+              type: string
+              format: password
+              description: The password
+        JwtResponse:
+          type: object
+          properties:
+            token:
+              type: string
+              description: JWT Token
+            refresh_token:
+              type: string
+              description: Refresh token
+  areas:
+    disable_default_routes: true
+    path_patterns:
+      - ^/api(?!/doc$)

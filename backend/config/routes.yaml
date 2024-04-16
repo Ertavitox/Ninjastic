@@ -2,6 +2,10 @@ api_login:
     path: /api/v1/login
 api_refresh_token:
     path: /api/v1/token/refresh
+app.swagger_ui:
+    path: /api/v1/swagger
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
 controllers:
     resource:
         path: ../src/Controller/
