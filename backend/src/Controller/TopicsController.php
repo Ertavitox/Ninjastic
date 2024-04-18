@@ -67,7 +67,7 @@ class TopicsController extends AbstractController
         if (count($errors) > 0) {
             return $this->json(
                 new RequestDto(
-                    message: "Failed to create new comment!",
+                    message: "Failed to create new Topic!",
                     errors: (new ValidationErrorHelper($errors))->getTransformedErrors(),
                 ),
                 JsonResponse::HTTP_BAD_REQUEST
@@ -168,7 +168,7 @@ class TopicsController extends AbstractController
         return $this->json(
             new RequestDto(
                 result: $topic->getId(),
-                message: "Comment updated successfully!"
+                message: "Topic updated successfully!"
             )
         );
     }
@@ -203,7 +203,7 @@ class TopicsController extends AbstractController
 
         return $this->json(
             new RequestDto(
-                message: "Comment deleted successfully!"
+                message: "Topic deleted successfully!"
             )
         );
     }

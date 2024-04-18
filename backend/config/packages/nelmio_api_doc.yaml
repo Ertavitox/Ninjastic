@@ -76,7 +76,7 @@ nelmio_api_doc:
                       type: string
           responses:
             "201":
-              description: Created
+              $ref: "#/components/responses/PatchOrPost"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -95,6 +95,15 @@ nelmio_api_doc:
               description: ID of the topic to update
               schema:
                 type: integer
+          responses:
+            "200":
+              $ref: "#/components/responses/PatchOrPost"
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "404":
+              $ref: "#/components/responses/NotFound"
+            "400":
+              $ref: "#/components/responses/BadRequest"
         delete:
           summary: Delete a topic
           tags:
@@ -107,8 +116,8 @@ nelmio_api_doc:
               schema:
                 type: integer
           responses:
-            "204":
-              description: No Content
+            "200":
+              $ref: "#/components/responses/Success"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -174,7 +183,7 @@ nelmio_api_doc:
                       type: string
           responses:
             "201":
-              description: Created
+              $ref: "#/components/responses/PatchOrPost"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -236,7 +245,7 @@ nelmio_api_doc:
                       type: string
           responses:
             "200":
-              description: OK
+              $ref: "#/components/responses/PatchOrPost"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -261,8 +270,8 @@ nelmio_api_doc:
               schema:
                 type: integer
           responses:
-            "204":
-              description: No Content
+            "200":
+              $ref: "#/components/responses/Success"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -285,7 +294,7 @@ nelmio_api_doc:
                       type: string
           responses:
             "201":
-              description: Created
+              $ref: "#/components/responses/Success"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -326,7 +335,7 @@ nelmio_api_doc:
                 type: integer
           responses:
             "200":
-              description: OK
+              $ref: "#/components/responses/Success"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -345,8 +354,8 @@ nelmio_api_doc:
               schema:
                 type: integer
           responses:
-            "204":
-              description: No Content
+            "200":
+              $ref: "#/components/responses/Success"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -360,6 +369,21 @@ nelmio_api_doc:
           scheme: bearer
           bearerFormat: JWT
       responses:
+        Success:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                  message:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
         Unauthorized:
           description: Unauthorized
           content:
@@ -378,7 +402,22 @@ nelmio_api_doc:
             application/json:
               schema:
                 $ref: "#/components/schemas/BadRequestError"
-
+        PatchOrPost:
+          description: General Patch or Post response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
       schemas:
         UnauthorizedError:
           type: object
@@ -397,7 +436,7 @@ nelmio_api_doc:
               nullable: true
             message:
               type: string
-              example: "Topic not found!"
+              example: "not found!"
             errors:
               type: array
               items:
