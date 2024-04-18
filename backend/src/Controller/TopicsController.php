@@ -53,7 +53,7 @@ class TopicsController extends AbstractController
         );
     }
 
-    #[Route('', name: 'app_topic_new', methods: ['POST', 'PUT'])]
+    #[Route('', name: 'app_topic_new', methods: ['POST'])]
     public function new(
         ValidatorInterface $validator,
         Request $request,

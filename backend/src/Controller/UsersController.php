@@ -18,7 +18,7 @@ use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
 
 class UsersController extends AbstractController
 {
-    #[Route('/api/v1/users', name: 'api_v1_user_new', methods: ['POST', 'PUT'])]
+    #[Route('/api/v1/users', name: 'api_v1_user_new', methods: ['POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -66,7 +66,7 @@ class UsersController extends AbstractController
         ], JsonResponse::HTTP_CREATED);
     }
 
-    #[Route('/api/v1/user/{id}', name: 'api_v1_user_show', methods: ['GET'])]
+    #[Route('/api/v1/users/{id}', name: 'api_v1_user_show', methods: ['GET'])]
     public function show(User $user): JsonResponse
     {
         $userData = [
@@ -88,7 +88,7 @@ class UsersController extends AbstractController
         return new JsonResponse(new RequestDto(result: $userData));
     }
 
-    #[Route('/api/v1/user/{id}', name: 'api_v1_user_edit', methods: ['PATCH'])]
+    #[Route('/api/v1/users/{id}', name: 'api_v1_user_edit', methods: ['PATCH'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): JsonResponse
     {
         $userId = $this->getUser()->getId();
@@ -96,7 +96,7 @@ class UsersController extends AbstractController
         if ($userId != $user->getId()) {
             return $this->json(
                 new RequestDto(
-                    message: 'You are not allowed to delete this user'
+                    message: 'You are not allowed to update this user'
                 ),
                 JsonResponse::HTTP_FORBIDDEN
             );
@@ -112,7 +112,7 @@ class UsersController extends AbstractController
         return $this->json(['message' => 'User updated successfully'], JsonResponse::HTTP_OK);
     }
 
-    #[Route('/api/v1/user/{id}', name: 'api_v1_user_delete', methods: ['DELETE'])]
+    #[Route('/api/v1/users/{id}', name: 'api_v1_user_delete', methods: ['DELETE'])]
     public function delete(User $user, EntityManagerInterface $entityManager): JsonResponse
     {
 

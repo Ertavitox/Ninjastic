@@ -56,7 +56,7 @@ class CommentsController extends AbstractController
         );
     }
 
-    #[Route('', name: 'app_comments_new', methods: ['POST','PUT'])]
+    #[Route('', name: 'app_comments_new', methods: ['POST'])]
     public function new(
         int $topicId,
         ValidatorInterface $validator,

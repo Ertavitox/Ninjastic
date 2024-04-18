@@ -19,9 +19,9 @@ class UsersController extends ApiTestCase
         $userId = $this->getUser()->getId();
 
         $endpoints = [
-            'GET' => '/api/v1/user/' . $userId,
-            'PATCH' => '/api/v1/user/' . $userId,
-            'DELETE' => '/api/v1/user/' . $userId,
+            'GET' => '/api/v1/users/' . $userId,
+            'PATCH' => '/api/v1/users/' . $userId,
+            'DELETE' => '/api/v1/users/' . $userId,
         ];
 
         $client = static::createClient();
@@ -36,7 +36,7 @@ class UsersController extends ApiTestCase
     {
         $client = static::createClient();
 
-        $client->request('POST', '/api/v1/user', [
+        $client->request('POST', '/api/v1/users', [
             "json" => [
                 'email' => 'randomEmail@randommail.com',
                 'name' => 'test',
@@ -53,7 +53,7 @@ class UsersController extends ApiTestCase
         $client = static::createClient();
         $client->loginUser($user);
 
-        $client->request('GET', '/api/v1/user/' . $user->getId());
+        $client->request('GET', '/api/v1/users/' . $user->getId());
 
         $this->assertResponseStatusCodeSame(200);
     }
@@ -65,7 +65,7 @@ class UsersController extends ApiTestCase
         $client = static::createClient();
         $client->loginUser($user);
 
-        $reponse = $client->request('GET', '/api/v1/user/' . $anotherUser->getId());
+        $reponse = $client->request('GET', '/api/v1/users/' . $anotherUser->getId());
 
         $data = json_decode($reponse->getContent(), true);
 
@@ -80,7 +80,7 @@ class UsersController extends ApiTestCase
         $client->loginUser($user);
 
 
-        $client->request('PATCH', '/api/v1/user/' . $user->getId(), [
+        $client->request('PATCH', '/api/v1/users/' . $user->getId(), [
             "json" => [
                 'name' => 'test',
                 'description' => 'test',
@@ -97,7 +97,7 @@ class UsersController extends ApiTestCase
         $client = static::createClient();
         $client->loginUser($user);
 
-        $client->request('DELETE', '/api/v1/user/' . $user->getId());
+        $client->request('DELETE', '/api/v1/users/' . $user->getId());
 
         $this->assertResponseIsSuccessful();
     }
@@ -109,7 +109,7 @@ class UsersController extends ApiTestCase
         $client = static::createClient();
         $client->loginUser($user);
 
-        $client->request('DELETE', '/api/v1/user/' . $anotherUser->getId());
+        $client->request('DELETE', '/api/v1/users/' . $anotherUser->getId());
 
         $this->assertResponseStatusCodeSame(403);
     }

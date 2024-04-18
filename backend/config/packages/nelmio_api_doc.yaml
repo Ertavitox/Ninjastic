@@ -84,8 +84,8 @@ nelmio_api_doc:
             "400":
               $ref: "#/components/responses/BadRequest"
       /api/v1/topics/{topicId}:
-        put:
-          summary: Update a topic
+        patch:
+          summary: Update a topic by ID
           tags:
             - Topics
           parameters:
@@ -95,24 +95,6 @@ nelmio_api_doc:
               description: ID of the topic to update
               schema:
                 type: integer
-          requestBody:
-            required: true
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    title:
-                      type: string
-          responses:
-            "200":
-              description: OK
-            "403":
-              $ref: "#/components/responses/Unauthorized"
-            "404":
-              $ref: "#/components/responses/NotFound"
-            "400":
-              $ref: "#/components/responses/BadRequest"
         delete:
           summary: Delete a topic
           tags:
@@ -304,19 +286,6 @@ nelmio_api_doc:
           responses:
             "201":
               description: Created
-            "403":
-              $ref: "#/components/responses/Unauthorized"
-            "404":
-              $ref: "#/components/responses/NotFound"
-            "400":
-              $ref: "#/components/responses/BadRequest"
-        put:
-          summary: Update a user
-          tags:
-            - Users
-          responses:
-            "200":
-              description: OK
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
