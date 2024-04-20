@@ -105,11 +105,26 @@ class UsersController extends AbstractController
         $serializer->deserialize($request->getContent(), User::class, 'json', ['object_to_populate' => $user]);
         $errors = $validator->validate($user);
         if (count($errors) > 0) {
-            return $this->json($errors, JsonResponse::HTTP_BAD_REQUEST);
+            return $this->json(new RequestDto(
+                errors: (new ValidationErrorHelper($errors))->getTransformedErrors()
+            ), JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        $entityManager->flush();
-        return $this->json(['message' => 'User updated successfully'], JsonResponse::HTTP_OK);
+        try {
+            $entityManager->flush();
+        } catch (UniqueConstraintViolationException $e) {
+            return $this->json(
+                new RequestDto(
+                    message: 'Email already exists',
+                    errors: [
+                        'key' => "email",
+                        'message' => "This email is already in use"
+                    ]
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        };
+        return $this->json(new RequestDto(message: 'User updated successfully'), JsonResponse::HTTP_OK);
     }
 
     #[Route('/api/v1/users/{id}', name: 'api_v1_user_delete', methods: ['DELETE'])]
@@ -146,6 +161,6 @@ class UsersController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
 
-        return $this->json(['message' => 'User deleted successfully'], JsonResponse::HTTP_OK);
+        return $this->json(new RequestDto(message: 'User deleted successfully'), JsonResponse::HTTP_OK);
     }
 }

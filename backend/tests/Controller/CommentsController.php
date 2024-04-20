@@ -29,7 +29,7 @@ class CommentsController extends ApiTestCase
     {
         $client = static::createClient();
         $client->loginUser($this->getUser());
-        $client->request('GET', '/api/v1/topic/' . $this->topic->getId() . '/comments');
+        $client->request('GET', '/api/v1/topics/' . $this->topic->getId() . '/comments');
 
         $this->assertResponseIsSuccessful();
     }
@@ -38,11 +38,11 @@ class CommentsController extends ApiTestCase
     {
 
         $endpoints = [
-            'GET' => '/api/v1/topic/' . $this->topic->getId() . '/comments',
-            'GET' => '/api/v1/topic/' . $this->topic->getId() . '/comments/1',
-            'PATCH' => '/api/v1/topic/' . $this->topic->getId() . '/comments/1',
-            'DELETE' => '/api/v1/topic/' . $this->topic->getId() . '/comments/1',
-            'POST' => '/api/v1/topic/' . $this->topic->getId() . '/comments',
+            'GET' => '/api/v1/topics/' . $this->topic->getId() . '/comments',
+            'GET' => '/api/v1/topics/' . $this->topic->getId() . '/comments/1',
+            'PATCH' => '/api/v1/topics/' . $this->topic->getId() . '/comments/1',
+            'DELETE' => '/api/v1/topics/' . $this->topic->getId() . '/comments/1',
+            'POST' => '/api/v1/topics/' . $this->topic->getId() . '/comments',
         ];
 
         $client = static::createClient();
@@ -58,7 +58,7 @@ class CommentsController extends ApiTestCase
         $client = static::createClient();
         $client->loginUser($this->getUser());
 
-        $client->request('POST', '/api/v1/topic/' . $this->topic->getId() . '/comments', [
+        $client->request('POST', '/api/v1/topics/' . $this->topic->getId() . '/comments', [
             "json" => [
                 'message' => 'test',
                 'original' => 'test'
@@ -75,7 +75,7 @@ class CommentsController extends ApiTestCase
 
         $commentId = $this->topic->getComments()->first()->getId();
 
-        $client->request('GET', '/api/v1/topic/' . $this->topic->getId() . "/comments/$commentId");
+        $client->request('GET', '/api/v1/topics/' . $this->topic->getId() . "/comments/$commentId");
 
         $this->assertResponseStatusCodeSame(200);
     }
@@ -87,7 +87,7 @@ class CommentsController extends ApiTestCase
 
         $commentId = $this->topic->getComments()->first()->getId();
 
-        $client->request('PATCH', '/api/v1/topic/' . $this->topic->getId() . "/comments/$commentId", [
+        $client->request('PATCH', '/api/v1/topics/' . $this->topic->getId() . "/comments/$commentId", [
             'json' => [
                 'message' => 'test1',
                 'original' => 'test1'
@@ -106,7 +106,7 @@ class CommentsController extends ApiTestCase
             return $v->getUser()->getId() == $this->getUser()->getId();
         })->getId();
 
-        $client->request('DELETE', '/api/v1/topic/' . $this->topic->getId() . "/comments/$commentId");
+        $client->request('DELETE', '/api/v1/topics/' . $this->topic->getId() . "/comments/$commentId");
 
         $this->assertResponseIsSuccessful();
     }

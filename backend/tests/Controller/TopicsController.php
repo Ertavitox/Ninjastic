@@ -27,7 +27,7 @@ class TopicsController extends ApiTestCase
     {
         $client = static::createClient();
         $client->loginUser($this->getUser());
-        $client->request('GET', '/api/v1/topic');
+        $client->request('GET', '/api/v1/topics');
 
         $this->assertResponseIsSuccessful();
     }
@@ -36,11 +36,11 @@ class TopicsController extends ApiTestCase
     {
 
         $endpoints = [
-            'GET' => '/api/v1/topic',
-            'GET' => '/api/v1/topic/' . $this->topic->getId(),
-            'PATCH' => '/api/v1/topic/' . $this->topic->getId(),
-            'DELETE' => '/api/v1/topic/' . $this->topic->getId(),
-            'POST' => '/api/v1/topic',
+            'GET' => '/api/v1/topics',
+            'GET' => '/api/v1/topics/' . $this->topic->getId(),
+            'PATCH' => '/api/v1/topics/' . $this->topic->getId(),
+            'DELETE' => '/api/v1/topics/' . $this->topic->getId(),
+            'POST' => '/api/v1/topics',
         ];
 
         $client = static::createClient();
@@ -56,7 +56,7 @@ class TopicsController extends ApiTestCase
         $client = static::createClient();
         $client->loginUser($this->getUser());
 
-        $client->request('POST', '/api/v1/topic', [
+        $client->request('POST', '/api/v1/topics', [
             "json" => [
                 'name' => 'test',
                 'description' => 'test',
@@ -72,7 +72,7 @@ class TopicsController extends ApiTestCase
         $client = static::createClient();
         $client->loginUser($this->getUser());
 
-        $client->request('GET', '/api/v1/topic/'.$this->topic->getId());
+        $client->request('GET', '/api/v1/topics/'.$this->topic->getId());
 
         $this->assertResponseStatusCodeSame(200);
     }
@@ -83,7 +83,7 @@ class TopicsController extends ApiTestCase
         $client->loginUser($this->getUser());
 
 
-        $client->request('PATCH', '/api/v1/topic/' . $this->topic->getId(), [
+        $client->request('PATCH', '/api/v1/topics/' . $this->topic->getId(), [
             "json" => [
                 'name' => 'test',
                 'description' => 'test',
@@ -99,7 +99,7 @@ class TopicsController extends ApiTestCase
         $client = static::createClient();
         $client->loginUser($this->getUser());
 
-        $client->request('DELETE', '/api/v1/topic/' . $this->topic->getId());
+        $client->request('DELETE', '/api/v1/topics/' . $this->topic->getId());
 
         $this->assertResponseIsSuccessful();
     }

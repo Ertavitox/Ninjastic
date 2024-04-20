@@ -83,7 +83,7 @@ class CommentsController extends AbstractController
         $comment->setUser($this->getUser());
         $comment->setTopic($topic);
         $comment->setMessage($this->wordCensor->censorWords($comment->getOriginal()));
-        
+
         $errors = $validator->validate($comment);
         if (count($errors) > 0) {
             return $this->json(
@@ -100,7 +100,7 @@ class CommentsController extends AbstractController
 
         return $this->json(
             new RequestDto(
-                result: $comment->getId(),
+                result: ['id' => $comment->getId()],
                 message: "Comment created successfully!"
             ),
             JsonResponse::HTTP_CREATED
@@ -147,13 +147,12 @@ class CommentsController extends AbstractController
             new RequestDto(
                 result: [
                     'id' => $comment->getId(),
-                    'mesasge' => $comment->getMessage(),
+                    'message' => $comment->getMessage(),
                     'created_at' => $comment->getCreatedAt(),
                     'updated_at' => $comment->getUpdatedAt(),
                     'user_id' => $comment->getUser()->getId(),
-                    'username' => $comment->getUser()->getName()
+                    'user_name' => $comment->getUser()->getName()
                 ],
-                message: "Comment updated successfully!"
             )
         );
     }
@@ -203,6 +202,8 @@ class CommentsController extends AbstractController
         $commentFromRequest = $serializer->deserialize($request->getContent(), Comment::class, 'json');
         $commentFromRequest->setUser($this->getUser());
         $commentFromRequest->setTopic($topic);
+        $commentFromRequest->setMessage($this->wordCensor->censorWords($comment->getOriginal()));
+        $commentFromRequest->setOriginal($commentFromRequest->getOriginal());
 
         $errors = $validator->validate($commentFromRequest);
         if (count($errors) > 0) {
@@ -224,7 +225,7 @@ class CommentsController extends AbstractController
 
         return $this->json(
             new RequestDto(
-                result: $comment->getId(),
+                result: ['id' => $comment->getId()],
                 message: "Comment updated successfully!"
             )
         );

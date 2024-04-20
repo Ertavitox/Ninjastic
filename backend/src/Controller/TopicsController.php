@@ -79,7 +79,7 @@ class TopicsController extends AbstractController
 
         return $this->json(
             new RequestDto(
-                result: $topic->getId(),
+                result: ['id' => $topic->getId()],
                 message: "Topic created successfully!"
             ),
             JsonResponse::HTTP_CREATED
@@ -167,7 +167,7 @@ class TopicsController extends AbstractController
 
         return $this->json(
             new RequestDto(
-                result: $topic->getId(),
+                result: ['id' => $topic->getId()],
                 message: "Topic updated successfully!"
             )
         );

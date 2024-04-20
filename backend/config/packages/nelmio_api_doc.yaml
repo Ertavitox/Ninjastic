@@ -57,8 +57,6 @@ nelmio_api_doc:
                     $ref: "#/components/schemas/PaginationTopicResponse"
             "403":
               $ref: "#/components/responses/Unauthorized"
-            "404":
-              $ref: "#/components/responses/NotFound"
             "400":
               $ref: "#/components/responses/BadRequest"
         post:
@@ -72,15 +70,15 @@ nelmio_api_doc:
                 schema:
                   type: object
                   properties:
-                    title:
+                    name:
+                      type: string
+                    description:
                       type: string
           responses:
             "201":
               $ref: "#/components/responses/PatchOrPost"
             "403":
               $ref: "#/components/responses/Unauthorized"
-            "404":
-              $ref: "#/components/responses/NotFound"
             "400":
               $ref: "#/components/responses/BadRequest"
       /api/v1/topics/{topicId}:
@@ -88,6 +86,17 @@ nelmio_api_doc:
           summary: Update a topic by ID
           tags:
             - Topics
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
           parameters:
             - name: topicId
               in: path
@@ -179,7 +188,7 @@ nelmio_api_doc:
                 schema:
                   type: object
                   properties:
-                    content:
+                    original:
                       type: string
           responses:
             "201":
@@ -210,7 +219,17 @@ nelmio_api_doc:
                 type: integer
           responses:
             "200":
-              description: OK
+              description: Successful response
+              content:
+                application/json:
+                  schema:
+                    properties:
+                      result:
+                        $ref: "#/components/schemas/Comment"
+                      message:
+                        type: string
+                      errors:
+                        type: object
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -241,7 +260,9 @@ nelmio_api_doc:
                 schema:
                   type: object
                   properties:
-                    content:
+                    name:
+                      type: string
+                    description:
                       type: string
           responses:
             "200":
@@ -292,9 +313,21 @@ nelmio_api_doc:
                   properties:
                     username:
                       type: string
+                    password:
+                      type: string
           responses:
             "201":
-              $ref: "#/components/responses/Success"
+              description: Successful response
+              content:
+                application/json:
+                  schema:
+                    properties:
+                      result:
+                        $ref: "#/components/schemas/FullUser"
+                      message:
+                        type: string
+                      errors:
+                        type: object
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -315,7 +348,7 @@ nelmio_api_doc:
                 type: integer
           responses:
             "200":
-              description: OK
+              $ref: "#/components/responses/GetUserById"
             "403":
               $ref: "#/components/responses/Unauthorized"
             "404":
@@ -333,6 +366,19 @@ nelmio_api_doc:
               description: ID of the user
               schema:
                 type: integer
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    password:
+                      type: string
           responses:
             "200":
               $ref: "#/components/responses/Success"
@@ -410,8 +456,26 @@ nelmio_api_doc:
                 type: object
                 properties:
                   result:
-                    type: integer
-                    example: 1
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                  message:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
+        GetUserById:
+          description: Get user by ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                      $ref: "#/components/schemas/User"
                   message:
                     type: string
                   errors:
@@ -419,6 +483,48 @@ nelmio_api_doc:
                     items:
                       type: object
       schemas:
+        User:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            status:
+              type: integer
+            email:
+              type: string
+              optional: true
+        FullUser:
+          type: object
+          properties:
+            id: 
+              type: integer
+              example: 1
+            name: 
+              type: string
+              example: Teszt api
+            email: 
+              type: string
+              example: test_api@user.com
+            status: 
+              type: integer
+              example: 1
+            createdAt: 
+              type: string
+              example: 2024-04-18T19:25:41+00:00
+            updatedAt: 
+              type: string
+              example: 2024-04-18T19:25:41+00:00
+            password: 
+              type: string
+            roles:
+              type: array
+              items:
+                type: string
+            userIdentifier: 
+              type: string
+              example: test_api@user.com
         UnauthorizedError:
           type: object
           properties:
@@ -496,9 +602,16 @@ nelmio_api_doc:
             user_id:
               type: integer
               example: 11
+            user_name:
+              type: string
             message:
               type: string
               example: test message
+            created_at:
+              type: string
+            updated_at:
+              type: string
+            
         PaginationTopicResponse:
           type: object
           properties:
