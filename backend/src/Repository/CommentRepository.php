@@ -42,7 +42,9 @@ class CommentRepository extends ServiceEntityRepository
                 c.id,
                 IDENTITY(c.user) as user_id,
                 u.name as user_name,
-                c.message
+                c.message,
+                c.created_at,
+                c.updated_at
             FROM App\Entity\Comment c
             JOIN c.user u
             WHERE c.topic = :topicId
