@@ -25,6 +25,7 @@ const themes = {
     900: "#63171b",
   },
   green: {
+    "DEFAULT": "#38a169",
     50: "#f0fff4",
     100: "#c6f6d5",
     200: "#9ae6b4",

@@ -14,8 +14,6 @@ interface Threads {
     user_id: number;
     username: string;
     comment_count: number;
-
-    // Add any other properties you have for comments
 }
 
 const auth = useAuthStore();
@@ -25,7 +23,7 @@ const threads = ref<Threads[]>([]);
 const token = computed(() => auth.getToken());
 const baseURL = import.meta.env.VITE_APP_URL;
 
-const fetchComments = async () => {
+const fetchThreads = async () => {
     try {
         await auth.checkAuth();
         const response = await fetch(`${import.meta.env.VITE_API_URL}/topics`, {
@@ -37,33 +35,26 @@ const fetchComments = async () => {
         });
         if (response.ok) {
             const responseData = await response.json();
-            const messagesNonSorted: Threads[] = responseData.result;
-            threads.value = messagesNonSorted.sort((a, b) => {
-                const timeA = new Date(a.created_at);
-                const timeB = new Date(b.created_at);
-                return timeB.getTime() - timeA.getTime();
-            });
-
+            const threadsData: Threads[] = responseData.result;
+            threads.value = threadsData.sort((a, b) => b.comment_count - a.comment_count);
         } else if (response.status === 401) {
             router.push('/login');
         }
     } catch (error) {
-        console.error('Error fetching comments:', error);
+        console.error('Error fetching threads:', error);
     }
 };
 
-
 onMounted(() => {
-    fetchComments();
+    fetchThreads();
 });
 
 const getRelativeTime = (time: Date) => {
     return moment(time).fromNow();
-}
+};
 
 
 </script>
-
 
 <template>
     <div id="latests" class="flex flex-col w-full gap-8 xl:flex-row">

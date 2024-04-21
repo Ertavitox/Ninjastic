@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth.store';
 
 interface User {
   username: string;
+  name: string;
   password: string;
 }
 
@@ -11,27 +12,28 @@ export default defineComponent({
   data() {
     return {
       username: '',
+      name: '',
       password: '',
-      errorMessage: '' as string,
+      errorMessage: '',
+
     };
   },
   methods: {
-    async loginUser(values: User): Promise<void> {
-      try {
-        const authStore = useAuthStore();
-        const { username, password } = values;
-        await authStore.login(username, password);
-      
-      } catch (error) {
-        this.errorMessage = error as string;
-      }
+    registerUser(values: User): void {
+      const authStore = useAuthStore();
+      const { username, name, password } = values;
+      authStore.register(username, name, password)
+        .catch(error => {
+        this.errorMessage = error;
+        });
     },
-    handleSubmit(event: Event): void {
+
+    handleSubmit(event: Event) {
       event.preventDefault();
-      const { username, password } = this;
-      this.loginUser({ username, password });
-    },
-  },
+      const { username, name, password } = this;
+      this.registerUser({ username, name, password });
+    }
+  }
 });
 </script>
 
@@ -53,13 +55,16 @@ export default defineComponent({
         </svg>
 
       </div>
-      <div class="text-3xl"><span class="antialiased font-bold">Ninjastic</span> Login</div>
+      <div class="text-3xl"><span class="antialiased font-bold">Ninjastic</span> Registration</div>
       <form @submit.prevent="handleSubmit" method="post" class="flex flex-col items-center p-8 mt-8">
         <div class="flex flex-col w-full gap-8">
           <div class="flex flex-col gap-2">
             <input placeholder="Email Address" v-model="username"
               class="flex-grow w-full py-2 pl-4 text-black placeholder-gray-500 rounded-lg focus:outline-none"
               type="text" name="email" id="email" autocomplete="email" autofocus />
+            <input placeholder="Your Name" v-model="name"
+              class="flex-grow w-full py-2 pl-4 text-black placeholder-gray-500 rounded-lg focus:outline-none"
+              type="text" name="name" id="name" autocomplete="name" autofocus />
             <input placeholder="Password" v-model="password"
               class="flex-grow w-full py-2 pl-4 text-black placeholder-gray-500 rounded-lg focus:outline-none"
               type="password" name="password" id="password" autocomplete="current-password" />
@@ -67,10 +72,9 @@ export default defineComponent({
           <div v-if="errorMessage"
             class="py-2 font-semibold border rounded-lg text-primary border-primary bg-primary/10">{{ errorMessage }}
           </div>
-          <button class="w-full py-2 text-white bg-green-500 rounded-lg" type="submit">Login</button>
+          <button class="w-full py-2 text-white bg-green-500 rounded-lg" type="submit">Register</button>
           <div>
-            <span class="text-gray-200">Haven't registered yet? <a href="/register" class="text-blue-500">Click
-                here</a></span>
+            <span class="text-gray-200">Already Registered? <a href="/login" class="text-blue-500">Login here</a></span>
           </div>
         </div>
       </form>

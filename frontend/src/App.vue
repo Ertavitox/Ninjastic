@@ -1,38 +1,139 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { RouterLink, RouterView, useRouter } from 'vue-router'
-import { ArrowRightStartOnRectangleIcon, Bars3Icon, HomeIcon as HomeIconOutlined } from '@heroicons/vue/24/outline'
-import { ChatBubbleBottomCenterTextIcon as ChatOutlined } from '@heroicons/vue/24/outline'
-import { ChatBubbleBottomCenterTextIcon as ChatSolid, MagnifyingGlassIcon } from '@heroicons/vue/24/solid'
+import { ArrowRightStartOnRectangleIcon, Bars3Icon, HomeIcon as HomeIconOutlined, PlusCircleIcon } from '@heroicons/vue/24/outline'
+import { MagnifyingGlassIcon } from '@heroicons/vue/24/solid'
 import { FireIcon as FireOutlined } from '@heroicons/vue/24/outline'
 import { FireIcon as FireSolid } from '@heroicons/vue/24/solid'
-import { PlusIcon } from '@heroicons/vue/24/outline'
-import { BellIcon } from '@heroicons/vue/24/outline'
-import { UserIcon } from '@heroicons/vue/24/solid'
 import { HomeIcon as HomeIconFilled } from '@heroicons/vue/24/solid'
+import { XMarkIcon } from '@heroicons/vue/24/solid'
 import IntroBox from './components/IntroBox.vue'
-import StaffOnline from './components/StaffOnline.vue'
+import Modal from './components/ModalComp.vue';
+import GravatarImage from './components/GravatarImage.vue'
+import { useAuthStore } from '@/stores/auth.store'
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
+import { useSearchStore } from '@/stores/search.store';
+import { useHead } from 'unhead'
 
 
 const easterActive = ref(false);
 const router = useRouter()
+const auth = useAuthStore();
+const searchStore = useSearchStore();
+const searchTerm = searchStore.searchTerm;
+
+const searchToast = 'search-toast-267878';
 
 
-// Define initial configuration array with default values
-const config = ref(JSON.parse(localStorage.getItem('config')) || {
+
+const onSearch = (event: KeyboardEvent) => {
+  if (!auth.checkAuth()) {
+    toast.error("Private forum. You must be logged in to search.", {
+      autoClose: 3000,
+      toastId: searchToast,
+      position: toast.POSITION.BOTTOM_CENTER,
+      theme: 'dark'
+    });
+    return;
+  }
+
+  const searchTerm = (event.target as HTMLInputElement).value;
+
+  // Update the route programmatically with the search term as a query parameter
+  router.push({ name: 'Search', query: { term: searchTerm } });
+
+  // Optionally, you can also update the search term in the store
+  searchStore.updateSearchTerm(searchTerm);
+};
+
+const config = ref(JSON.parse(localStorage.getItem('config') || '{}') || {
   sidebarOpen: false,
-  // Add more configuration options here if needed
 });
 
+const showDropdown = ref(false);
+const threadTitle = ref('');
+const threadDescription = ref('');
+const firstComment = ref('');
 const isOpen = computed(() => config.value.sidebarOpen);
-
+const isModalOpen = ref(false);
+const toggleModal = () => {
+  console.log(isModalOpen.value)
+  isModalOpen.value = !isModalOpen.value;
+};
 const toggleSidebar = () => {
   config.value.sidebarOpen = !config.value.sidebarOpen;
   localStorage.setItem('config', JSON.stringify(config.value));
 
 };
 
+const logout = () => {
+  auth.logout()
+}
+
 const currentRouteName = computed(() => router.currentRoute.value.name);
+
+const newThread = async () => {
+  try {
+    const thread = {
+      name: threadTitle.value,
+      description: firstComment.value
+    };
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/topics`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${auth.token}`
+      },
+      body: JSON.stringify(thread)
+    });
+    const responseData = await response.json();
+    if (response.ok) {
+      const threadId = responseData.result.id;
+      await newComment(threadId);
+      toast.success(responseData.message, {
+        autoClose: 3000,
+        position: toast.POSITION.BOTTOM_CENTER,
+        theme: 'dark'
+      });
+      toggleModal();
+      router.push(`/discussions/thread/${threadId}`);
+    } else {
+      toast.error(responseData.message, {
+        autoClose: 3000,
+        position: toast.POSITION.BOTTOM_CENTER,
+        theme: 'dark'
+      });
+    }
+  } catch (error) {
+    console.error('Error creating thread:', error);
+  }
+};
+
+const newComment = async (threadId: number) => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${auth.token}`
+      },
+      body: JSON.stringify({
+        original: firstComment.value
+      })
+    });
+    if (response.ok) {
+      // Since this is a first thread, we don't need notification.
+    } else {
+      // Since this is a first thread, we don't need notification.
+    }
+  } catch (error) {
+    console.error('Error creating comment:', error);
+  }
+};
+
+
 
 const easterEgg = () => {
   easterActive.value = !easterActive.value;
@@ -45,18 +146,61 @@ const easterEgg = () => {
   }
 }
 
-onMounted(() => {
+const homeURL = () => {
+  router.push("/")
+}
+
+const openDropdown = () => {
+  showDropdown.value = true;
+};
+
+const isMobileMenuOpen = ref(false);
+
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
+};
+
+const closeDropdown = () => {
+  showDropdown.value = false;
+};
+
+onMounted(async () => {
   localStorage.setItem('config', JSON.stringify(config.value));
+
 });
+
+
 </script>
 
 <template>
+
+
   <div class="flex flex-col md:flex-row ">
+    <transition name="slide-fade">
+      <div v-if="isMobileMenuOpen" class="fixed inset-0 z-50 bg-gray-800/80 backdrop-blur-sm">
+        <div class="flex flex-col items-center justify-center h-full">
+          <nav class="text-white">
+            <ul class="flex flex-col gap-6 text-xl text-center">
+              <li>
+                <RouterLink to="/">Home</RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/hot-topics">Hot Topics</RouterLink>
+              </li>
+            </ul>
+          </nav>
+          <!-- Close button -->
+          <button @click="toggleMobileMenu" class="absolute text-white top-4 right-4">
+            <XMarkIcon class="w-12 h-12"></XMarkIcon>
+          </button>
+        </div>
+      </div>
+    </transition>
     <!-- Navbar Desktop -->
     <div :class="{ 'w-28 text-center': !isOpen, 'w-80 text-left': isOpen }"
-      class="fixed hidden h-screen text-white transition-all bg-gray-800 md:block">
+      class="hidden h-screen text-white transition-all lg:bg-gray-800 lg:fixed lg:block">
       <nav class="z-50 py-2">
-        <div id="logo-container" class="flex items-center justify-center">
+        <div id="logo-container" @click="homeURL" class="flex items-center justify-center cursor-pointer">
           <svg @click="easterEgg" class="w-auto h-20 mt-4 text-gray-900" viewBox="0 0 131 152" fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <path
@@ -92,23 +236,7 @@ onMounted(() => {
               </template>
             </li>
           </RouterLink>
-          <RouterLink to="/discussions" v-slot="{ isExactActive }">
-            <li>
-              <template v-if="isExactActive">
-                <div :class="{ 'bg-gray-900 ': isOpen }"
-                  class="flex items-center gap-4 p-2 px-4 text-lg rounded-lg cursor-pointer">
-                  <ChatSolid class="w-8 h-8"></ChatSolid>
-                  <span v-if="isOpen">Discussions</span>
-                </div>
-              </template>
-              <template v-else>
-                <div class="flex items-center gap-4 p-2 px-4 text-lg cursor-pointer">
-                  <ChatOutlined class="w-8 h-8 hover:stroke-red-500"></ChatOutlined>
-                  <span v-if="isOpen">Discussions</span>
-                </div>
-              </template>
-            </li>
-          </RouterLink>
+
           <RouterLink to="/hot-topics" v-slot="{ isExactActive }">
             <li>
               <template v-if="isExactActive">
@@ -132,7 +260,7 @@ onMounted(() => {
     </div>
 
     <!-- Main Content -->
-    <div :class="{ 'ml-20': !isOpen, 'ml-80': isOpen }" class="relative flex-1 transition-all ">
+    <div :class="{ 'md:ml-28': !isOpen, 'lg:ml-80': isOpen }" class="relative flex-1 transition-all ">
       <div class="z-0 flex-1 m-8 bg-gray-900 lg:m-12">
         <div class="gap-8">
           <!-- Search Bar -->
@@ -141,42 +269,81 @@ onMounted(() => {
               <ArrowRightStartOnRectangleIcon @click="toggleSidebar()" class="hidden w-8 h-8 lg:block">
               </ArrowRightStartOnRectangleIcon>
               <div class="relative flex w-full max-w-lg hi">
-                <input type="text" class="w-full py-4 pl-12 bg-gray-700 min-w-96 focus:outline-none rounded-2xl">
-                <MagnifyingGlassIcon class="absolute top-0 left-0 w-auto h-8 m-3"></MagnifyingGlassIcon>
+                <form @submit.prevent>
+                  <input v-model="searchTerm" @keyup.enter="onSearch" type="text"
+                    class="w-full py-4 pl-12 bg-gray-700 min-w-96 focus:outline-none rounded-2xl">
+                  <MagnifyingGlassIcon class="absolute top-0 left-0 w-auto h-8 m-3"></MagnifyingGlassIcon>
+                </form>
               </div>
             </div>
 
             <div class="flex items-center justify-around">
               <div>
-                <Bars3Icon class="w-12 h-12 lg:hidden"></Bars3Icon>
+                <Bars3Icon @click="toggleMobileMenu" class="w-12 h-12 lg:hidden"></Bars3Icon>
               </div>
               <div class="flex items-center justify-end w-full gap-8">
-                <PlusIcon class="h-8 p-1 border-2 rounded-full "></PlusIcon>
-                <BellIcon class="h-10"></BellIcon>
-                <UserIcon class="h-12 p-1 bg-gray-700 hover:bg-gray-600 rounded-xl"></UserIcon>
+                <PlusCircleIcon @click="toggleModal()" class="h-10 transition-colors hover:text-secondary">
+                </PlusCircleIcon>
+                <div class="relative">
+                  <!-- Dropdown button -->
+                  <div @click="openDropdown" class="cursor-pointer">
+                    <GravatarImage :email="auth.userData?.username ?? ''" class="w-12 h-auto"></GravatarImage>
+                  </div>
+                  <div v-if="showDropdown" id="dropdown" @click="closeDropdown" @mouseleave="closeDropdown"
+                    class="absolute right-0 z-10 w-56 mt-2 border rounded-lg shadow-lg bg-gray-950 border-gray-950">
+                    <div class="pb-1 text-gray-500">
+                      <div
+                        class="flex flex-col px-4 py-2 text-sm text-right text-white rounded-t-lg cursor-pointer bg-secondary">
+                        <span>{{ auth.userData?.name }}</span>
+                        <span class="text-xs font-bold text-secondary-900/80">{{ auth.userData?.username }}</span>
+                      </div>
+                      <a href="/my-profile">
+                        <div class="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900">
+                          <a>My Profile</a>
+                        </div>
+                      </a>
+                      <div class="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900"
+                        @click="logout">
+                        <a>Logout</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-
             </div>
           </div>
           <!-- Breadcrumb -->
           <div id="breadcrumb" class="mx-2 my-5 font-semibold text-gray-500">Forum > {{ currentRouteName }} </div>
 
-          <!-- IntroBox and Staff Online -->
           <div class="flex flex-col xl:flex-row">
             <div class="flex-1">
               <IntroBox class="hidden" />
             </div>
-            <StaffOnline class="hidden lg:mx-16" />
           </div>
         </div>
+        <Modal :isModalOpen="isModalOpen" @close="isModalOpen = false">
 
-        <!-- Content area -->
+          <template #content>
+            <h2 class="mb-4 text-lg font-semibold">New Topic</h2>
+            <form class="flex flex-col">
+              <input v-model="threadTitle" type="text" class="px-4 py-2 my-1 text-black rounded-lg focus:outline-none"
+                placeholder="Subject" />
+              <input v-model="threadDescription" class="px-4 py-2 my-1 text-black rounded-lg focus:outline-none"
+                placeholder="Description" />
+              <textarea v-model="firstComment" class="h-32 px-4 py-2 my-1 text-black rounded-lg focus:outline-none"
+                placeholder="Start a conversation with something">
+              </textarea>
+              <div class="my-2">
+                <input @click.prevent="newThread" type="submit" class="px-4 py-2 rounded-lg bg-secondary"
+                  value="Create Topic" />
+              </div>
+            </form>
+          </template>
+        </Modal>
         <div>
           <RouterView></RouterView>
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
