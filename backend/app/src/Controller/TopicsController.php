@@ -29,7 +29,7 @@ class TopicsController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'app_topic_index', methods: ['GET'])]
+    #[Route('', name: 'app_topic_index', methods: ['GET'], host: 'api.ninjastic.pro')]
     public function index(
         ValidatorInterface $validator,
         #[MapQueryParameter] int $page = 1,
@@ -53,7 +53,7 @@ class TopicsController extends AbstractController
         );
     }
 
-    #[Route('', name: 'app_topic_new', methods: ['POST'])]
+    #[Route('', name: 'app_topic_new', methods: ['POST'], host: 'api.ninjastic.pro')]
     public function new(
         ValidatorInterface $validator,
         Request $request,
@@ -87,7 +87,7 @@ class TopicsController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'app_topic_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_topic_show', methods: ['GET'], host: 'api.ninjastic.pro')]
     public function show(int $id): JsonResponse
     {
         $topic = $this->topicRepository->findOneBy([
@@ -121,7 +121,7 @@ class TopicsController extends AbstractController
         );
     }
 
-    #[Route('/{id}', name: 'app_topic_edit', methods: ['PATCH'])]
+    #[Route('/{id}', name: 'app_topic_edit', methods: ['PATCH'], host: 'api.ninjastic.pro')]
     public function edit(
         int $id,
         ValidatorInterface $validator,
@@ -174,7 +174,7 @@ class TopicsController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'app_topic_delete', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'app_topic_delete', methods: ['DELETE'], host: 'api.ninjastic.pro')]
     public function delete(int $id, EntityManagerInterface $entityManager): JsonResponse
     {
         $topic = $this->topicRepository->findOneBy([

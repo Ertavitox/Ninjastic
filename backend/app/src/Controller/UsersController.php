@@ -18,7 +18,7 @@ use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
 
 class UsersController extends AbstractController
 {
-    #[Route('/api/v1/users', name: 'api_v1_user_new', methods: ['POST'])]
+    #[Route('/api/v1/users', name: 'api_v1_user_new', methods: ['POST'], host: 'api.ninjastic.pro')]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -66,7 +66,7 @@ class UsersController extends AbstractController
         ], JsonResponse::HTTP_CREATED);
     }
 
-    #[Route('/api/v1/users/{id}', name: 'api_v1_user_show', methods: ['GET'])]
+    #[Route('/api/v1/users/{id}', name: 'api_v1_user_show', methods: ['GET'], host: 'api.ninjastic.pro')]
     public function show(User $user): JsonResponse
     {
         $userData = [
@@ -88,7 +88,7 @@ class UsersController extends AbstractController
         return new JsonResponse(new RequestDto(result: $userData));
     }
 
-    #[Route('/api/v1/users/{id}', name: 'api_v1_user_edit', methods: ['PATCH'])]
+    #[Route('/api/v1/users/{id}', name: 'api_v1_user_edit', methods: ['PATCH'], host: 'api.ninjastic.pro')]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): JsonResponse
     {
         $userId = $this->getUser()->getId();
@@ -127,7 +127,7 @@ class UsersController extends AbstractController
         return $this->json(new RequestDto(message: 'User updated successfully'), JsonResponse::HTTP_OK);
     }
 
-    #[Route('/api/v1/users/{id}', name: 'api_v1_user_delete', methods: ['DELETE'])]
+    #[Route('/api/v1/users/{id}', name: 'api_v1_user_delete', methods: ['DELETE'], host: 'api.ninjastic.pro')]
     public function delete(User $user, EntityManagerInterface $entityManager): JsonResponse
     {
 

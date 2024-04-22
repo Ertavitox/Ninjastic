@@ -31,7 +31,7 @@ class CommentsController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'app_comments_index', methods: ['GET'])]
+    #[Route('', name: 'app_comments_index', methods: ['GET'], host: 'api.ninjastic.pro')]
     public function index(
         ValidatorInterface $validator,
         int $topicId,
@@ -56,7 +56,7 @@ class CommentsController extends AbstractController
         );
     }
 
-    #[Route('', name: 'app_comments_new', methods: ['POST'])]
+    #[Route('', name: 'app_comments_new', methods: ['POST'], host: 'api.ninjastic.pro')]
     public function new(
         int $topicId,
         ValidatorInterface $validator,
@@ -107,7 +107,7 @@ class CommentsController extends AbstractController
         );
     }
 
-    #[Route('/{id}', name: 'app_comments_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_comments_show', methods: ['GET'], host: 'api.ninjastic.pro')]
     public function show(
         int $topicId,
         int $id,
@@ -158,7 +158,7 @@ class CommentsController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'app_comments_edit', methods: ['PATCH'])]
+    #[Route('/{id}', name: 'app_comments_edit', methods: ['PATCH'], host: 'api.ninjastic.pro')]
     public function edit(
         int $topicId,
         int $id,
@@ -216,9 +216,7 @@ class CommentsController extends AbstractController
             );
         }
 
-        $comment->setUser($this->getUser());
-        $comment->setTopic($topic);
-        $comment->setMessage($this->wordCensor->censorWords($comment->getOriginal()));
+        $comment->setMessage($this->wordCensor->censorWords($commentFromRequest->getOriginal()));
         $comment->setOriginal($commentFromRequest->getOriginal());
 
         $entityManager->flush();
@@ -231,7 +229,7 @@ class CommentsController extends AbstractController
         );
     }
 
-    #[Route('/{id}', name: 'app_comments_delete', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'app_comments_delete', methods: ['DELETE'], host: 'api.ninjastic.pro')]
     public function delete(
         int $topicId,
         int $id,

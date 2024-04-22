@@ -1,0 +1,20 @@
+FROM php:8.2.17-apache
+
+RUN apt-get -y update && apt-get -y install git libicu-dev
+
+COPY ./docker/admin /etc/apache2/sites-available/
+
+RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install intl
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+WORKDIR /var/www/api
+COPY ./app .
+
+RUN sed -i 's/APP_ENV=dev/APP_ENV=prod/' .env
+
+RUN composer install --no-dev --no-interaction --no-scripts --optimize-autoloader
+RUN php bin/console cache:clear
+RUN php bin/console lexik:jwt:generate-keypair --overwrite
+
+RUN chown -R www-data:www-data /var/www/api/var
