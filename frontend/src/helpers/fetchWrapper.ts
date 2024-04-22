@@ -7,7 +7,10 @@ interface RequestOptions {
 }
 
 interface ResponseData {
-  token: string
+  status: number
+  user?: any 
+  token?: string
+  refresh_token?: string
 }
 
 export const fetchWrapper = {
@@ -18,19 +21,22 @@ export const fetchWrapper = {
 }
 
 function request(method: string) {
-  return (url: string, body?: Record<string, any>) => {
-    const auth = useAuthStore()
+  return async (url: string, body?: Record<string, any>) => {
+    const auth = useAuthStore();
     const requestOptions: RequestOptions = {
       method,
       headers: authHeader(url, auth)
-    }
+    };
     if (body) {
-      requestOptions.headers['Content-Type'] = 'application/json'
-      requestOptions.body = JSON.stringify(body)
+      requestOptions.headers['Content-Type'] = 'application/json';
+      requestOptions.body = JSON.stringify(body);
     }
-    return fetch(url, requestOptions).then(handleResponse)
-  }
+    const response = await fetch(url, requestOptions);
+    
+    return handleResponse(response);
+  };
 }
+
 
 function authHeader(url: string, auth: any): Record<string, string> {
   const token = auth.getToken()
@@ -45,19 +51,23 @@ function authHeader(url: string, auth: any): Record<string, string> {
 }
 
 function handleResponse(response: Response): Promise<ResponseData> {
-  return response.text().then((text) => {
-    const data = text && JSON.parse(text)
-
-    if (response.status !== 200) {
-      const { userData, logout } = useAuthStore()
-      // Ha a visszakapott kódunk 401 vagy 403 akkor jelentkeztessük ki a "felhasználót".
-      if ([401, 403].includes(response.status) && userData) {
-        logout()
-      }
-      const error = (data && data.message) || response.statusText
-      return Promise.reject(error)
+  if (!response.ok) {
+    const { userData, logout } = useAuthStore();
+    if ([401, 403].includes(response.status) && userData) {
+      logout();
     }
-
-    return data
-  })
+    return response.text().then((text) => {
+      const data = text && JSON.parse(text);
+      const error = (data && data.message) || response.statusText;
+      return Promise.reject(error);
+    });
+  } else {
+    return response.json().then(data => ({
+      status: response.status,
+      user: data.user,
+      token: data.token,
+      refresh_token: data.refresh_token 
+    }));
+  }
 }
+

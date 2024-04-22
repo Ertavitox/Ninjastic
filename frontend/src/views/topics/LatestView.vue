@@ -3,8 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import moment from 'moment';
 import { useAuthStore } from '@/stores/auth.store';
 import { useRouter } from 'vue-router';
-import GravatarImage from '@/components/GravatarImage.vue';
-import { UserIcon } from '@heroicons/vue/24/solid';
+import { EnvelopeIcon } from '@heroicons/vue/24/solid';
 
 interface Threads {
     id: number;
@@ -73,7 +72,7 @@ const getRelativeTime = (time: Date) => {
                 <div class="flex items-center gap-4">
 
                     <a :href="`${baseURL + '/profile/' + message.user_id}`">
-                        <GravatarImage :email="message.username ?? ''" class="w-12 h-auto"></GravatarImage>
+                       <EnvelopeIcon class="w-auto mt-1 h-9"></EnvelopeIcon>
                     </a>
                     <div class="flex flex-col">
                         <a id="title" :href="`${baseURL + '/discussions/thread/' + message.id}`">{{ message.name

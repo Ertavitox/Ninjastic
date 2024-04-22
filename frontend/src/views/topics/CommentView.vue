@@ -30,25 +30,52 @@
               </div>
             </span>
           </template>
-          
-          <Modal :isModalOpen="isModalOpen" @close="closeEditModal">
+
+          <Modal :isModalOpen="isModalOpen" @close="closeEditModal" :emojis="smileys" @insert-emoji="insertEmojiIntoTextarea">
+            <!-- Title slot -->
+            <template #title>
+              <h2 class="mb-4 text-xl font-bold">Update Post</h2>
+            </template>
+
+            <!-- Content slot -->
             <template #content>
-              <div class="p-4">
+              <div class="">
                 <textarea v-model="editedComment"
                   class="w-full h-40 p-2 text-white border border-gray-300 rounded-md resize-none bg-gray-950"></textarea>
-                <button @click="saveEditedComment"
-                  class="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md">Save Comment</button>
               </div>
             </template>
-          </Modal>
 
-          <span
-            class="absolute bottom-0 right-0 flex items-center justify-end gap-1 mx-4 my-4 text-right text-gray-500">
-            {{ getRelativeTime(comment.created_at) }}
-          </span>
+            <!-- Emojis slot -->
+            <template #emojis>
+              <!-- Render emojis here -->
+            </template>
+
+            <!-- Button slot -->
+            <template #button>
+              <button @click="saveEditedComment" class="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md">Save
+                Comment</button>
+            </template>
+           
+          </Modal>
+          <div
+            class="absolute bottom-0 right-0 flex flex-row items-center justify-end gap-1 mx-4 my-4 text-right text-gray-500">
+
+            <span>
+              {{ getRelativeTime(comment.created_at) }}
+            </span>
+          </div>
+
 
         </div>
-        <div class="flex max-w-3xl mb-12 text-justify text-gray-300 text-pretty">{{ comment.message }}</div>
+        <div v-if="comment.created_at !== comment.updated_at">
+          <div class="flex flex-col max-w-3xl gap-2 mb-12 text-justify text-gray-300 text-pretty">{{ comment.message }}
+            <span class="text-xs text-gray-400/60"> @ Edited {{ getRelativeTime(comment.updated_at) }}</span>
+          </div>
+        </div>
+        <div v-else>
+          <div class="flex flex-col max-w-3xl gap-2 mb-12 text-justify text-gray-300 text-pretty">{{ comment.message }}
+          </div>
+        </div>
       </div>
     </template>
 
@@ -58,15 +85,25 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted, ref, provide } from 'vue';
 import moment from 'moment';
-import { UserIcon } from '@heroicons/vue/24/solid';
+import { UserIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { PencilIcon } from '@heroicons/vue/24/outline';
-import { TrashIcon } from '@heroicons/vue/24/solid';
+
 import router from '@/router/index';
 import Modal from '@/components/ModalComp.vue';
 import NewComment from '@/components/topics/NewComment.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+
+
+const smileys = {
+  '1': ['😀', '😁', '😂', '😃', '😄', '😅'],
+  '2': ['😆', '😇', '😈', '😉', '😊', '😋'],
+  '3': ['😌', '😍', '😎', '😏', '😐', '😑'],
+  '4': ['😒', '😓', '😔', '😕', '😖', '😗']
+};
+
+
 
 interface Comments {
   id: number;
@@ -78,6 +115,7 @@ interface Comments {
   thread_id: number;
   editing: boolean;
 }
+
 
 export default defineComponent({
   components: {
@@ -97,6 +135,10 @@ export default defineComponent({
     const isModalOpen = ref(false);
     let editingCommentId: number | null = null;
 
+    const insertEmojiIntoTextarea = (emoji: string) => {
+    // Insert the emoji into the textarea
+    editedComment.value += emoji; // Use editedComment instead of comment
+     };
     const fetchComments = async () => {
       try {
         await auth.checkAuth();
@@ -135,7 +177,7 @@ export default defineComponent({
     const toggleEditing = (comment: Comments) => {
       comment.editing = !comment.editing;
     };
-
+  
     const closeEditModal = () => {
       isModalOpen.value = false;
       editedComment.value = ''; // Clear edited comment when closing modal
@@ -159,7 +201,7 @@ export default defineComponent({
         }
         const commentData = await response.json();
         const comment = commentData.result;
-        editedComment.value = comment.message;
+        editedComment.value = decodeUnicode(comment.message);
       } catch (error) {
         console.error('Error fetching comment details:', error);
       }
@@ -168,13 +210,23 @@ export default defineComponent({
     const saveEditedComment = async () => {
       if (editingCommentId === null) return; // Safety check
       try {
+
+        const commentWithEscapedEmoji = (editedComment.value as string) ?
+      (editedComment.value as string).replace(/[\u{1F600}-\u{1F64F}]/gu, (match: string | undefined) => {
+        if (match) {
+          return `\\u{${match.codePointAt(0)!.toString(16)}}`;
+        }
+        return '';
+      }) :
+      '';
+
         const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments/${editingCommentId}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token.value}`,
           },
-          body: JSON.stringify({ original: editedComment.value }),
+          body: JSON.stringify({ original: commentWithEscapedEmoji }),
         });
         const responseData = await response.json();
         if (response.ok) {
@@ -251,9 +303,11 @@ export default defineComponent({
       comments,
       baseURL,
       userId,
+      smileys,
       toggleEditing,
       deleteComment,
       getRelativeTime,
+      insertEmojiIntoTextarea,
       editedComment,
       openEditModal,
       closeEditModal,

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col max-w-7xl">
     <div class="max-w-xs p-3 pl-5 bg-gray-800 rounded-t-3xl">
-      Posting as <a :href="`${baseURL + '/profile/' + auth.userData?.id}`"
+      Posting as <a @click="router.push(`/my-profile`)"
         class="transition-all text-secondary-500 hover:cursor-pointer hover:text-secondary-300" @click.prevent>@{{
         auth.userData?.name }}</a>
     </div>
@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth.store';
 import router from '@/router';
-import { ref, computed, inject } from 'vue';
+import { ref, computed, inject, provide } from 'vue';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
@@ -46,17 +46,16 @@ const fetchComments = inject<FetchCommentsFunction>('fetchComments');
 const comment = ref('');
 const errorMessage = ref('');
 const apiUrl = import.meta.env.VITE_API_URL;
-const baseURL = import.meta.env.VITE_APP_URL;
 const threadId = router.currentRoute.value.params.id;
 const auth = useAuthStore();
 const token = computed(() => auth.getToken());
 
-const smileys: Smileys = {
+const smileys = inject<Smileys>('emojis', {
   '1': ['😀', '😁', '😂', '😃', '😄', '😅'],
   '2': ['😆', '😇', '😈', '😉', '😊', '😋'],
   '3': ['😌', '😍', '😎', '😏', '😐', '😑'],
   '4': ['😒', '😓', '😔', '😕', '😖', '😗']
-};
+});
 
 const smileyRows = Object.keys(smileys);
 
@@ -107,5 +106,6 @@ const postComment = async () => {
     console.error(err);
   }
 };
+provide('emojis', smileys);
 
 </script>

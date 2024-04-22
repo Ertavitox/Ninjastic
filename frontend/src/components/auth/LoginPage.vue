@@ -13,6 +13,7 @@ export default defineComponent({
       username: '',
       password: '',
       errorMessage: '' as string,
+      errorCode: 0 as number
     };
   },
   methods: {
@@ -21,10 +22,14 @@ export default defineComponent({
         const authStore = useAuthStore();
         const { username, password } = values;
         await authStore.login(username, password);
-      
+
       } catch (error) {
         this.errorMessage = error as string;
       }
+    },
+    isSuccessMessage(message: string) {
+      // You can customize the logic based on your specific criteria
+      return message.startsWith('Success');
     },
     handleSubmit(event: Event): void {
       event.preventDefault();
@@ -65,8 +70,11 @@ export default defineComponent({
               type="password" name="password" id="password" autocomplete="current-password" />
           </div>
           <div v-if="errorMessage"
-            class="py-2 font-semibold border rounded-lg text-primary border-primary bg-primary/10">{{ errorMessage }}
+            :class="{ 'text-green-500': isSuccessMessage(errorMessage), 'py-2 font-semibold border rounded-lg text-primary border-primary bg-primary/10': !isSuccessMessage(errorMessage) }"
+            class="py-2 font-semibold border rounded-lg">
+            {{ errorMessage }}
           </div>
+        
           <button class="w-full py-2 text-white bg-green-500 rounded-lg" type="submit">Login</button>
           <div>
             <span class="text-gray-200">Haven't registered yet? <a href="/register" class="text-blue-500">Click

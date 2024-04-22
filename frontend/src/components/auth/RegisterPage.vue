@@ -19,15 +19,19 @@ export default defineComponent({
     };
   },
   methods: {
-    registerUser(values: User): void {
-      const authStore = useAuthStore();
-      const { username, name, password } = values;
-      authStore.register(username, name, password)
-        .catch(error => {
-        this.errorMessage = error;
-        });
+    async registerUser(values: User): Promise<void> {
+      try {
+        const authStore = useAuthStore();
+        const { username, name, password } = values;
+        await authStore.register(username, name, password);
+      
+      } catch (error) {
+        this.errorMessage = error as string;
+      }
     },
-
+    isSuccessMessage(message: string) {
+      return message.startsWith('Success');
+    },
     handleSubmit(event: Event) {
       event.preventDefault();
       const { username, name, password } = this;
@@ -70,7 +74,9 @@ export default defineComponent({
               type="password" name="password" id="password" autocomplete="current-password" />
           </div>
           <div v-if="errorMessage"
-            class="py-2 font-semibold border rounded-lg text-primary border-primary bg-primary/10">{{ errorMessage }}
+            :class="{ 'text-green-500': isSuccessMessage(errorMessage), 'py-2 font-semibold border rounded-lg text-primary border-primary bg-primary/10': !isSuccessMessage(errorMessage) }"
+            class="py-2 font-semibold border rounded-lg">
+            {{ errorMessage }}
           </div>
           <button class="w-full py-2 text-white bg-green-500 rounded-lg" type="submit">Register</button>
           <div>

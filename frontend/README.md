@@ -1,44 +1,44 @@
-# ninjastic
+# Ninjastic Fórum rendszer
 
-This template should help get you started developing with Vue 3 in Vite.
+Üdvözöljük a Ninjastic projekt repozitóriumában, mely a VESZC Ipari Céges Képzés keretében készült szakdolgozat része. Ez a README fájl útmutatást nyújt a szükséges szoftverek telepítéséhez és beállításához.
 
-## Recommended IDE Setup
+## Javasolt fejlesztői környezet
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (és tiltsa le a Vetur-t).
 
-## Type Support for `.vue` Imports in TS
+## Típus támogatás a `.vue` importálásokhoz TS-ben
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+A TypeScript alapértelmezés szerint nem tudja kezelni a típusinformációkat a `.vue` importálásokhoz, ezért a `tsc` CLI-t helyettesíti a `vue-tsc` a típusellenőrzéshez. Az szerkesztőkben szükség van a [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) -ra, hogy a TypeScript nyelvszolgáltatás tudjon a `.vue` típusokról.
 
-## Customize configuration
+## Testreszabott konfiguráció
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Lásd a [Vite Konfigurációs Referenciát](https://vitejs.dev/config/).
 
-## Project Setup
+## Projekt beállítása
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Fordítás és gyors újratöltés fejlesztéshez
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Típusellenőrzés, fordítás és minifikálás produkcióhoz
 
 ```sh
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Egységtesztek futtatása a [Vitest](https://vitest.dev/) segítségével
 
 ```sh
 npm run test:unit
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Lintezés az [ESLint](https://eslint.org/)  segítségével
 
 ```sh
 npm run lint
