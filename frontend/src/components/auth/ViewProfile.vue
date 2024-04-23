@@ -7,8 +7,8 @@
         </template>
         <template #content>
           <form class="flex flex-col gap-2 mb-2">
-            <input type="text" :value="auth.userData?.name" class="px-2 py-2 text-black rounded-lg focus:outline-none">
-            <input type="text" :value="auth.userData?.username"
+            <input type="text" v-model="name" class="px-2 py-2 text-black rounded-lg focus:outline-none">
+            <input type="text" v-model="username"
               class="px-2 py-2 text-black rounded-lg focus:outline-none">
             <input type="text" v-model="newPassword" placeholder="New Password" class="px-2 py-2 text-black rounded-lg focus:outline-none">
           </form>
@@ -72,8 +72,14 @@ import 'vue3-toastify/dist/index.css';
 import Modal from '@/components/ModalComp.vue';
 
 
+
 const newPassword = ref('')
 const apiUrl = import.meta.env.VITE_API_URL;
+const auth = useAuthStore();
+const token = computed(() => auth.getToken());
+
+const username = ref(auth.userData?.username ?? '');
+const name = ref(auth.userData?.name ?? '');
 
 export default defineComponent({
   components: {
@@ -83,13 +89,12 @@ export default defineComponent({
     Modal
   },
   setup() {
-    const auth = useAuthStore();
+
     const isModalOpen = ref(false);
     const toggleModal = () => {
       isModalOpen.value = !isModalOpen.value;
     };
 
-    const token = computed(() => auth.getToken());
 
     const updateUserProfile = async () => {
       try {
@@ -100,8 +105,8 @@ export default defineComponent({
         }
         
         const payload = {
-          name: auth.userData?.name,
-          email: auth.userData?.username,
+          name: name.value.toString(),
+          email: username.value.toString(),
           password: newPassword.value.toString()
         };
 
@@ -133,6 +138,8 @@ export default defineComponent({
 
     return {
       auth,
+      name,
+      username,
       newPassword,
       toggleModal,
       isModalOpen,

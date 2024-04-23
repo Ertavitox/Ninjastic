@@ -143,13 +143,4 @@ class DirtyWordsController extends AdminController
             return new JsonResponse(['error' => true]);
         }
     }
-
-    #[Route('/admin/dirtywords/loadxml', name: 'app_admin_dirtywords_loadxml')]
-    public function loadXml(XmlProcessor $xmlProcessor): Response
-    {
-        $xmlPath = getcwd() . '/dirtywords.xml';
-        $xmlProcessor->process($xmlPath);
-
-        return new Response('XML processed and saved into the database.');
-    }
 }

@@ -13,19 +13,24 @@ security:
                 class: App\Entity\User
                 property: email
     firewalls:
-        login:
-            pattern: ^/api/v1/login
-            stateless: true
-            json_login:
-                check_path: /api/v1/login
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-            refresh_jwt:
-                check_path: /api/v1/token/refresh  
+        #login:
+        #    pattern: ^/api/v1/login
+        #    stateless: true
+        #    json_login:
+        #        check_path: /api/v1/login
+        #        success_handler: lexik_jwt_authentication.handler.authentication_success
+        #        failure_handler: lexik_jwt_authentication.handler.authentication_failure 
         api:
             pattern: ^/api
             stateless: true
+            entry_point: jwt
+            json_login:
+                check_path: /api/login # or, if you have defined a route for your login path, the route name you used
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
+            refresh_jwt:
+                check_path: /api/token/refresh 
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -45,8 +50,7 @@ security:
         - { path: ^/api/v1/users$, roles: PUBLIC_ACCESS}
         - { path: ^/api/v1/swagger$, roles: PUBLIC_ACCESS}
         - { path: ^/api/v1/swagger/json$, roles: PUBLIC_ACCESS}
-        - { path: ^/api/v1/login, roles: PUBLIC_ACCESS}
-        - { path: ^/api/v1/token/refresh, roles: PUBLIC_ACCESS}
+        - { path: ^/api/v1/(login|token/refresh), roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY}
 
 when@test:

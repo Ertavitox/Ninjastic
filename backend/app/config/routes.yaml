@@ -2,6 +2,7 @@ api_login:
     path: /api/v1/login
 api_refresh_token:
     path: /api/v1/token/refresh
+    methods: POST
 app.swagger_ui:
     path: /api/v1/swagger
     methods: GET
