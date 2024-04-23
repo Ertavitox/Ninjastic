@@ -203,7 +203,7 @@ class CommentsController extends AbstractController
         $commentFromRequest->setUser($this->getUser());
         $commentFromRequest->setTopic($topic);
         $commentFromRequest->setMessage($this->wordCensor->censorWords($comment->getOriginal()));
-        $commentFromRequest->setOriginal($commentFromRequest->getOriginal());
+        $commentFromRequest->setOriginal($commentFromRequest->getOriginal() ?? "");
 
         $errors = $validator->validate($commentFromRequest);
         if (count($errors) > 0) {

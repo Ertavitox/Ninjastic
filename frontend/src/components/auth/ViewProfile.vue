@@ -73,10 +73,7 @@ import Modal from '@/components/ModalComp.vue';
 
 
 
-const newPassword = ref('')
-const apiUrl = import.meta.env.VITE_API_URL;
-const auth = useAuthStore();
-const token = computed(() => auth.getToken());
+
 
 
 
@@ -88,7 +85,10 @@ export default defineComponent({
     Modal
   },
   setup() {
-
+    const newPassword = ref('')
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const auth = useAuthStore();
+    const token = computed(() => auth.getToken());
     const isModalOpen = ref(false);
     const toggleModal = () => {
       isModalOpen.value = !isModalOpen.value;
