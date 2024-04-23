@@ -7,7 +7,7 @@ import mkcert from 'vite-plugin-mkcert'
 // https://vitejs.dev/config/
 export default ({ mode }: ConfigEnv): any =>
   defineConfig({
-    base: loadEnv(mode, process.cwd(), '')['BASE'] ?? '',
+    base: loadEnv(mode, process.cwd(), '')['BASE'] ?? '/',
     plugins: [vue(), vueJsx(), mkcert()],
     resolve: {
       alias: {
