@@ -1,0 +1,68 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block viewContent %}
+	<div class="card card-info">
+		<form role="form" method="POST" action="" enctype="multipart/form-data">
+			<div class="card-body">
+				{% if Entity.getId() %}
+					{% set index = 'id' %}
+					<div class="form-group">
+						<label for="{{ index }}">ID</label>
+						<input type="text" class="form-control" disabled id="{{ index }}" value="{{ Entity.getId() }}">
+					</div>
+				{% endif %}
+
+				<div class="form-group">
+					{% set index = 'name' %}
+					<label>Name</label>
+					<input class="form-control {%if error[index] is defined %}error{% endif %}" type="text" name="{{ index }}" value="{{ Entity.getName() }}" placeholder="Name" />
+					{% if error[index] is defined %}
+						<label class="error text-danger" for="{{ index }}">{{ error[index] }}</label>
+					{% endif %}
+				</div>
+
+				<div class="form-group">
+					{% set index = 'description' %}
+					<label>Description</label>
+					<textarea style="resize: none;" class="form-control {%if error[index] is defined %}error{% endif %}" type="text" name="{{ index }}" placeholder="Description" >{{ Entity.getDescription() }}</textarea>
+					{% if error[index] is defined %}
+						<label class="error text-danger" for="{{ index }}">{{ error[index] }}</label>
+					{% endif %}
+				</div>
+
+				<div class="form-group">
+					<label>User</label>
+					{% set index = 'user_id' %}
+					<select name="{{ index }}" class="form-control">
+						<option value="0">Not selected user</option>
+						{% for userEntity in UserList %}
+							<option value="{{ userEntity.getId() }}"  {% if Entity.getUser() != null and userEntity.getId() == Entity.getUser().getId() %}selected{% endif %}>{{ userEntity.getName() }}</option>
+						{% endfor %}
+					</select>
+					{% if error[index] is defined %}
+						<label class="error text-danger" for="{{ index }}">{{ error[index] }}</label>
+					{% endif %}
+				</div>
+
+				<div class="form-group">
+					<label>Status</label>
+					{% set index = 'status' %}
+					<select name="{{ index }}" class="form-control">
+						<option value="1" {% if Entity.getStatus() == 1 %}selected="selected"{% endif %}>Active</option>
+						<option value="0" {% if Entity.getStatus() == 0 %}selected="selected"{% endif %}>Inactive</option>
+					</select>
+				</div>
+			</div>
+			<!-- /.card-body -->
+
+			<div class="card-footer">
+				{% set saveStayButton = {'button': { 'type' : 'saveStay'} } %}
+				{% include "admin/adminParts/makebutton.twig" with saveStayButton %}
+				{% set saveButton = {'button': { 'type' : 'save'} } %}
+				{% include "admin/adminParts/makebutton.twig" with saveButton %}
+				{% set backButton = {'button': { 'type' : 'back', 'action' : ''} } %}
+				{% include "admin/adminParts/makebutton.twig" with backButton %}
+			</div>
+		</form>
+	</div>
+{% endblock %}

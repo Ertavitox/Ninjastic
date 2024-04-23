@@ -1,0 +1,8 @@
+{% set sortingClass = 'fa-sort' %}
+{% if GET.orderSort is defined and GET.orderSort == 'ASC' and orderingField == GET.orderField %}
+    {% set sortingClass = 'fa-sort-up' %}
+{% endif %}
+{% if GET.orderSort is defined and GET.orderSort == 'DESC' and orderingField == GET.orderField %}
+    {% set sortingClass = 'fa-sort-down' %}
+{% endif %}
+<a href="{% if orderingField %}{{ pathUrl({ 'orderField': orderingField, 'q': query, 'r': request_uri }) }}{% else %}javascript:void(0){%endif%}">{{ text }} {% if orderingField %}<i class="fa {{ sortingClass }} float-right mt-1"></i>{% endif %}</a>
