@@ -4,37 +4,54 @@
 
 ## Telepítési Útmutató
 
-A Ninjastic projekt futtatásához szükséges szoftverek telepítéséhez kövesse az alábbi lépéseket. Az utasítások Ubuntu rendszerre vonatkoznak.
+#### Clone-ozzuk a repot.
+ Ha szeretnék https/SSL-t akkor a Ninjastic/certs mappába tegyünk bele a domainhez tartozó .crt és .key file-t (pl: ninjastic.pro.crt, ninjastic.pro.key), majd módosítsuk a Ninjastic/docker-compose.yaml file-t:
 
-### Előfeltételek
+#### Az nginx-proxy service-ben vegyük ki a ”#”-eket ports, volumes és az environment résznél. Ezzel elérjük hogy a reverse-proxy-nk https-t használjon és felolvassa a cert-eket.  
 
-Győződjön meg arról, hogy rendszere naprakész:
-
-#### PHP 8.2 Telepítése
-
-```bash
-sudo apt update
-sudo apt install software-properties-common
-sudo apt update
-sudo apt install software-properties-common
-sudo add-apt-repository ppa:ondrej/php
-sudo apt update
-sudo apt install php8.2
-sudo apt install php8.2-mysql php8.2-gd
-php -v
+```
+  nginx-proxy:
+    image: jwilder/nginx-proxy:1.5.1
+    ports:
+      - "80:80"
+      #- "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      #- ./certs:/etc/nginx/certs
+    environment:
+      - HTTP_PORT=80
+      #- HTTPS_PORT=443
+      #- VIRTUAL_PROTO=https
 ```
 
-#### CLI Symphony telepítése:
+#### Lépjünk be a Ninjastic mappába és a következő parancsal elindítjuk a database-t, api-t, admin, reverse-proxy-t és a frontendet: 
 
-````bash
-composer install
-curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash
-sudo apt install symfony-cli
-sudo apt install php8.2 php8.2-common php8.2-ctype php8.2-iconv php8.2-simplexml php8.2-tokenizer php8.2-mbstring php8.2-mysql php8.2-intl libnss3-tools php8.2-xdebug
-symfony server:ca:install
-symfony server:start
-```bash
-````
+```sudo docker-compose up –d```
+
+#### Miután a környezet elindult be kell exec-elni az egyik backend containerbe: 
+
+```docker exec -it ninjastic-api bash```
+
+#### Ezután pedig lefuttatjuk a migrációt: 
+
+```php bin/console --no-interaction doctrine:migrations:migrate ```
+
+#### Majd a dirty words commandot ami az adatbázis elmenti a csúnya szavakat: 
+
+```php bin/console app:process-dirty-words-xml ```
+
+#### A host fájlba vegyük fel a következőt: 
+
+```127.0.01 api.ninjastic.pro admin.ninjastic.pro ninjastic.pro```
+
+Windows hosts fájl: ```C:\Windows\System32\drivers\etc\hosts```
+
+Linux hosts fájl: ```/etc/hosts```
+
+#### Ezekután a következő url-eken érhetjük el a weboldalkat: 
+- API: api.ninjastic.pro 
+- Admin:  admin.ninjastic.pro 
+- Frontend: ninjastic.pro 
 
 # További Források
 
