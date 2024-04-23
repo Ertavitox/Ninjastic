@@ -31,7 +31,8 @@
             </span>
           </template>
 
-          <Modal :isModalOpen="isModalOpen" @close="closeEditModal" :emojis="smileys" @insert-emoji="insertEmojiIntoTextarea">
+          <Modal :isModalOpen="isModalOpen" @close="closeEditModal" :emojis="smileys"
+            @insert-emoji="insertEmojiIntoTextarea">
             <!-- Title slot -->
             <template #title>
               <h2 class="mb-4 text-xl font-bold">Update Post</h2>
@@ -55,7 +56,7 @@
               <button @click="saveEditedComment" class="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md">Save
                 Comment</button>
             </template>
-           
+
           </Modal>
           <div
             class="absolute bottom-0 right-0 flex flex-row items-center justify-end gap-1 mx-4 my-4 text-right text-gray-500">
@@ -82,8 +83,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onMounted, ref, provide } from 'vue';
+<script setup lang="ts">
+import { ref, computed, onMounted, provide } from 'vue';
 import moment from 'moment';
 import { UserIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { PencilIcon } from '@heroicons/vue/24/outline';
@@ -95,7 +96,6 @@ import { useAuthStore } from '@/stores/auth.store';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
-
 const smileys = {
   '1': ['😀', '😁', '😂', '😃', '😄', '😅'],
   '2': ['😆', '😇', '😈', '😉', '😊', '😋'],
@@ -103,9 +103,7 @@ const smileys = {
   '4': ['😒', '😓', '😔', '😕', '😖', '😗']
 };
 
-
-
-interface Comments {
+interface Comment {
   id: number;
   user_id: number;
   user_name: string;
@@ -116,102 +114,87 @@ interface Comments {
   editing: boolean;
 }
 
+const auth = useAuthStore();
+const comments = ref<Comment[]>([]);
+const token = computed(() => auth.getToken());
+const baseURL = import.meta.env.VITE_APP_URL;
+const threadId = router.currentRoute.value.params.id;
+const editedComment = ref('');
+const isModalOpen = ref(false);
+let editingCommentId: number | null = null;
 
-export default defineComponent({
-  components: {
-    UserIcon,
-    PencilIcon,
-    TrashIcon,
-    Modal,
-    NewComment,
-  },
-  setup() {
-    const auth = useAuthStore();
-    const comments = ref<Comments[]>([]);
-    const token = computed(() => auth.getToken());
-    const baseURL = import.meta.env.VITE_APP_URL;
-    const threadId = router.currentRoute.value.params.id;
-    const editedComment = ref('');
-    const isModalOpen = ref(false);
-    let editingCommentId: number | null = null;
+const insertEmojiIntoTextarea = (emoji: string) => {
+  editedComment.value += emoji;
+};
 
-    const insertEmojiIntoTextarea = (emoji: string) => {
-    // Insert the emoji into the textarea
-    editedComment.value += emoji; // Use editedComment instead of comment
-     };
-    const fetchComments = async () => {
-      try {
-        await auth.checkAuth();
-        if (!threadId) {
-          console.error('Missing threadId');
-          return;
-        }
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token.value}`
-          }
-        });
-        if (response.ok) {
-          const responseData = await response.json();
-          const commentsNonSorted: Comments[] = responseData.result;
-
-          comments.value = commentsNonSorted
-            .map(comment => ({
-              ...comment,
-              message: decodeUnicode(comment.message)
-            }))
-            .sort((a, b) => b.id - a.id);
-
-          await commentsNonSorted.map(comment => comment.user_id);
-
-        } else if (response.status === 401) {
-          router.push('/login');
-        }
-      } catch (error) {
-        console.error('Error fetching comments:', error);
+const fetchComments = async () => {
+  try {
+    await auth.checkAuth();
+    if (!threadId) {
+      console.error('Missing threadId');
+      return;
+    }
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token.value}`
       }
-    };
+    });
+    if (response.ok) {
+      const responseData = await response.json();
+      const commentsNonSorted: Comment[] = responseData.result;
 
-    const toggleEditing = (comment: Comments) => {
-      comment.editing = !comment.editing;
-    };
-  
-    const closeEditModal = () => {
-      isModalOpen.value = false;
-      editedComment.value = ''; // Clear edited comment when closing modal
-      editingCommentId = null;
-    };
+      comments.value = commentsNonSorted
+        .map(comment => ({
+          ...comment,
+          message: decodeUnicode(comment.message)
+        }))
+        .sort((a, b) => b.id - a.id);
 
-    const openEditModal = async (commentId: number) => {
-      isModalOpen.value = true;
-      editingCommentId = commentId;
-      // Fetch comment details and populate editedComment
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments/${commentId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token.value}`
-          }
-        });
-        if (!response.ok) {
-          throw new Error(`Failed to fetch comment details for comment with ID ${commentId}`);
-        }
-        const commentData = await response.json();
-        const comment = commentData.result;
-        editedComment.value = decodeUnicode(comment.message);
-      } catch (error) {
-        console.error('Error fetching comment details:', error);
+      await commentsNonSorted.map(comment => comment.user_id);
+
+    } else if (response.status === 401) {
+      router.push('/login');
+    }
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+  }
+};
+
+const closeEditModal = () => {
+  isModalOpen.value = false;
+  editedComment.value = '';
+  editingCommentId = null;
+};
+
+const openEditModal = async (commentId: number) => {
+  isModalOpen.value = true;
+  editingCommentId = commentId;
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments/${commentId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token.value}`
       }
-    };
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch comment details for comment with ID ${commentId}`);
+    }
+    const commentData = await response.json();
+    const comment = commentData.result;
+    editedComment.value = decodeUnicode(comment.message);
+  } catch (error) {
+    console.error('Error fetching comment details:', error);
+  }
+};
 
-    const saveEditedComment = async () => {
-      if (editingCommentId === null) return; // Safety check
-      try {
+const saveEditedComment = async () => {
+  if (editingCommentId === null) return; 
+  try {
 
-        const commentWithEscapedEmoji = (editedComment.value as string) ?
+    const commentWithEscapedEmoji = (editedComment.value as string) ?
       (editedComment.value as string).replace(/[\u{1F600}-\u{1F64F}]/gu, (match: string | undefined) => {
         if (match) {
           return `\\u{${match.codePointAt(0)!.toString(16)}}`;
@@ -220,100 +203,85 @@ export default defineComponent({
       }) :
       '';
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments/${editingCommentId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token.value}`,
-          },
-          body: JSON.stringify({ original: commentWithEscapedEmoji }),
-        });
-        const responseData = await response.json();
-        if (response.ok) {
-          toast.success(responseData.message, {
-            position: toast.POSITION.BOTTOM_CENTER,
-            autoClose: 3000,
-          });
-          // Clear editedComment and close modal after saving
-          editedComment.value = '';
-          isModalOpen.value = false;
-          editingCommentId = null;
-          await fetchComments();
-        } else {
-          toast.error(responseData.message, {
-            position: toast.POSITION.BOTTOM_CENTER,
-            autoClose: 3000,
-          });
-        }
-      } catch (error) {
-        console.error('Error updating comment: ', error);
-      }
-    };
-
-    const deleteComment = async (id: number) => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token.value}`
-          }
-        });
-        const responseData = await response.json();
-        if (response.ok) {
-          toast.success(responseData.message, {
-            position: toast.POSITION.BOTTOM_CENTER,
-            autoClose: 3000
-          });
-          await fetchComments();
-        } else {
-          toast.error(responseData.message, {
-            position: toast.POSITION.BOTTOM_CENTER,
-            autoClose: 3000
-          })
-        }
-      } catch (error) {
-        console.error('Something went wrong. Error: ', error);
-      }
-    };
-
-    provide('fetchComments', fetchComments);
-
-    // Mivel a szerver nem tudja ezt feldolgozni, így unicodeba dekódoljuk az emojikat...
-    const decodeUnicode = (text: string): string => {
-      return text.replace(/\\u\{([0-9a-fA-F]+)\}/gu, (match, code) => {
-        return String.fromCodePoint(parseInt(code, 16));
-      });
-    };
-
-    const getRelativeTime = (time: string) => {
-      return moment(time).fromNow();
-    }
-
-    onMounted(() => {
-      fetchComments();
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments/${editingCommentId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token.value}`,
+      },
+      body: JSON.stringify({ original: commentWithEscapedEmoji }),
     });
-
-    const userData = auth.getUserData();
-    const userId = userData?.user_id;
-
-    return {
-      token,
-      threadId,
-      comments,
-      baseURL,
-      userId,
-      smileys,
-      toggleEditing,
-      deleteComment,
-      getRelativeTime,
-      insertEmojiIntoTextarea,
-      editedComment,
-      openEditModal,
-      closeEditModal,
-      saveEditedComment,
-      isModalOpen
-    };
+    const responseData = await response.json();
+    if (response.ok) {
+      toast.success(responseData.message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        autoClose: 3000,
+        theme: 'dark'
+      });
+      // Clear editedComment and close modal after saving
+      editedComment.value = '';
+      isModalOpen.value = false;
+      editingCommentId = null;
+      await fetchComments();
+    } else {
+      toast.error(responseData.message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        autoClose: 3000,
+        theme: 'dark'
+      });
+    }
+  } catch (error) {
+    console.error('Error updating comment: ', error);
   }
+};
+
+const deleteComment = async (id: number) => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token.value}`
+      }
+    });
+    const responseData = await response.json();
+    if (response.ok) {
+      toast.success(responseData.message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        autoClose: 3000,
+        theme: 'dark'
+      });
+      await fetchComments();
+    } else {
+      toast.error(responseData.message, {
+        position: toast.POSITION.BOTTOM_CENTER,
+        autoClose: 3000,
+        theme: 'dark'
+      })
+    }
+  } catch (error) {
+    console.error('Something went wrong. Error: ', error);
+  }
+};
+
+provide('fetchComments', fetchComments);
+
+// Mivel a szerver nem tudja ezt feldolgozni, így unicodeba dekódoljuk az emojikat...
+const decodeUnicode = (text: string): string => {
+  return text.replace(/\\u\{([0-9a-fA-F]+)\}/gu, (match, code) => {
+    return String.fromCodePoint(parseInt(code, 16));
+  });
+};
+
+const getRelativeTime = (time: string) => {
+  return moment(time).fromNow();
+}
+
+onMounted(() => {
+  fetchComments();
 });
+
+const userData = auth.getUserData();
+const userId = userData?.user_id;
+
 </script>

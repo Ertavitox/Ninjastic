@@ -41,7 +41,6 @@ services:
       - nginx-proxy
     environment:
       - VIRTUAL_HOST=ninjastic.pro
-      - VIRTUAL_PORT=80
   api:
     build:
       context: .

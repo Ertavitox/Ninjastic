@@ -63,9 +63,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore();
-  console.log(to.meta.requiresAuth)
   if (to.meta.requiresAuth && !auth.checkAuth()) {
-    console.log(to.meta.requiresAuth)
     auth.returnUrl = to.fullPath
     next('/login')
   } else {
@@ -85,7 +83,5 @@ router.beforeEach((to, from, next) => {
   }
   
 })
-
-
 
 export default router
