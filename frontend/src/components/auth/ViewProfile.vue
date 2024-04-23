@@ -78,8 +78,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const auth = useAuthStore();
 const token = computed(() => auth.getToken());
 
-const username = ref(auth.userData?.username ?? '');
-const name = ref(auth.userData?.name ?? '');
+
 
 export default defineComponent({
   components: {
@@ -95,7 +94,8 @@ export default defineComponent({
       isModalOpen.value = !isModalOpen.value;
     };
 
-
+    const username = ref(auth.userData?.username ?? '');
+    const name = ref(auth.userData?.name ?? '');
     const updateUserProfile = async () => {
       try {
         const userId = auth.userData?.user_id;

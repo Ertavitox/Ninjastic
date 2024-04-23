@@ -82,7 +82,7 @@ class CommentsController extends AbstractController
         $comment = $serializer->deserialize($request->getContent(), Comment::class, 'json');
         $comment->setUser($this->getUser());
         $comment->setTopic($topic);
-        $comment->setMessage($this->wordCensor->censorWords($comment->getOriginal()));
+        $comment->setMessage($this->wordCensor->censorWords($comment->getOriginal() ?? ""));
 
         $errors = $validator->validate($comment);
         if (count($errors) > 0) {
