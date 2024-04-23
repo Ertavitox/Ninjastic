@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /home/ninja/Ninjastic/backend/app/src</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="_css/bootstrap.min.css?v=9.2.31" rel="stylesheet" type="text/css">
+  <link href="_css/nv.d3.min.css?v=9.2.31" rel="stylesheet" type="text/css">
+  <link href="_css/style.css?v=9.2.31" rel="stylesheet" type="text/css">
+  <link href="_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="index.html">/home/ninja/Ninjastic/backend/app/src</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Command/ProcessDirtyWordsXmlCommand.php.html#10">App\Command\ProcessDirtyWordsXmlCommand</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#23">App\Controller\CommentsController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/SiteController.php.html#8">App\Controller\SiteController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#22">App\Controller\TopicsController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#19">App\Controller\UsersController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="DataFixtures/AppFixtures.php.html#12">App\DataFixtures\AppFixtures</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Dto/RequestDto.php.html#7">App\Dto\RequestDto</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventListener/JWTCreatedListener.php.html#10">App\EventListener\JWTCreatedListener</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/AdminRepository.php.html#17">App\Repository\AdminRepository</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/CommentRepository.php.html#19">App\Repository\CommentRepository</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/DirtyWordRepository.php.html#17">App\Repository\DirtyWordRepository</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/TopicRepository.php.html#19">App\Repository\TopicRepository</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/UserRepository.php.html#17">App\Repository\UserRepository</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Security/Hasher/CustomPasswordHasher.php.html#9">App\Security\Hasher\CustomPasswordHasher</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Validator/Comments/CommentsPaginationValidator.php.html#7">App\Validator\Comments\CommentsPaginationValidator</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Validator/PaginationValidator.php.html#7">App\Validator\PaginationValidator</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Twig/AppExtension.php.html#14">App\Twig\AppExtension</a></td><td class="text-right">33%</td></tr>
+       <tr><td><a href="Helper/AdminHtmlDetails.php.html#7">App\Helper\AdminHtmlDetails</a></td><td class="text-right">45%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#14">App\Helper\Validator</a></td><td class="text-right">54%</td></tr>
+       <tr><td><a href="Helper/ValidatorEConvMessage.php.html#9">App\Helper\ValidatorEConvMessage</a></td><td class="text-right">70%</td></tr>
+       <tr><td><a href="Form/CommentFormType.php.html#13">App\Form\CommentFormType</a></td><td class="text-right">79%</td></tr>
+       <tr><td><a href="Helper/FlashBag.php.html#5">App\Helper\FlashBag</a></td><td class="text-right">80%</td></tr>
+       <tr><td><a href="Form/TopicFormType.php.html#11">App\Form\TopicFormType</a></td><td class="text-right">82%</td></tr>
+       <tr><td><a href="Entity/Topic.php.html#11">App\Entity\Topic</a></td><td class="text-right">87%</td></tr>
+       <tr><td><a href="Entity/User.php.html#14">App\Entity\User</a></td><td class="text-right">87%</td></tr>
+       <tr><td><a href="Controller/Admin/LoginController.php.html#13">App\Controller\Admin\LoginController</a></td><td class="text-right">88%</td></tr>
+       <tr><td><a href="Form/DirtyWordFormType.php.html#10">App\Form\DirtyWordFormType</a></td><td class="text-right">89%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Helper/Validator.php.html#14">App\Helper\Validator</a></td><td class="text-right">1582</td></tr>
+       <tr><td><a href="Twig/AppExtension.php.html#14">App\Twig\AppExtension</a></td><td class="text-right">539</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#23">App\Controller\CommentsController</a></td><td class="text-right">272</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#22">App\Controller\TopicsController</a></td><td class="text-right">156</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#19">App\Controller\UsersController</a></td><td class="text-right">156</td></tr>
+       <tr><td><a href="Repository/CommentRepository.php.html#19">App\Repository\CommentRepository</a></td><td class="text-right">72</td></tr>
+       <tr><td><a href="Repository/TopicRepository.php.html#19">App\Repository\TopicRepository</a></td><td class="text-right">72</td></tr>
+       <tr><td><a href="Repository/AdminRepository.php.html#17">App\Repository\AdminRepository</a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="Repository/UserRepository.php.html#17">App\Repository\UserRepository</a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="Security/Hasher/CustomPasswordHasher.php.html#9">App\Security\Hasher\CustomPasswordHasher</a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="Entity/User.php.html#14">App\Entity\User</a></td><td class="text-right">39</td></tr>
+       <tr><td><a href="Entity/Topic.php.html#11">App\Entity\Topic</a></td><td class="text-right">27</td></tr>
+       <tr><td><a href="Helper/AdminHtmlDetails.php.html#7">App\Helper\AdminHtmlDetails</a></td><td class="text-right">22</td></tr>
+       <tr><td><a href="Repository/DirtyWordRepository.php.html#17">App\Repository\DirtyWordRepository</a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="Form/CommentFormType.php.html#13">App\Form\CommentFormType</a></td><td class="text-right">19</td></tr>
+       <tr><td><a href="EventListener/JWTCreatedListener.php.html#10">App\EventListener\JWTCreatedListener</a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Form/TopicFormType.php.html#11">App\Form\TopicFormType</a></td><td class="text-right">11</td></tr>
+       <tr><td><a href="Helper/ValidatorEConvMessage.php.html#9">App\Helper\ValidatorEConvMessage</a></td><td class="text-right">9</td></tr>
+       <tr><td><a href="Helper/FlashBag.php.html#5">App\Helper\FlashBag</a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controller/Admin/LoginController.php.html#13">App\Controller\Admin\LoginController</a></td><td class="text-right">5</td></tr>
+       <tr><td><a href="Form/DirtyWordFormType.php.html#10">App\Form\DirtyWordFormType</a></td><td class="text-right">4</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Command/ProcessDirtyWordsXmlCommand.php.html#14"><abbr title="App\Command\ProcessDirtyWordsXmlCommand::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Command/ProcessDirtyWordsXmlCommand.php.html#20"><abbr title="App\Command\ProcessDirtyWordsXmlCommand::configure">configure</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Command/ProcessDirtyWordsXmlCommand.php.html#27"><abbr title="App\Command\ProcessDirtyWordsXmlCommand::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/Admin/LoginController.php.html#40"><abbr title="App\Controller\Admin\LoginController::logout">logout</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#26"><abbr title="App\Controller\CommentsController::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#34"><abbr title="App\Controller\CommentsController::index">index</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#59"><abbr title="App\Controller\CommentsController::new">new</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#110"><abbr title="App\Controller\CommentsController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#161"><abbr title="App\Controller\CommentsController::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#232"><abbr title="App\Controller\CommentsController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/SiteController.php.html#11"><abbr title="App\Controller\SiteController::index">index</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#26"><abbr title="App\Controller\TopicsController::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#32"><abbr title="App\Controller\TopicsController::index">index</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#56"><abbr title="App\Controller\TopicsController::new">new</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#90"><abbr title="App\Controller\TopicsController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#124"><abbr title="App\Controller\TopicsController::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#177"><abbr title="App\Controller\TopicsController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#21"><abbr title="App\Controller\UsersController::new">new</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#69"><abbr title="App\Controller\UsersController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#91"><abbr title="App\Controller\UsersController::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#130"><abbr title="App\Controller\UsersController::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="DataFixtures/AppFixtures.php.html#14"><abbr title="App\DataFixtures\AppFixtures::load">load</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Dto/RequestDto.php.html#14"><abbr title="App\Dto\RequestDto::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/Comment.php.html#159"><abbr title="App\Entity\Comment::setCreatedAtValue">setCreatedAtValue</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/Comment.php.html#167"><abbr title="App\Entity\Comment::setUpdatedAtValue">setUpdatedAtValue</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/Topic.php.html#105"><abbr title="App\Entity\Topic::getStatus">getStatus</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/Topic.php.html#146"><abbr title="App\Entity\Topic::setCreatedAtValue">setCreatedAtValue</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/Topic.php.html#154"><abbr title="App\Entity\Topic::setUpdatedAtValue">setUpdatedAtValue</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/User.php.html#118"><abbr title="App\Entity\User::getStatus">getStatus</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/User.php.html#152"><abbr title="App\Entity\User::setCreatedAtValue">setCreatedAtValue</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/User.php.html#160"><abbr title="App\Entity\User::setUpdatedAtValue">setUpdatedAtValue</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/User.php.html#273"><abbr title="App\Entity\User::eraseCredentials">eraseCredentials</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entity/User.php.html#284"><abbr title="App\Entity\User::getUserIdentifier">getUserIdentifier</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventListener/JWTCreatedListener.php.html#20"><abbr title="App\EventListener\JWTCreatedListener::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventListener/JWTCreatedListener.php.html#30"><abbr title="App\EventListener\JWTCreatedListener::onJWTCreated">onJWTCreated</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/AdminHtmlDetails.php.html#35"><abbr title="App\Helper\AdminHtmlDetails::setPagerData">setPagerData</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/AdminHtmlDetails.php.html#45"><abbr title="App\Helper\AdminHtmlDetails::adminPager">adminPager</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/FlashBag.php.html#28"><abbr title="App\Helper\FlashBag::getType">getType</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/FlashBag.php.html#33"><abbr title="App\Helper\FlashBag::getInstance">getInstance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#45"><abbr title="App\Helper\Validator::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#85"><abbr title="App\Helper\Validator::equalsPassword">equalsPassword</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#96"><abbr title="App\Helper\Validator::taxnumber">taxnumber</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#125"><abbr title="App\Helper\Validator::removeRule">removeRule</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#141"><abbr title="App\Helper\Validator::removeFilter">removeFilter</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#184"><abbr title="App\Helper\Validator::removeDefaultRule">removeDefaultRule</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#200"><abbr title="App\Helper\Validator::removeDefaultFilter">removeDefaultFilter</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#236"><abbr title="App\Helper\Validator::addslashes">addslashes</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#316"><abbr title="App\Helper\Validator::isEmpty">isEmpty</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#352"><abbr title="App\Helper\Validator::exactLength">exactLength</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#376"><abbr title="App\Helper\Validator::regex">regex</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#387"><abbr title="App\Helper\Validator::msn">msn</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#561"><abbr title="App\Helper\Validator::alphaDash">alphaDash</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#596"><abbr title="App\Helper\Validator::range">range</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#607"><abbr title="App\Helper\Validator::color">color</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#731"><abbr title="App\Helper\Validator::isDouble">isDouble</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#749"><abbr title="App\Helper\Validator::isInt">isInt</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#769"><abbr title="App\Helper\Validator::isDate">isDate</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#782"><abbr title="App\Helper\Validator::ip">ip</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#863"><abbr title="App\Helper\Validator::putDefaultError">putDefaultError</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#944"><abbr title="App\Helper\Validator::__call">__call</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/ValidatorEConvMessage.php.html#76"><abbr title="App\Helper\ValidatorEConvMessage::addNewErrorMessages">addNewErrorMessages</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/AdminRepository.php.html#19"><abbr title="App\Repository\AdminRepository::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/AdminRepository.php.html#24"><abbr title="App\Repository\AdminRepository::countAll">countAll</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/AdminRepository.php.html#32"><abbr title="App\Repository\AdminRepository::login">login</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/AdminRepository.php.html#46"><abbr title="App\Repository\AdminRepository::adminListing">adminListing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/CommentRepository.php.html#21"><abbr title="App\Repository\CommentRepository::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/CommentRepository.php.html#26"><abbr title="App\Repository\CommentRepository::countAll">countAll</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/CommentRepository.php.html#34"><abbr title="App\Repository\CommentRepository::paginate">paginate</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/CommentRepository.php.html#61"><abbr title="App\Repository\CommentRepository::adminListing">adminListing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/DirtyWordRepository.php.html#19"><abbr title="App\Repository\DirtyWordRepository::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/DirtyWordRepository.php.html#24"><abbr title="App\Repository\DirtyWordRepository::adminListing">adminListing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/TopicRepository.php.html#21"><abbr title="App\Repository\TopicRepository::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/TopicRepository.php.html#26"><abbr title="App\Repository\TopicRepository::countAll">countAll</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/TopicRepository.php.html#34"><abbr title="App\Repository\TopicRepository::getTopicById">getTopicById</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/TopicRepository.php.html#41"><abbr title="App\Repository\TopicRepository::paginate">paginate</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/TopicRepository.php.html#59"><abbr title="App\Repository\TopicRepository::adminListing">adminListing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/UserRepository.php.html#19"><abbr title="App\Repository\UserRepository::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/UserRepository.php.html#24"><abbr title="App\Repository\UserRepository::countAll">countAll</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/UserRepository.php.html#32"><abbr title="App\Repository\UserRepository::getUserById">getUserById</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Repository/UserRepository.php.html#39"><abbr title="App\Repository\UserRepository::adminListing">adminListing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Security/Hasher/CustomPasswordHasher.php.html#15"><abbr title="App\Security\Hasher\CustomPasswordHasher::hash">hash</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Security/Hasher/CustomPasswordHasher.php.html#24"><abbr title="App\Security\Hasher\CustomPasswordHasher::verify">verify</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Security/Hasher/CustomPasswordHasher.php.html#35"><abbr title="App\Security\Hasher\CustomPasswordHasher::needsRehash">needsRehash</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Twig/AppExtension.php.html#23"><abbr title="App\Twig\AppExtension::getName">getName</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Twig/AppExtension.php.html#28"><abbr title="App\Twig\AppExtension::getGlobals">getGlobals</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Twig/AppExtension.php.html#73"><abbr title="App\Twig\AppExtension::isNumeric">isNumeric</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Twig/AppExtension.php.html#95"><abbr title="App\Twig\AppExtension::adminPager">adminPager</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Validator/Comments/CommentsPaginationValidator.php.html#21"><abbr title="App\Validator\Comments\CommentsPaginationValidator::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Validator/PaginationValidator.php.html#18"><abbr title="App\Validator\PaginationValidator::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#400"><abbr title="App\Helper\Validator::email">email</abbr></a></td><td class="text-right">31%</td></tr>
+       <tr><td><a href="Twig/AppExtension.php.html#118"><abbr title="App\Twig\AppExtension::pathUrl">pathUrl</abbr></a></td><td class="text-right">32%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#914"><abbr title="App\Helper\Validator::methodCaller">methodCaller</abbr></a></td><td class="text-right">36%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#254"><abbr title="App\Helper\Validator::stripTags">stripTags</abbr></a></td><td class="text-right">40%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#270"><abbr title="App\Helper\Validator::trim">trim</abbr></a></td><td class="text-right">40%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#286"><abbr title="App\Helper\Validator::notEmpty">notEmpty</abbr></a></td><td class="text-right">66%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#510"><abbr title="App\Helper\Validator::date">date</abbr></a></td><td class="text-right">66%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#545"><abbr title="App\Helper\Validator::alphaNumeric">alphaNumeric</abbr></a></td><td class="text-right">66%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#579"><abbr title="App\Helper\Validator::number">number</abbr></a></td><td class="text-right">66%</td></tr>
+       <tr><td><a href="Form/CommentFormType.php.html#22"><abbr title="App\Form\CommentFormType::createUpdate">createUpdate</abbr></a></td><td class="text-right">67%</td></tr>
+       <tr><td><a href="Entity/Topic.php.html#110"><abbr title="App\Entity\Topic::setStatus">setStatus</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="Entity/User.php.html#123"><abbr title="App\Entity\User::setStatus">setStatus</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="Form/TopicFormType.php.html#13"><abbr title="App\Form\TopicFormType::createUpdate">createUpdate</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#527"><abbr title="App\Helper\Validator::alpha">alpha</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#619"><abbr title="App\Helper\Validator::creditCard">creditCard</abbr></a></td><td class="text-right">76%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#431"><abbr title="App\Helper\Validator::url">url</abbr></a></td><td class="text-right">76%</td></tr>
+       <tr><td><a href="Helper/ValidatorEConvMessage.php.html#42"><abbr title="App\Helper\ValidatorEConvMessage::replaceErrorToMessage">replaceErrorToMessage</abbr></a></td><td class="text-right">84%</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#818"><abbr title="App\Helper\Validator::validationChecker">validationChecker</abbr></a></td><td class="text-right">85%</td></tr>
+       <tr><td><a href="Form/DirtyWordFormType.php.html#12"><abbr title="App\Form\DirtyWordFormType::createUpdate">createUpdate</abbr></a></td><td class="text-right">87%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Twig/AppExtension.php.html#118"><abbr title="App\Twig\AppExtension::pathUrl">pathUrl</abbr></a></td><td class="text-right">272</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#96"><abbr title="App\Helper\Validator::taxnumber">taxnumber</abbr></a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="Repository/CommentRepository.php.html#61"><abbr title="App\Repository\CommentRepository::adminListing">adminListing</abbr></a></td><td class="text-right">30</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#161"><abbr title="App\Controller\CommentsController::edit">edit</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#21"><abbr title="App\Controller\UsersController::new">new</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#91"><abbr title="App\Controller\UsersController::edit">edit</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="Repository/TopicRepository.php.html#59"><abbr title="App\Repository\TopicRepository::adminListing">adminListing</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#818"><abbr title="App\Helper\Validator::validationChecker">validationChecker</abbr></a></td><td class="text-right">13</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#59"><abbr title="App\Controller\CommentsController::new">new</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#110"><abbr title="App\Controller\CommentsController::show">show</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#232"><abbr title="App\Controller\CommentsController::delete">delete</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#124"><abbr title="App\Controller\TopicsController::edit">edit</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#236"><abbr title="App\Helper\Validator::addslashes">addslashes</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#731"><abbr title="App\Helper\Validator::isDouble">isDouble</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#749"><abbr title="App\Helper\Validator::isInt">isInt</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Repository/AdminRepository.php.html#46"><abbr title="App\Repository\AdminRepository::adminListing">adminListing</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Repository/DirtyWordRepository.php.html#24"><abbr title="App\Repository\DirtyWordRepository::adminListing">adminListing</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Repository/UserRepository.php.html#39"><abbr title="App\Repository\UserRepository::adminListing">adminListing</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Security/Hasher/CustomPasswordHasher.php.html#24"><abbr title="App\Security\Hasher\CustomPasswordHasher::verify">verify</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="Form/CommentFormType.php.html#22"><abbr title="App\Form\CommentFormType::createUpdate">createUpdate</abbr></a></td><td class="text-right">11</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#619"><abbr title="App\Helper\Validator::creditCard">creditCard</abbr></a></td><td class="text-right">11</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#400"><abbr title="App\Helper\Validator::email">email</abbr></a></td><td class="text-right">9</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#914"><abbr title="App\Helper\Validator::methodCaller">methodCaller</abbr></a></td><td class="text-right">8</td></tr>
+       <tr><td><a href="Form/TopicFormType.php.html#13"><abbr title="App\Form\TopicFormType::createUpdate">createUpdate</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controller/CommentsController.php.html#34"><abbr title="App\Controller\CommentsController::index">index</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#32"><abbr title="App\Controller\TopicsController::index">index</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#56"><abbr title="App\Controller\TopicsController::new">new</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#90"><abbr title="App\Controller\TopicsController::show">show</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controller/TopicsController.php.html#177"><abbr title="App\Controller\TopicsController::delete">delete</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#69"><abbr title="App\Controller\UsersController::show">show</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Controller/UsersController.php.html#130"><abbr title="App\Controller\UsersController::delete">delete</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="EventListener/JWTCreatedListener.php.html#30"><abbr title="App\EventListener\JWTCreatedListener::onJWTCreated">onJWTCreated</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#125"><abbr title="App\Helper\Validator::removeRule">removeRule</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#141"><abbr title="App\Helper\Validator::removeFilter">removeFilter</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#184"><abbr title="App\Helper\Validator::removeDefaultRule">removeDefaultRule</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#200"><abbr title="App\Helper\Validator::removeDefaultFilter">removeDefaultFilter</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#561"><abbr title="App\Helper\Validator::alphaDash">alphaDash</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#596"><abbr title="App\Helper\Validator::range">range</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#769"><abbr title="App\Helper\Validator::isDate">isDate</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#782"><abbr title="App\Helper\Validator::ip">ip</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/ValidatorEConvMessage.php.html#76"><abbr title="App\Helper\ValidatorEConvMessage::addNewErrorMessages">addNewErrorMessages</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Repository/AdminRepository.php.html#32"><abbr title="App\Repository\AdminRepository::login">login</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Security/Hasher/CustomPasswordHasher.php.html#15"><abbr title="App\Security\Hasher\CustomPasswordHasher::hash">hash</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Helper/ValidatorEConvMessage.php.html#42"><abbr title="App\Helper\ValidatorEConvMessage::replaceErrorToMessage">replaceErrorToMessage</abbr></a></td><td class="text-right">5</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#254"><abbr title="App\Helper\Validator::stripTags">stripTags</abbr></a></td><td class="text-right">4</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#270"><abbr title="App\Helper\Validator::trim">trim</abbr></a></td><td class="text-right">4</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#579"><abbr title="App\Helper\Validator::number">number</abbr></a></td><td class="text-right">4</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#431"><abbr title="App\Helper\Validator::url">url</abbr></a></td><td class="text-right">4</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#286"><abbr title="App\Helper\Validator::notEmpty">notEmpty</abbr></a></td><td class="text-right">3</td></tr>
+       <tr><td><a href="Form/DirtyWordFormType.php.html#12"><abbr title="App\Form\DirtyWordFormType::createUpdate">createUpdate</abbr></a></td><td class="text-right">3</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#510"><abbr title="App\Helper\Validator::date">date</abbr></a></td><td class="text-right">2</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#545"><abbr title="App\Helper\Validator::alphaNumeric">alphaNumeric</abbr></a></td><td class="text-right">2</td></tr>
+       <tr><td><a href="Entity/Topic.php.html#110"><abbr title="App\Entity\Topic::setStatus">setStatus</abbr></a></td><td class="text-right">2</td></tr>
+       <tr><td><a href="Entity/User.php.html#123"><abbr title="App\Entity\User::setStatus">setStatus</abbr></a></td><td class="text-right">2</td></tr>
+       <tr><td><a href="Helper/Validator.php.html#527"><abbr title="App\Helper\Validator::alpha">alpha</abbr></a></td><td class="text-right">2</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 9.2.31</a> using <a href="https://secure.php.net/" target="_top">PHP 8.2.17</a> and <a href="https://phpunit.de/">PHPUnit 9.6.17</a> at Tue Apr 23 19:45:20 UTC 2024.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="_js/jquery.min.js?v=9.2.31" type="text/javascript"></script>
+  <script src="_js/d3.min.js?v=9.2.31" type="text/javascript"></script>
+  <script src="_js/nv.d3.min.js?v=9.2.31" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([16,0,0,0,1,1,1,0,2,6,3,14], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([89,0,0,0,3,2,0,5,6,3,4,159], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[0,3,"<a href=\"Command\/ProcessDirtyWordsXmlCommand.php.html#10\">App\\Command\\ProcessDirtyWordsXmlCommand<\/a>"],[100,4,"<a href=\"Controller\/Admin\/AdminController.php.html#10\">App\\Controller\\Admin\\AdminController<\/a>"],[100,21,"<a href=\"Controller\/Admin\/AdminsController.php.html#19\">App\\Controller\\Admin\\AdminsController<\/a>"],[100,21,"<a href=\"Controller\/Admin\/CommentsController.php.html#22\">App\\Controller\\Admin\\CommentsController<\/a>"],[100,2,"<a href=\"Controller\/Admin\/DashboardController.php.html#14\">App\\Controller\\Admin\\DashboardController<\/a>"],[100,21,"<a href=\"Controller\/Admin\/DirtyWordsController.php.html#20\">App\\Controller\\Admin\\DirtyWordsController<\/a>"],[88.23529411764706,5,"<a href=\"Controller\/Admin\/LoginController.php.html#13\">App\\Controller\\Admin\\LoginController<\/a>"],[100,21,"<a href=\"Controller\/Admin\/TopicsController.php.html#20\">App\\Controller\\Admin\\TopicsController<\/a>"],[100,21,"<a href=\"Controller\/Admin\/UsersController.php.html#19\">App\\Controller\\Admin\\UsersController<\/a>"],[0,16,"<a href=\"Controller\/CommentsController.php.html#23\">App\\Controller\\CommentsController<\/a>"],[0,1,"<a href=\"Controller\/SiteController.php.html#8\">App\\Controller\\SiteController<\/a>"],[0,12,"<a href=\"Controller\/TopicsController.php.html#22\">App\\Controller\\TopicsController<\/a>"],[0,12,"<a href=\"Controller\/UsersController.php.html#19\">App\\Controller\\UsersController<\/a>"],[0,1,"<a href=\"DataFixtures\/AppFixtures.php.html#12\">App\\DataFixtures\\AppFixtures<\/a>"],[0,1,"<a href=\"Dto\/RequestDto.php.html#7\">App\\Dto\\RequestDto<\/a>"],[100,20,"<a href=\"Entity\/Admin.php.html#9\">App\\Entity\\Admin<\/a>"],[90.625,22,"<a href=\"Entity\/Comment.php.html#11\">App\\Entity\\Comment<\/a>"],[100,8,"<a href=\"Entity\/DirtyWord.php.html#8\">App\\Entity\\DirtyWord<\/a>"],[100,0,"<a href=\"Entity\/RefreshToken.php.html#12\">App\\Entity\\RefreshToken<\/a>"],[87.17948717948718,26,"<a href=\"Entity\/Topic.php.html#11\">App\\Entity\\Topic<\/a>"],[87.93103448275862,37,"<a href=\"Entity\/User.php.html#14\">App\\Entity\\User<\/a>"],[0,3,"<a href=\"EventListener\/JWTCreatedListener.php.html#10\">App\\EventListener\\JWTCreatedListener<\/a>"],[94.11764705882352,14,"<a href=\"Form\/AdminFormType.php.html#11\">App\\Form\\AdminFormType<\/a>"],[79.59183673469387,17,"<a href=\"Form\/CommentFormType.php.html#13\">App\\Form\\CommentFormType<\/a>"],[89.47368421052632,4,"<a href=\"Form\/DirtyWordFormType.php.html#10\">App\\Form\\DirtyWordFormType<\/a>"],[82.85714285714286,11,"<a href=\"Form\/TopicFormType.php.html#11\">App\\Form\\TopicFormType<\/a>"],[94.11764705882352,14,"<a href=\"Form\/UserFormType.php.html#11\">App\\Form\\UserFormType<\/a>"],[45.45454545454545,9,"<a href=\"Helper\/AdminHtmlDetails.php.html#7\">App\\Helper\\AdminHtmlDetails<\/a>"],[80,6,"<a href=\"Helper\/FlashBag.php.html#5\">App\\Helper\\FlashBag<\/a>"],[100,3,"<a href=\"Helper\/ValidationErrorHelper.php.html#7\">App\\Helper\\ValidationErrorHelper<\/a>"],[54.132231404958674,123,"<a href=\"Helper\/Validator.php.html#14\">App\\Helper\\Validator<\/a>"],[70.58823529411765,8,"<a href=\"Helper\/ValidatorEConvMessage.php.html#9\">App\\Helper\\ValidatorEConvMessage<\/a>"],[100,0,"<a href=\"Kernel.php.html#8\">App\\Kernel<\/a>"],[0,7,"<a href=\"Repository\/AdminRepository.php.html#17\">App\\Repository\\AdminRepository<\/a>"],[0,8,"<a href=\"Repository\/CommentRepository.php.html#19\">App\\Repository\\CommentRepository<\/a>"],[0,4,"<a href=\"Repository\/DirtyWordRepository.php.html#17\">App\\Repository\\DirtyWordRepository<\/a>"],[0,8,"<a href=\"Repository\/TopicRepository.php.html#19\">App\\Repository\\TopicRepository<\/a>"],[0,6,"<a href=\"Repository\/UserRepository.php.html#17\">App\\Repository\\UserRepository<\/a>"],[0,6,"<a href=\"Security\/Hasher\/CustomPasswordHasher.php.html#9\">App\\Security\\Hasher\\CustomPasswordHasher<\/a>"],[100,4,"<a href=\"Service\/WordCensor.php.html#9\">App\\Service\\WordCensor<\/a>"],[100,3,"<a href=\"Service\/XmlProcessor.php.html#9\">App\\Service\\XmlProcessor<\/a>"],[33.33333333333333,41,"<a href=\"Twig\/AppExtension.php.html#14\">App\\Twig\\AppExtension<\/a>"],[0,1,"<a href=\"Validator\/Comments\/CommentsPaginationValidator.php.html#7\">App\\Validator\\Comments\\CommentsPaginationValidator<\/a>"],[0,1,"<a href=\"Validator\/PaginationValidator.php.html#7\">App\\Validator\\PaginationValidator<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[0,1,"<a href=\"Command\/ProcessDirtyWordsXmlCommand.php.html#14\">App\\Command\\ProcessDirtyWordsXmlCommand::__construct<\/a>"],[0,1,"<a href=\"Command\/ProcessDirtyWordsXmlCommand.php.html#20\">App\\Command\\ProcessDirtyWordsXmlCommand::configure<\/a>"],[0,1,"<a href=\"Command\/ProcessDirtyWordsXmlCommand.php.html#27\">App\\Command\\ProcessDirtyWordsXmlCommand::execute<\/a>"],[100,1,"<a href=\"Controller\/Admin\/AdminController.php.html#17\">App\\Controller\\Admin\\AdminController::__construct<\/a>"],[100,1,"<a href=\"Controller\/Admin\/AdminController.php.html#22\">App\\Controller\\Admin\\AdminController::isAdmin<\/a>"],[100,1,"<a href=\"Controller\/Admin\/AdminController.php.html#28\">App\\Controller\\Admin\\AdminController::setAdminHtmlDetails<\/a>"],[100,1,"<a href=\"Controller\/Admin\/AdminController.php.html#33\">App\\Controller\\Admin\\AdminController::setFormType<\/a>"],[100,1,"<a href=\"Controller\/Admin\/AdminsController.php.html#22\">App\\Controller\\Admin\\AdminsController::__construct<\/a>"],[100,2,"<a href=\"Controller\/Admin\/AdminsController.php.html#30\">App\\Controller\\Admin\\AdminsController::index<\/a>"],[100,7,"<a href=\"Controller\/Admin\/AdminsController.php.html#57\">App\\Controller\\Admin\\AdminsController::create<\/a>"],[100,6,"<a href=\"Controller\/Admin\/AdminsController.php.html#91\">App\\Controller\\Admin\\AdminsController::edit<\/a>"],[100,5,"<a href=\"Controller\/Admin\/AdminsController.php.html#125\">App\\Controller\\Admin\\AdminsController::delete<\/a>"],[100,1,"<a href=\"Controller\/Admin\/CommentsController.php.html#25\">App\\Controller\\Admin\\CommentsController::__construct<\/a>"],[100,2,"<a href=\"Controller\/Admin\/CommentsController.php.html#33\">App\\Controller\\Admin\\CommentsController::index<\/a>"],[100,7,"<a href=\"Controller\/Admin\/CommentsController.php.html#65\">App\\Controller\\Admin\\CommentsController::create<\/a>"],[100,6,"<a href=\"Controller\/Admin\/CommentsController.php.html#104\">App\\Controller\\Admin\\CommentsController::edit<\/a>"],[100,5,"<a href=\"Controller\/Admin\/CommentsController.php.html#142\">App\\Controller\\Admin\\CommentsController::delete<\/a>"],[100,2,"<a href=\"Controller\/Admin\/DashboardController.php.html#16\">App\\Controller\\Admin\\DashboardController::index<\/a>"],[100,1,"<a href=\"Controller\/Admin\/DirtyWordsController.php.html#24\">App\\Controller\\Admin\\DirtyWordsController::__construct<\/a>"],[100,2,"<a href=\"Controller\/Admin\/DirtyWordsController.php.html#32\">App\\Controller\\Admin\\DirtyWordsController::index<\/a>"],[100,7,"<a href=\"Controller\/Admin\/DirtyWordsController.php.html#59\">App\\Controller\\Admin\\DirtyWordsController::create<\/a>"],[100,6,"<a href=\"Controller\/Admin\/DirtyWordsController.php.html#92\">App\\Controller\\Admin\\DirtyWordsController::edit<\/a>"],[100,5,"<a href=\"Controller\/Admin\/DirtyWordsController.php.html#126\">App\\Controller\\Admin\\DirtyWordsController::delete<\/a>"],[100,4,"<a href=\"Controller\/Admin\/LoginController.php.html#15\">App\\Controller\\Admin\\LoginController::login<\/a>"],[0,1,"<a href=\"Controller\/Admin\/LoginController.php.html#40\">App\\Controller\\Admin\\LoginController::logout<\/a>"],[100,1,"<a href=\"Controller\/Admin\/TopicsController.php.html#24\">App\\Controller\\Admin\\TopicsController::__construct<\/a>"],[100,2,"<a href=\"Controller\/Admin\/TopicsController.php.html#32\">App\\Controller\\Admin\\TopicsController::index<\/a>"],[100,7,"<a href=\"Controller\/Admin\/TopicsController.php.html#61\">App\\Controller\\Admin\\TopicsController::create<\/a>"],[100,6,"<a href=\"Controller\/Admin\/TopicsController.php.html#97\">App\\Controller\\Admin\\TopicsController::edit<\/a>"],[100,5,"<a href=\"Controller\/Admin\/TopicsController.php.html#133\">App\\Controller\\Admin\\TopicsController::delete<\/a>"],[100,1,"<a href=\"Controller\/Admin\/UsersController.php.html#23\">App\\Controller\\Admin\\UsersController::__construct<\/a>"],[100,2,"<a href=\"Controller\/Admin\/UsersController.php.html#31\">App\\Controller\\Admin\\UsersController::index<\/a>"],[100,7,"<a href=\"Controller\/Admin\/UsersController.php.html#59\">App\\Controller\\Admin\\UsersController::create<\/a>"],[100,6,"<a href=\"Controller\/Admin\/UsersController.php.html#92\">App\\Controller\\Admin\\UsersController::edit<\/a>"],[100,5,"<a href=\"Controller\/Admin\/UsersController.php.html#126\">App\\Controller\\Admin\\UsersController::delete<\/a>"],[0,1,"<a href=\"Controller\/CommentsController.php.html#26\">App\\Controller\\CommentsController::__construct<\/a>"],[0,2,"<a href=\"Controller\/CommentsController.php.html#34\">App\\Controller\\CommentsController::index<\/a>"],[0,3,"<a href=\"Controller\/CommentsController.php.html#59\">App\\Controller\\CommentsController::new<\/a>"],[0,3,"<a href=\"Controller\/CommentsController.php.html#110\">App\\Controller\\CommentsController::show<\/a>"],[0,4,"<a href=\"Controller\/CommentsController.php.html#161\">App\\Controller\\CommentsController::edit<\/a>"],[0,3,"<a href=\"Controller\/CommentsController.php.html#232\">App\\Controller\\CommentsController::delete<\/a>"],[0,1,"<a href=\"Controller\/SiteController.php.html#11\">App\\Controller\\SiteController::index<\/a>"],[0,1,"<a href=\"Controller\/TopicsController.php.html#26\">App\\Controller\\TopicsController::__construct<\/a>"],[0,2,"<a href=\"Controller\/TopicsController.php.html#32\">App\\Controller\\TopicsController::index<\/a>"],[0,2,"<a href=\"Controller\/TopicsController.php.html#56\">App\\Controller\\TopicsController::new<\/a>"],[0,2,"<a href=\"Controller\/TopicsController.php.html#90\">App\\Controller\\TopicsController::show<\/a>"],[0,3,"<a href=\"Controller\/TopicsController.php.html#124\">App\\Controller\\TopicsController::edit<\/a>"],[0,2,"<a href=\"Controller\/TopicsController.php.html#177\">App\\Controller\\TopicsController::delete<\/a>"],[0,4,"<a href=\"Controller\/UsersController.php.html#21\">App\\Controller\\UsersController::new<\/a>"],[0,2,"<a href=\"Controller\/UsersController.php.html#69\">App\\Controller\\UsersController::show<\/a>"],[0,4,"<a href=\"Controller\/UsersController.php.html#91\">App\\Controller\\UsersController::edit<\/a>"],[0,2,"<a href=\"Controller\/UsersController.php.html#130\">App\\Controller\\UsersController::delete<\/a>"],[0,1,"<a href=\"DataFixtures\/AppFixtures.php.html#14\">App\\DataFixtures\\AppFixtures::load<\/a>"],[0,1,"<a href=\"Dto\/RequestDto.php.html#14\">App\\Dto\\RequestDto::__construct<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#46\">App\\Entity\\Admin::__construct<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#52\">App\\Entity\\Admin::setId<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#59\">App\\Entity\\Admin::getId<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#64\">App\\Entity\\Admin::getName<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#69\">App\\Entity\\Admin::setName<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#76\">App\\Entity\\Admin::getEmail<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#81\">App\\Entity\\Admin::setEmail<\/a>"],[100,2,"<a href=\"Entity\/Admin.php.html#88\">App\\Entity\\Admin::showStatusText<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#93\">App\\Entity\\Admin::getStatus<\/a>"],[100,2,"<a href=\"Entity\/Admin.php.html#98\">App\\Entity\\Admin::setStatus<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#110\">App\\Entity\\Admin::getCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#115\">App\\Entity\\Admin::setCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#122\">App\\Entity\\Admin::getUpdatedAt<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#127\">App\\Entity\\Admin::setUpdatedAt<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#134\">App\\Entity\\Admin::getPassword<\/a>"],[100,2,"<a href=\"Entity\/Admin.php.html#139\">App\\Entity\\Admin::setPassword<\/a>"],[100,1,"<a href=\"Entity\/Admin.php.html#149\">App\\Entity\\Admin::generatePassHash<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#53\">App\\Entity\\Comment::__construct<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#59\">App\\Entity\\Comment::setId<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#66\">App\\Entity\\Comment::getId<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#71\">App\\Entity\\Comment::getUser<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#79\">App\\Entity\\Comment::setUser<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#89\">App\\Entity\\Comment::getTopic<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#94\">App\\Entity\\Comment::setTopic<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#101\">App\\Entity\\Comment::getMessage<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#106\">App\\Entity\\Comment::setMessage<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#113\">App\\Entity\\Comment::getOriginal<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#118\">App\\Entity\\Comment::setOriginal<\/a>"],[100,2,"<a href=\"Entity\/Comment.php.html#125\">App\\Entity\\Comment::showStatusText<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#130\">App\\Entity\\Comment::getStatus<\/a>"],[100,2,"<a href=\"Entity\/Comment.php.html#135\">App\\Entity\\Comment::setStatus<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#147\">App\\Entity\\Comment::getCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#152\">App\\Entity\\Comment::setCreatedAt<\/a>"],[0,1,"<a href=\"Entity\/Comment.php.html#159\">App\\Entity\\Comment::setCreatedAtValue<\/a>"],[0,1,"<a href=\"Entity\/Comment.php.html#167\">App\\Entity\\Comment::setUpdatedAtValue<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#173\">App\\Entity\\Comment::getUpdatedAt<\/a>"],[100,1,"<a href=\"Entity\/Comment.php.html#178\">App\\Entity\\Comment::setUpdatedAt<\/a>"],[100,1,"<a href=\"Entity\/DirtyWord.php.html#22\">App\\Entity\\DirtyWord::getId<\/a>"],[100,1,"<a href=\"Entity\/DirtyWord.php.html#27\">App\\Entity\\DirtyWord::setId<\/a>"],[100,1,"<a href=\"Entity\/DirtyWord.php.html#34\">App\\Entity\\DirtyWord::getWord<\/a>"],[100,1,"<a href=\"Entity\/DirtyWord.php.html#39\">App\\Entity\\DirtyWord::setWord<\/a>"],[100,1,"<a href=\"Entity\/DirtyWord.php.html#46\">App\\Entity\\DirtyWord::getType<\/a>"],[100,1,"<a href=\"Entity\/DirtyWord.php.html#51\">App\\Entity\\DirtyWord::setType<\/a>"],[100,2,"<a href=\"Entity\/DirtyWord.php.html#58\">App\\Entity\\DirtyWord::showTypeText<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#46\">App\\Entity\\Topic::__construct<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#53\">App\\Entity\\Topic::getId<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#58\">App\\Entity\\Topic::setId<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#64\">App\\Entity\\Topic::getUser<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#69\">App\\Entity\\Topic::setUser<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#76\">App\\Entity\\Topic::getName<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#81\">App\\Entity\\Topic::setName<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#88\">App\\Entity\\Topic::getDescription<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#93\">App\\Entity\\Topic::setDescription<\/a>"],[100,2,"<a href=\"Entity\/Topic.php.html#100\">App\\Entity\\Topic::showStatusText<\/a>"],[0,1,"<a href=\"Entity\/Topic.php.html#105\">App\\Entity\\Topic::getStatus<\/a>"],[75,2,"<a href=\"Entity\/Topic.php.html#110\">App\\Entity\\Topic::setStatus<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#122\">App\\Entity\\Topic::getCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#127\">App\\Entity\\Topic::setCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#134\">App\\Entity\\Topic::getUpdatedAt<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#139\">App\\Entity\\Topic::setUpdatedAt<\/a>"],[0,1,"<a href=\"Entity\/Topic.php.html#146\">App\\Entity\\Topic::setCreatedAtValue<\/a>"],[0,1,"<a href=\"Entity\/Topic.php.html#154\">App\\Entity\\Topic::setUpdatedAtValue<\/a>"],[100,1,"<a href=\"Entity\/Topic.php.html#163\">App\\Entity\\Topic::getComments<\/a>"],[100,2,"<a href=\"Entity\/Topic.php.html#168\">App\\Entity\\Topic::addComment<\/a>"],[100,3,"<a href=\"Entity\/Topic.php.html#178\">App\\Entity\\Topic::removeComment<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#70\">App\\Entity\\User::__construct<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#78\">App\\Entity\\User::setId<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#84\">App\\Entity\\User::getId<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#89\">App\\Entity\\User::getName<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#94\">App\\Entity\\User::setName<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#101\">App\\Entity\\User::getEmail<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#106\">App\\Entity\\User::setEmail<\/a>"],[100,2,"<a href=\"Entity\/User.php.html#113\">App\\Entity\\User::showStatusText<\/a>"],[0,1,"<a href=\"Entity\/User.php.html#118\">App\\Entity\\User::getStatus<\/a>"],[75,2,"<a href=\"Entity\/User.php.html#123\">App\\Entity\\User::setStatus<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#135\">App\\Entity\\User::getCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#140\">App\\Entity\\User::setCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#147\">App\\Entity\\User::getUpdatedAt<\/a>"],[0,1,"<a href=\"Entity\/User.php.html#152\">App\\Entity\\User::setCreatedAtValue<\/a>"],[0,1,"<a href=\"Entity\/User.php.html#160\">App\\Entity\\User::setUpdatedAtValue<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#166\">App\\Entity\\User::setUpdatedAt<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#176\">App\\Entity\\User::getTopics<\/a>"],[100,2,"<a href=\"Entity\/User.php.html#181\">App\\Entity\\User::addTopic<\/a>"],[100,3,"<a href=\"Entity\/User.php.html#191\">App\\Entity\\User::removeTopic<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#206\">App\\Entity\\User::getComments<\/a>"],[100,2,"<a href=\"Entity\/User.php.html#211\">App\\Entity\\User::addComment<\/a>"],[100,3,"<a href=\"Entity\/User.php.html#221\">App\\Entity\\User::removeComment<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#233\">App\\Entity\\User::getPassword<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#238\">App\\Entity\\User::setPassword<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#245\">App\\Entity\\User::generatePassHash<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#254\">App\\Entity\\User::getRoles<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#263\">App\\Entity\\User::setRoles<\/a>"],[0,1,"<a href=\"Entity\/User.php.html#273\">App\\Entity\\User::eraseCredentials<\/a>"],[0,1,"<a href=\"Entity\/User.php.html#284\">App\\Entity\\User::getUserIdentifier<\/a>"],[0,1,"<a href=\"EventListener\/JWTCreatedListener.php.html#20\">App\\EventListener\\JWTCreatedListener::__construct<\/a>"],[0,2,"<a href=\"EventListener\/JWTCreatedListener.php.html#30\">App\\EventListener\\JWTCreatedListener::onJWTCreated<\/a>"],[92,8,"<a href=\"Form\/AdminFormType.php.html#13\">App\\Form\\AdminFormType::createUpdate<\/a>"],[100,6,"<a href=\"Form\/AdminFormType.php.html#55\">App\\Form\\AdminFormType::setEntityData<\/a>"],[100,1,"<a href=\"Form\/CommentFormType.php.html#17\">App\\Form\\CommentFormType::__construct<\/a>"],[67.74193548387096,9,"<a href=\"Form\/CommentFormType.php.html#22\">App\\Form\\CommentFormType::createUpdate<\/a>"],[100,1,"<a href=\"Form\/CommentFormType.php.html#68\">App\\Form\\CommentFormType::checkTopicEntity<\/a>"],[100,1,"<a href=\"Form\/CommentFormType.php.html#75\">App\\Form\\CommentFormType::checkUserEntity<\/a>"],[100,4,"<a href=\"Form\/CommentFormType.php.html#82\">App\\Form\\CommentFormType::setEntityData<\/a>"],[100,1,"<a href=\"Form\/CommentFormType.php.html#97\">App\\Form\\CommentFormType::setWordCensor<\/a>"],[87.5,3,"<a href=\"Form\/DirtyWordFormType.php.html#12\">App\\Form\\DirtyWordFormType::createUpdate<\/a>"],[100,1,"<a href=\"Form\/DirtyWordFormType.php.html#39\">App\\Form\\DirtyWordFormType::setEntityData<\/a>"],[75,6,"<a href=\"Form\/TopicFormType.php.html#13\">App\\Form\\TopicFormType::createUpdate<\/a>"],[100,1,"<a href=\"Form\/TopicFormType.php.html#50\">App\\Form\\TopicFormType::checkUserEntity<\/a>"],[100,4,"<a href=\"Form\/TopicFormType.php.html#57\">App\\Form\\TopicFormType::setEntityData<\/a>"],[92,8,"<a href=\"Form\/UserFormType.php.html#13\">App\\Form\\UserFormType::createUpdate<\/a>"],[100,6,"<a href=\"Form\/UserFormType.php.html#55\">App\\Form\\UserFormType::setEntityData<\/a>"],[100,1,"<a href=\"Helper\/AdminHtmlDetails.php.html#12\">App\\Helper\\AdminHtmlDetails::__construct<\/a>"],[100,1,"<a href=\"Helper\/AdminHtmlDetails.php.html#19\">App\\Helper\\AdminHtmlDetails::setDefault<\/a>"],[100,1,"<a href=\"Helper\/AdminHtmlDetails.php.html#30\">App\\Helper\\AdminHtmlDetails::setExtraParameter<\/a>"],[0,1,"<a href=\"Helper\/AdminHtmlDetails.php.html#35\">App\\Helper\\AdminHtmlDetails::setPagerData<\/a>"],[100,1,"<a href=\"Helper\/AdminHtmlDetails.php.html#40\">App\\Helper\\AdminHtmlDetails::getData<\/a>"],[0,1,"<a href=\"Helper\/AdminHtmlDetails.php.html#45\">App\\Helper\\AdminHtmlDetails::adminPager<\/a>"],[100,3,"<a href=\"Helper\/AdminHtmlDetails.php.html#68\">App\\Helper\\AdminHtmlDetails::checkStayPage<\/a>"],[100,1,"<a href=\"Helper\/FlashBag.php.html#8\">App\\Helper\\FlashBag::has<\/a>"],[100,1,"<a href=\"Helper\/FlashBag.php.html#13\">App\\Helper\\FlashBag::set<\/a>"],[100,2,"<a href=\"Helper\/FlashBag.php.html#20\">App\\Helper\\FlashBag::get<\/a>"],[0,1,"<a href=\"Helper\/FlashBag.php.html#28\">App\\Helper\\FlashBag::getType<\/a>"],[0,1,"<a href=\"Helper\/FlashBag.php.html#33\">App\\Helper\\FlashBag::getInstance<\/a>"],[100,1,"<a href=\"Helper\/ValidationErrorHelper.php.html#12\">App\\Helper\\ValidationErrorHelper::__construct<\/a>"],[100,2,"<a href=\"Helper\/ValidationErrorHelper.php.html#17\">App\\Helper\\ValidationErrorHelper::getTransformedErrors<\/a>"],[100,2,"<a href=\"Helper\/Validator.php.html#32\">App\\Helper\\Validator::__construct<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#45\">App\\Helper\\Validator::create<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#58\">App\\Helper\\Validator::addRule<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#72\">App\\Helper\\Validator::addFilter<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#85\">App\\Helper\\Validator::equalsPassword<\/a>"],[0,5,"<a href=\"Helper\/Validator.php.html#96\">App\\Helper\\Validator::taxnumber<\/a>"],[0,2,"<a href=\"Helper\/Validator.php.html#125\">App\\Helper\\Validator::removeRule<\/a>"],[0,2,"<a href=\"Helper\/Validator.php.html#141\">App\\Helper\\Validator::removeFilter<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#158\">App\\Helper\\Validator::addDefaultRule<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#172\">App\\Helper\\Validator::addDefaultFilter<\/a>"],[0,2,"<a href=\"Helper\/Validator.php.html#184\">App\\Helper\\Validator::removeDefaultRule<\/a>"],[0,2,"<a href=\"Helper\/Validator.php.html#200\">App\\Helper\\Validator::removeDefaultFilter<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#216\">App\\Helper\\Validator::getCleanedValues<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#226\">App\\Helper\\Validator::getListOfErrors<\/a>"],[0,3,"<a href=\"Helper\/Validator.php.html#236\">App\\Helper\\Validator::addslashes<\/a>"],[40,3,"<a href=\"Helper\/Validator.php.html#254\">App\\Helper\\Validator::stripTags<\/a>"],[40,3,"<a href=\"Helper\/Validator.php.html#270\">App\\Helper\\Validator::trim<\/a>"],[66.66666666666666,3,"<a href=\"Helper\/Validator.php.html#286\">App\\Helper\\Validator::notEmpty<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#302\">App\\Helper\\Validator::unFormatCSVPrice<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#316\">App\\Helper\\Validator::isEmpty<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#328\">App\\Helper\\Validator::maxLength<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#340\">App\\Helper\\Validator::minLength<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#352\">App\\Helper\\Validator::exactLength<\/a>"],[100,1,"<a href=\"Helper\/Validator.php.html#364\">App\\Helper\\Validator::equals<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#376\">App\\Helper\\Validator::regex<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#387\">App\\Helper\\Validator::msn<\/a>"],[31.25,4,"<a href=\"Helper\/Validator.php.html#400\">App\\Helper\\Validator::email<\/a>"],[76.92307692307693,4,"<a href=\"Helper\/Validator.php.html#431\">App\\Helper\\Validator::url<\/a>"],[100,2,"<a href=\"Helper\/Validator.php.html#493\">App\\Helper\\Validator::phone<\/a>"],[66.66666666666666,2,"<a href=\"Helper\/Validator.php.html#510\">App\\Helper\\Validator::date<\/a>"],[75,2,"<a href=\"Helper\/Validator.php.html#527\">App\\Helper\\Validator::alpha<\/a>"],[66.66666666666666,2,"<a href=\"Helper\/Validator.php.html#545\">App\\Helper\\Validator::alphaNumeric<\/a>"],[0,2,"<a href=\"Helper\/Validator.php.html#561\">App\\Helper\\Validator::alphaDash<\/a>"],[66.66666666666666,4,"<a href=\"Helper\/Validator.php.html#579\">App\\Helper\\Validator::number<\/a>"],[0,2,"<a href=\"Helper\/Validator.php.html#596\">App\\Helper\\Validator::range<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#607\">App\\Helper\\Validator::color<\/a>"],[76.19047619047619,10,"<a href=\"Helper\/Validator.php.html#619\">App\\Helper\\Validator::creditCard<\/a>"],[90.9090909090909,5,"<a href=\"Helper\/Validator.php.html#698\">App\\Helper\\Validator::luhn<\/a>"],[0,3,"<a href=\"Helper\/Validator.php.html#731\">App\\Helper\\Validator::isDouble<\/a>"],[0,3,"<a href=\"Helper\/Validator.php.html#749\">App\\Helper\\Validator::isInt<\/a>"],[0,2,"<a href=\"Helper\/Validator.php.html#769\">App\\Helper\\Validator::isDate<\/a>"],[0,2,"<a href=\"Helper\/Validator.php.html#782\">App\\Helper\\Validator::ip<\/a>"],[100,2,"<a href=\"Helper\/Validator.php.html#799\">App\\Helper\\Validator::clearAndValidate<\/a>"],[85,13,"<a href=\"Helper\/Validator.php.html#818\">App\\Helper\\Validator::validationChecker<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#863\">App\\Helper\\Validator::putDefaultError<\/a>"],[91.66666666666666,9,"<a href=\"Helper\/Validator.php.html#882\">App\\Helper\\Validator::filterChecker<\/a>"],[36.36363636363637,4,"<a href=\"Helper\/Validator.php.html#914\">App\\Helper\\Validator::methodCaller<\/a>"],[0,1,"<a href=\"Helper\/Validator.php.html#944\">App\\Helper\\Validator::__call<\/a>"],[100,1,"<a href=\"Helper\/ValidatorEConvMessage.php.html#31\">App\\Helper\\ValidatorEConvMessage::__construct<\/a>"],[84.61538461538461,5,"<a href=\"Helper\/ValidatorEConvMessage.php.html#42\">App\\Helper\\ValidatorEConvMessage::replaceErrorToMessage<\/a>"],[0,2,"<a href=\"Helper\/ValidatorEConvMessage.php.html#76\">App\\Helper\\ValidatorEConvMessage::addNewErrorMessages<\/a>"],[0,1,"<a href=\"Repository\/AdminRepository.php.html#19\">App\\Repository\\AdminRepository::__construct<\/a>"],[0,1,"<a href=\"Repository\/AdminRepository.php.html#24\">App\\Repository\\AdminRepository::countAll<\/a>"],[0,2,"<a href=\"Repository\/AdminRepository.php.html#32\">App\\Repository\\AdminRepository::login<\/a>"],[0,3,"<a href=\"Repository\/AdminRepository.php.html#46\">App\\Repository\\AdminRepository::adminListing<\/a>"],[0,1,"<a href=\"Repository\/CommentRepository.php.html#21\">App\\Repository\\CommentRepository::__construct<\/a>"],[0,1,"<a href=\"Repository\/CommentRepository.php.html#26\">App\\Repository\\CommentRepository::countAll<\/a>"],[0,1,"<a href=\"Repository\/CommentRepository.php.html#34\">App\\Repository\\CommentRepository::paginate<\/a>"],[0,5,"<a href=\"Repository\/CommentRepository.php.html#61\">App\\Repository\\CommentRepository::adminListing<\/a>"],[0,1,"<a href=\"Repository\/DirtyWordRepository.php.html#19\">App\\Repository\\DirtyWordRepository::__construct<\/a>"],[0,3,"<a href=\"Repository\/DirtyWordRepository.php.html#24\">App\\Repository\\DirtyWordRepository::adminListing<\/a>"],[0,1,"<a href=\"Repository\/TopicRepository.php.html#21\">App\\Repository\\TopicRepository::__construct<\/a>"],[0,1,"<a href=\"Repository\/TopicRepository.php.html#26\">App\\Repository\\TopicRepository::countAll<\/a>"],[0,1,"<a href=\"Repository\/TopicRepository.php.html#34\">App\\Repository\\TopicRepository::getTopicById<\/a>"],[0,1,"<a href=\"Repository\/TopicRepository.php.html#41\">App\\Repository\\TopicRepository::paginate<\/a>"],[0,4,"<a href=\"Repository\/TopicRepository.php.html#59\">App\\Repository\\TopicRepository::adminListing<\/a>"],[0,1,"<a href=\"Repository\/UserRepository.php.html#19\">App\\Repository\\UserRepository::__construct<\/a>"],[0,1,"<a href=\"Repository\/UserRepository.php.html#24\">App\\Repository\\UserRepository::countAll<\/a>"],[0,1,"<a href=\"Repository\/UserRepository.php.html#32\">App\\Repository\\UserRepository::getUserById<\/a>"],[0,3,"<a href=\"Repository\/UserRepository.php.html#39\">App\\Repository\\UserRepository::adminListing<\/a>"],[0,2,"<a href=\"Security\/Hasher\/CustomPasswordHasher.php.html#15\">App\\Security\\Hasher\\CustomPasswordHasher::hash<\/a>"],[0,3,"<a href=\"Security\/Hasher\/CustomPasswordHasher.php.html#24\">App\\Security\\Hasher\\CustomPasswordHasher::verify<\/a>"],[0,1,"<a href=\"Security\/Hasher\/CustomPasswordHasher.php.html#35\">App\\Security\\Hasher\\CustomPasswordHasher::needsRehash<\/a>"],[100,1,"<a href=\"Service\/WordCensor.php.html#14\">App\\Service\\WordCensor::__construct<\/a>"],[100,2,"<a href=\"Service\/WordCensor.php.html#20\">App\\Service\\WordCensor::censorWords<\/a>"],[100,1,"<a href=\"Service\/WordCensor.php.html#32\">App\\Service\\WordCensor::setDirtyWordRepository<\/a>"],[100,1,"<a href=\"Service\/XmlProcessor.php.html#13\">App\\Service\\XmlProcessor::__construct<\/a>"],[100,2,"<a href=\"Service\/XmlProcessor.php.html#18\">App\\Service\\XmlProcessor::process<\/a>"],[100,1,"<a href=\"Twig\/AppExtension.php.html#18\">App\\Twig\\AppExtension::__construct<\/a>"],[0,1,"<a href=\"Twig\/AppExtension.php.html#23\">App\\Twig\\AppExtension::getName<\/a>"],[0,1,"<a href=\"Twig\/AppExtension.php.html#28\">App\\Twig\\AppExtension::getGlobals<\/a>"],[100,1,"<a href=\"Twig\/AppExtension.php.html#49\">App\\Twig\\AppExtension::getBaseUrl<\/a>"],[100,1,"<a href=\"Twig\/AppExtension.php.html#57\">App\\Twig\\AppExtension::getAdminUrl<\/a>"],[100,1,"<a href=\"Twig\/AppExtension.php.html#65\">App\\Twig\\AppExtension::getTests<\/a>"],[0,1,"<a href=\"Twig\/AppExtension.php.html#73\">App\\Twig\\AppExtension::isNumeric<\/a>"],[100,1,"<a href=\"Twig\/AppExtension.php.html#78\">App\\Twig\\AppExtension::getFunctions<\/a>"],[100,3,"<a href=\"Twig\/AppExtension.php.html#87\">App\\Twig\\AppExtension::checkStayPage<\/a>"],[0,1,"<a href=\"Twig\/AppExtension.php.html#95\">App\\Twig\\AppExtension::adminPager<\/a>"],[32.20338983050847,28,"<a href=\"Twig\/AppExtension.php.html#118\">App\\Twig\\AppExtension::pathUrl<\/a>"],[100,1,"<a href=\"Twig\/AppExtension.php.html#203\">App\\Twig\\AppExtension::getHostNameMain<\/a>"],[0,1,"<a href=\"Validator\/Comments\/CommentsPaginationValidator.php.html#21\">App\\Validator\\Comments\\CommentsPaginationValidator::__construct<\/a>"],[0,1,"<a href=\"Validator\/PaginationValidator.php.html#18\">App\\Validator\\PaginationValidator::__construct<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>
