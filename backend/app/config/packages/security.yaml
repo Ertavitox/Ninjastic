@@ -25,12 +25,12 @@ security:
             stateless: true
             entry_point: jwt
             json_login:
-                check_path: /api/login # or, if you have defined a route for your login path, the route name you used
+                check_path: /api/v1/login # or, if you have defined a route for your login path, the route name you used
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
             refresh_jwt:
-                check_path: /api/token/refresh 
+                check_path: /api/v1/token/refresh 
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
