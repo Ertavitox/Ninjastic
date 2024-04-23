@@ -42,7 +42,7 @@ class CommentFormType
             $error["topic_id"] = "Please choose topic from list";
             return array("entity" => $entity, "error" => $error);
         }
-        $topicEntity = $this->checkTopicEntity($userId, $entityManager);
+        $topicEntity = $this->checkTopicEntity($topic_id, $entityManager);
         if ($topicEntity === null) {
             $error["topic_id"] = "Please choose topic from list";
             return array("entity" => $entity, "error" => $error);
