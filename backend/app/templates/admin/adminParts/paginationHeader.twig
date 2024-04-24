@@ -63,7 +63,7 @@
                     </div>
                     <select class="custom-select form-control" onchange="location = this.value;">
                         {% for tableLengthItem in apps.tableLength %}
-                            <option value="{{ pathUrl({ 'pagesize': tableLengthItem , 'q': query, 'r': request_uri }) }}" {% if tableLengthItem == limit %}selected="selected"{% endif %}>{{ tableLengthItem }}</option>
+                            <option value="{{ pathUrl({ 'pageSize': tableLengthItem , 'q': query, 'r': request_uri }) }}" {% if tableLengthItem == limit %}selected="selected"{% endif %}>{{ tableLengthItem }}</option>
                         {% endfor %}
                     </select>
                 </div>
