@@ -18,15 +18,36 @@ interface Threads {
 
 const auth = useAuthStore();
 const router = useRouter();
-
+const currentPage = ref(1);
+const limit = ref(10);
 const threads = ref<Threads[]>([]);
 const token = computed(() => auth.getToken());
 const baseURL = import.meta.env.VITE_APP_URL;
+let isLoading = false;
+
+const isScrollAtBottom = () => {
+    return window.innerHeight + window.scrollY >= document.body.offsetHeight;
+};
+
+const fetchThreadsOnScroll = async () => {
+    try {
+        if (isScrollAtBottom() && !isLoading) {
+            isLoading = true;
+            await fetchThreads();
+            isLoading = false;
+        }
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        isLoading = false; 
+    }
+};
+
+window.addEventListener('scroll', fetchThreadsOnScroll);
 
 const fetchThreads = async () => {
     try {
         await auth.checkAuth();
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics?page=${currentPage.value}&limit=${limit.value}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,8 +56,8 @@ const fetchThreads = async () => {
         });
         if (response.ok) {
             const responseData = await response.json();
-            const threadsData: Threads[] = responseData.result;
-            threads.value = threadsData.sort((a, b) => b.comment_count - a.comment_count);
+            const newThreads: Threads[] = responseData.result;
+            threads.value = threads.value.concat(newThreads); 
         } else if (response.status === 401) {
             router.push('/login');
         }
@@ -44,6 +65,7 @@ const fetchThreads = async () => {
         console.error('Error fetching threads:', error);
     }
 };
+
 
 onMounted(() => {
     fetchThreads();

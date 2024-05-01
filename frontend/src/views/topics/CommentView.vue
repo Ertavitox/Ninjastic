@@ -119,48 +119,72 @@ const comments = ref<Comment[]>([]);
 const token = computed(() => auth.getToken());
 const baseURL = import.meta.env.VITE_APP_URL;
 const threadId = router.currentRoute.value.params.id;
+const currentPage = ref(1);
+const limit = ref(3);
 const editedComment = ref('');
 const isModalOpen = ref(false);
+let isLoading = false;
 let editingCommentId: number | null = null;
+
+const isScrollAtBottom = () => {
+    return window.innerHeight + window.scrollY >= document.body.offsetHeight;
+};
+
+const fetchCommentsOnScroll = async () => {
+    try {
+        if (isScrollAtBottom() && !isLoading) {
+            isLoading = true;
+            await fetchComments();
+            isLoading = false;
+        }
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        isLoading = false; 
+    }
+};
 
 const insertEmojiIntoTextarea = (emoji: string) => {
   editedComment.value += emoji;
 };
 
+window.addEventListener('scroll', fetchCommentsOnScroll);
+
 const fetchComments = async () => {
-  try {
-    await auth.checkAuth();
-    if (!threadId) {
-      console.error('Missing threadId');
-      return;
+    try {
+        await auth.checkAuth();
+        if (!threadId) {
+            console.error('Missing threadId');
+            return;
+        }
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments?page=${currentPage.value}&limit=${limit.value}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token.value}`
+            }
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            const commentsNonSorted: Comment[] = responseData.result;
+            if (commentsNonSorted.length > 0) {
+                comments.value = [...comments.value, ...commentsNonSorted]
+                    .map(comment => ({
+                        ...comment,
+                        message: decodeUnicode(comment.message)
+                    }))
+                   
+                currentPage.value++;
+            } else {
+                console.log('No more comments to load');
+            }
+        } else if (response.status === 401) {
+            router.push('/login');
+        }
+    } catch (error) {
+        console.error('Error fetching comments:', error);
     }
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/${threadId}/comments`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token.value}`
-      }
-    });
-    if (response.ok) {
-      const responseData = await response.json();
-      const commentsNonSorted: Comment[] = responseData.result;
-
-      comments.value = commentsNonSorted
-        .map(comment => ({
-          ...comment,
-          message: decodeUnicode(comment.message)
-        }))
-        .sort((a, b) => b.id - a.id);
-
-      await commentsNonSorted.map(comment => comment.user_id);
-
-    } else if (response.status === 401) {
-      router.push('/login');
-    }
-  } catch (error) {
-    console.error('Error fetching comments:', error);
-  }
 };
+
 
 const closeEditModal = () => {
   isModalOpen.value = false;
