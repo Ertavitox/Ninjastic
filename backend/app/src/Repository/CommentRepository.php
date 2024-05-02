@@ -48,7 +48,9 @@ class CommentRepository extends ServiceEntityRepository
             FROM App\Entity\Comment c
             JOIN c.user u
             WHERE c.topic = :topicId
-            and c.status = 1'
+            and c.status = 1
+            ORDER BY c.created_at desc'
+            
         )
             ->setMaxResults($limit)
             ->setFirstResult($offset)

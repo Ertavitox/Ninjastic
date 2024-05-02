@@ -50,7 +50,8 @@ class TopicRepository extends ServiceEntityRepository
             ->where('t.status = 1')
             ->setMaxResults($limit)
             ->setFirstResult($offset)
-            ->groupBy('t.id, t.name');
+            ->groupBy('t.id, t.name')
+            ->orderBy('t.created_at', 'DESC');
 
         return $queryBuilder->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
