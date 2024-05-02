@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useAuthStore } from '@/stores/auth.store';
 import { useRouter } from 'vue-router';
 import { EnvelopeIcon } from '@heroicons/vue/24/solid';
-import PaginationComp from '@/components/PaginationComp.vue';
+//import PaginationComp from '@/components/PaginationComp.vue';
 
 interface Threads {
     id: number;
