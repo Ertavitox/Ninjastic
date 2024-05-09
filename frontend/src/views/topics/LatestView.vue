@@ -57,7 +57,13 @@ const fetchComments = async (page: number) => {
         if (response.ok) {
             const responseData = await response.json();
             const newThreads: Threads[] = responseData.result;
-            threads.value = threads.value.concat(newThreads); 
+
+            if (newThreads.length > 0) {
+                threads.value = threads.value.concat(newThreads);
+                currentPage.value++;
+            } else {
+                window.removeEventListener('scroll', fetchThreadsOnScroll);
+            }
         } else if (response.status === 401) {
             router.push('/login');
         }

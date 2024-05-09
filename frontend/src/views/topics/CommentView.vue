@@ -120,7 +120,7 @@ const token = computed(() => auth.getToken());
 const baseURL = import.meta.env.VITE_APP_URL;
 const threadId = router.currentRoute.value.params.id;
 const currentPage = ref(1);
-const limit = ref(3);
+const limit = ref(10);
 const editedComment = ref('');
 const isModalOpen = ref(false);
 let isLoading = false;
