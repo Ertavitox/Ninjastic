@@ -30,6 +30,35 @@ nelmio_api_doc:
                 application/json:
                   schema:
                     $ref: "#/components/schemas/JwtResponse"
+      /api/v1/topics/hot:
+        get:
+          summary: List hot topics
+          tags:
+            - Topics
+          parameters:
+            - name: page
+              in: query
+              description: Page number for pagination
+              schema:
+                type: integer
+                default: 1
+            - name: limit
+              in: query
+              description: Number of items per page
+              schema:
+                type: integer
+                default: 10
+          responses:
+            "200":
+              description: Successful response
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/PaginationTopicResponse"
+            "403":
+              $ref: "#/components/responses/Unauthorized"
+            "400":
+              $ref: "#/components/responses/BadRequest"
       /api/v1/topics:
         get:
           summary: List topics

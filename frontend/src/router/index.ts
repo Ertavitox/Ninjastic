@@ -2,7 +2,7 @@ import { useHead } from 'unhead'
 import { createRouter, createWebHistory } from 'vue-router'
 import ForumView from '@/views/ForumView.vue'
 import CommentView from '@/views/topics/CommentView.vue'
-import HotView from '@/views/topics/HotView.vue'
+import HotestView from '@/views/HotestView.vue'
 import LoginPage from '@/views/auth/LoginView.vue'
 import MyProfile from '@/views/auth/MyProfile.vue'
 import RegisterPage from '@/views/auth/RegisterView.vue'
@@ -52,7 +52,7 @@ const router = createRouter({
     {
       path: '/hot-topics',
       name: 'Hot Topics',
-      component: HotView,
+      component: HotestView,
       meta: { requiresAuth: true, title: 'Hot Topics', description: 'Ninjastic Community is a place to be.' }
 
     }

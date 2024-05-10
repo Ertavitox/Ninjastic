@@ -5,7 +5,6 @@ import { useAuthStore } from '@/stores/auth.store';
 import { useRouter } from 'vue-router';
 import GravatarImage from '@/components/GravatarImage.vue';
 import { UserIcon } from '@heroicons/vue/24/solid';
-
 interface Threads {
     id: number;
     name: string;
@@ -33,21 +32,21 @@ const fetchThreadsOnScroll = async () => {
     try {
         if (isScrollAtBottom() && !isLoading) {
             isLoading = true;
-            await fetchThreads();
+            await fetchMoreThreads();
             isLoading = false;
         }
     } catch (error) {
-        console.error('Error fetching comments:', error);
-        isLoading = false; 
+        console.error('Error fetching threads:', error);
+        isLoading = false;
     }
 };
 
 window.addEventListener('scroll', fetchThreadsOnScroll);
 
-const fetchThreads = async () => {
+const fetchComments = async (page: number) => {
     try {
         await auth.checkAuth();
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics?page=${currentPage.value}&limit=${limit.value}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/topics/hot/?page=${page}&limit=${limit.value}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,24 +56,34 @@ const fetchThreads = async () => {
         if (response.ok) {
             const responseData = await response.json();
             const newThreads: Threads[] = responseData.result;
-            threads.value = threads.value.concat(newThreads); 
+
+            if (newThreads.length > 0) {
+                threads.value = threads.value.concat(newThreads);
+                currentPage.value++;
+            } else {
+                console.log('No more threads to fetch');
+                window.removeEventListener('scroll', fetchThreadsOnScroll);
+            }
         } else if (response.status === 401) {
             router.push('/login');
         }
     } catch (error) {
-        console.error('Error fetching threads:', error);
+        console.error('Error fetching comments:', error);
     }
 };
 
+const fetchMoreThreads = async () => {
+    currentPage.value++;
+    await fetchComments(currentPage.value);
+};
 
 onMounted(() => {
-    fetchThreads();
+    fetchComments(currentPage.value);
 });
 
 const getRelativeTime = (time: Date) => {
     return moment(time).fromNow();
-};
-
+}
 
 </script>
 
