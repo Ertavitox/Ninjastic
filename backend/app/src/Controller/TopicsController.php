@@ -53,6 +53,30 @@ class TopicsController extends AbstractController
         );
     }
 
+    #[Route('/hot', name: 'app_topic_hot', methods: ['GET'], host: 'api.ninjastic.pro')]
+    public function hot(
+        ValidatorInterface $validator,
+        #[MapQueryParameter] int $page = 1,
+        #[MapQueryParameter] int $limit = 10
+    ): JsonResponse {
+        $paginationValidator = new PaginationValidator($page, $limit);
+        $errors = $validator->validate($paginationValidator);
+
+        if (count($errors) > 0) {
+            return $this->json(
+                new RequestDto(
+                    message: "Validation Failed!",
+                    errors: (new ValidationErrorHelper($errors))->getTransformedErrors(),
+                ),
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        return $this->json(
+            new RequestDto(result: $this->topicRepository->paginate($page, $limit, 'comment_count'))
+        );
+    }
+
     #[Route('', name: 'app_topic_new', methods: ['POST'], host: 'api.ninjastic.pro')]
     public function new(
         ValidatorInterface $validator,
@@ -197,7 +221,7 @@ class TopicsController extends AbstractController
         $comments = $topic->getComments();
         $comments->map(function ($c) use ($entityManager) {
             $entityManager->remove($c);
-        });     
+        });
 
         $entityManager->remove($topic);
 

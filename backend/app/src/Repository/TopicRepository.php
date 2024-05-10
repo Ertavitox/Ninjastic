@@ -38,7 +38,7 @@ class TopicRepository extends ServiceEntityRepository
         ]);
     }
 
-    public function paginate(int $page, int $limit): mixed
+    public function paginate(int $page, int $limit, $sortBy = 't.created_at', $sort = 'DESC'): mixed
     {
         $offset = ($page - 1) * $limit;
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
@@ -51,7 +51,7 @@ class TopicRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->setFirstResult($offset)
             ->groupBy('t.id, t.name')
-            ->orderBy('t.created_at', 'DESC');
+            ->orderBy($sortBy, $sort);
 
         return $queryBuilder->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
