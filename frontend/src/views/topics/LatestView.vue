@@ -73,7 +73,6 @@ const fetchComments = async (page: number) => {
 };
 
 const fetchMoreThreads = async () => {
-    currentPage.value++;
     await fetchComments(currentPage.value);
 };
 
